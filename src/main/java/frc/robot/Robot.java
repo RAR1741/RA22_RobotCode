@@ -5,7 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import frc.robot.logging.LoggableController;
+import frc.robot.logging.LoggablePowerDistribution;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
 
@@ -23,12 +25,16 @@ public class Robot extends TimedRobot {
   LoggableController driver;
   LoggableController operator;
 
+  LoggablePowerDistribution pdp;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
+    pdp = new LoggablePowerDistribution(1, ModuleType.kRev);
+    
     driver = new LoggableController("Driver", 0);
     operator = new LoggableController("Operator", 1);
 
