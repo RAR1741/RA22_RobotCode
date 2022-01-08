@@ -5,6 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.logging.LoggableController;
+import frc.robot.logging.LoggableTimer;
+import frc.robot.logging.Logger;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -13,30 +16,63 @@ import edu.wpi.first.wpilibj.TimedRobot;
  * project.
  */
 public class Robot extends TimedRobot {
+
+  Logger logger;
+  LoggableTimer timer;
+
+  LoggableController driver;
+  LoggableController operator;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
-  public void robotInit() {}
+  public void robotInit() {
+    driver = new LoggableController("Driver", 0);
+    operator = new LoggableController("Operator", 1);
+
+    logger = new Logger();
+    timer = new LoggableTimer();
+
+    logger.addLoggable(timer);
+    logger.addLoggable(driver);
+    logger.addLoggable(operator);
+  }
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    logger.log();
+  }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    resetLogging();
+  }
+
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+
+    logger.writeLine();
+  }
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    resetLogging();
+  }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+    logger.writeLine();
+  }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    logger.close();
+    timer.stop();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -46,4 +82,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {}
+
+  private void resetLogging() {
+    logger.open();
+    logger.setup();
+
+    timer.reset();
+    timer.start();
+  }
 }
