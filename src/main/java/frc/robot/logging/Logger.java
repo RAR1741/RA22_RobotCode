@@ -123,8 +123,11 @@ public class Logger {
      * @return Whether the operation succeeded
      */
     public boolean log(String field, double d) {
+        if (!hasAttribute(field))
+            return false;
         table.getEntry(field).setDouble(d);
-        return log(field, String.valueOf(d));
+        fields.put(field, Double.toString(d));
+        return true;
     }
 
     /**
@@ -137,6 +140,7 @@ public class Logger {
         if (!hasAttribute(field))
             return false;
 
+        table.getEntry(field).setString(data);
         fields.put(field, data);
         return true;
     }
@@ -151,6 +155,7 @@ public class Logger {
         if (!hasAttribute(field))
             return false;
 
+        table.getEntry(field).setValue(data);
         fields.put(field, data.toString());
         return true;
     }
