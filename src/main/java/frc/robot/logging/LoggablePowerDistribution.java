@@ -13,12 +13,12 @@ public class LoggablePowerDistribution extends PowerDistribution implements Logg
 
     @Override
     public void setupLogging(Logger logger) {
-       logger.addAttribute("voltage");
+       logger.addAttribute("PDH/voltage");
     }
 
     @Override
     public void log(Logger logger) {
-        logger.log("voltage", this.getVoltage());
+        logger.log("PDH/voltage", this.getVoltage());
     }
 
 }
