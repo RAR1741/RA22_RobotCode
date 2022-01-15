@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-
+    // Robot code goes here
     logger.log();
     logger.writeLine();
   }
@@ -68,7 +68,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-
+    // Robot code goes here
     logger.log();
     logger.writeLine();
   }
@@ -81,17 +81,20 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    
+    // Robot code goes here
     logger.log();
   }
 
   @Override
-  public void testInit() {}
+  public void testInit() {
+    resetLogging();
+  }
 
   @Override
   public void testPeriodic() {
-
+    // Robot code goes here
     logger.log();
+    logger.writeLine();
   }
 
   private void resetLogging() {
