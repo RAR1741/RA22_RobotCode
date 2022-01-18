@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
   LoggablePowerDistribution pdp;
 
   boolean drivetrainEnabled;
+  boolean tankDriveEnabled;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -46,6 +47,10 @@ public class Robot extends TimedRobot {
       DriveModule leftModule = new DriveModule("LeftDriveModule", 2, 3);
       DriveModule rightModule = new DriveModule("RightDriveModule", 4, 5);
       drive = new Drivetrain(leftModule, rightModule);
+
+      logger.addLoggable(leftModule);
+      logger.addLoggable(rightModule);
+      logger.addLoggable(drive);
     } else {
       System.out.println("Drivetrain initialization disabled.");
     }
@@ -81,6 +86,22 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // Robot code goes here
+    if(this.drivetrainEnabled) {
+      if(tankDriveEnabled) {
+        double leftInput = driver.getLeftY();
+        double rightInput = driver.getRightY();
+        drive.tankDrive(leftInput, rightInput);
+      } else {
+        double turnInput = driver.getRightX();
+        double speedInput = driver.getLeftY();
+        drive.arcadeDrive(turnInput, speedInput);
+      }
+      if(driver.getXButtonPressed()) {
+        tankDriveEnabled = !tankDriveEnabled;
+      }
+    }
+
+
     logger.log();
     logger.writeLine();
   }
