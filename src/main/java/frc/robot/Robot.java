@@ -68,6 +68,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    
     // Robot code goes here
     logger.log();
     logger.writeLine();
