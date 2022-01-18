@@ -22,10 +22,13 @@ public class Robot extends TimedRobot {
   Logger logger;
   LoggableTimer timer;
 
+  Drivetrain drive;
   LoggableController driver;
   LoggableController operator;
 
   LoggablePowerDistribution pdp;
+
+  boolean drivetrainEnabled;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -37,6 +40,15 @@ public class Robot extends TimedRobot {
     
     driver = new LoggableController("Driver", 0);
     operator = new LoggableController("Operator", 1);
+
+    if(this.drivetrainEnabled) {
+      System.out.println("Initializing drivetrain...");
+      DriveModule leftModule = new DriveModule("LeftDriveModule", 2, 3);
+      DriveModule rightModule = new DriveModule("RightDriveModule", 4, 5);
+      drive = new Drivetrain(leftModule, rightModule);
+    } else {
+      System.out.println("Drivetrain initialization disabled.");
+    }
 
     logger = new Logger();
     timer = new LoggableTimer();
