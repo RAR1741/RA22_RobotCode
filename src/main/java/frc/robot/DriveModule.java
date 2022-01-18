@@ -18,17 +18,17 @@ public class DriveModule implements Loggable {
         this.moduleName = moduleName;
         this.main = new TalonFX(mainID);
         this.sub = new TalonFX(subID);
+
+        this.sub.follow(this.main);
     }
 
     public void setInverted(boolean isInverted) {
         main.setInverted(isInverted);
-        sub.setInverted(isInverted);
     }
 
     public void set(double input) {
         this.speed = input;
         main.set(TalonFXControlMode.PercentOutput, input);
-        sub.set(TalonFXControlMode.PercentOutput, input);
     }
 
     @Override
