@@ -24,8 +24,11 @@ public class Robot extends TimedRobot {
 
   LoggableController driver;
   LoggableController operator;
+  Manipulation manipulation;
 
   LoggablePowerDistribution pdp;
+
+  boolean manipulationEnabled;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -37,6 +40,13 @@ public class Robot extends TimedRobot {
     
     driver = new LoggableController("Driver", 0);
     operator = new LoggableController("Operator", 1);
+
+    if(manipulationEnabled) {
+      System.out.println("Initializing manipulation...");
+      manipulation = new Manipulation(0, 1, 7, 8);
+    } else {
+      System.out.println("Manipulation initialization disabled.");
+    }
 
     logger = new Logger();
     timer = new LoggableTimer();
@@ -69,6 +79,22 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // Robot code goes here
+    if(this.manipulationEnabled) {
+       if(driver.getRightBumperPressed()) {
+         manipulation.setIntakeExtend(true);
+       } else if(driver.getLeftBumperPressed()) {
+         manipulation.setIntakeExtend(false);
+       }
+
+       if(operator.getRightBumper()) {
+         manipulation.shoot(true);
+       } else {
+         manipulation.setIntakeSpin(operator.getYButton());
+         manipulation.setIndexLoad(operator.getXButton());
+       }
+    }
+
+
     logger.log();
     logger.writeLine();
   }
