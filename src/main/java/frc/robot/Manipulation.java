@@ -19,27 +19,64 @@ public class Manipulation implements Loggable {
     private double speed;
     private boolean spinning;
 
+    /**
+     * Constructor
+     * 
+     * @param pneumaticsForwardChannel The Solenoid id for the forward channel for the intake
+     * @param pneumaticsReverseChannel The Solenoid id for the reverse channel for the intake
+     * @param intakeWheelID The CAN id of the spark for the intake 
+     * @param indexLoadID The CAN id of the spark for the index loader
+     * 
+     */
     Manipulation(int pneumaticsForwardChannel, int pneumaticsReverseChannel, int intakeWheelID, int indexLoadID) {
         this.intakeWheel = new CANSparkMax(intakeWheelID, MotorType.kBrushless);
         this.indexLoad = new CANSparkMax(indexLoadID, MotorType.kBrushless);
         this.intakePneumatics = new DoubleSolenoid(PneumaticsModuleType.REVPH, pneumaticsForwardChannel, pneumaticsReverseChannel);
 
-        intakeWheel.setInverted(true);
+        intakeWheel
+        .setInverted(true);
     }
 
+    /**
+     * Spins the intake motor
+     * 
+     * @param spin True if the motor should spin; false if not
+     * 
+     */
     public void setIntakeSpin(boolean spin) {
         this.speed = spin ? -0.5 : 0.0;
         intakeWheel.set(speed);
         this.spinning = spin;
     }
 
+    /**
+     * Moves the intake system
+     * 
+     * @param extend True if the pneumatics should extend; false if not
+     *
+     */
+
     public void setIntakeExtend(boolean extend) {
         intakePneumatics.set(extend ? Value.kForward : Value.kReverse);
     }
 
+    /**
+     * Moves power cells down indexing system
+     * 
+     * @param load true if it should load
+     * 
+     */
+
     public void setIndexLoad(boolean load) {
         indexLoad.set(load ? 0.5 : 0.0);
     }
+
+    /**
+     * 
+     * 
+     * @param fire
+     * 
+     */
 
     public void shoot(boolean fire) {
         indexLoad.set(fire ? 0.75 : 0.0);
