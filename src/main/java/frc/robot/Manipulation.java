@@ -55,29 +55,25 @@ public class Manipulation implements Loggable {
      * @param extend True if the pneumatics should extend; false if not
      *
      */
-
     public void setIntakeExtend(boolean extend) {
         intakePneumatics.set(extend ? Value.kForward : Value.kReverse);
     }
-
     /**
      * Moves power cells down indexing system
      * 
-     * @param load true if it should load
+     * @param load True if it should load; false if not
      * 
      */
-
     public void setIndexLoad(boolean load) {
         indexLoad.set(load ? 0.5 : 0.0);
     }
 
     /**
+     * Fires the scoring elements 
      * 
-     * 
-     * @param fire
+     * @param fire True if it should fire; false if not
      * 
      */
-
     public void shoot(boolean fire) {
         indexLoad.set(fire ? 0.75 : 0.0);
     }
