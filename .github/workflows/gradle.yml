@@ -18,7 +18,7 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
-    - name: Setup Gradle
+    - name: Build with Gradle
       uses: gradle/gradle-build-action@v2.1.0
-    - name: Execute Gradle build
-      run: ./gradlew build
+      with:
+        arguments: build
