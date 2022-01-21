@@ -14,6 +14,14 @@ public class DriveModule implements Loggable {
 
     private double speed;
 
+    /**
+     * Constructor
+     * 
+     * @param moduleName Name of the attribute to log speed
+     * @param mainID CAN id of the main TalonFX
+     * @param subID CAN id of the sub TalonFX
+     * 
+     */
     DriveModule(String moduleName, int mainID, int subID) {
         this.moduleName = moduleName;
         this.main = new TalonFX(mainID);
@@ -22,10 +30,22 @@ public class DriveModule implements Loggable {
         this.sub.follow(this.main);
     }
 
+    /**
+     * Inverts the main TalonFX
+     * 
+     * @param isInverted True if the TalonFX should be inverted; false if not
+     * 
+     */
     public void setInverted(boolean isInverted) {
         main.setInverted(isInverted);
     }
 
+    /**
+     * Sets the speed of the main TalonFX
+     * 
+     * @param input The speed to set the TalonFX to
+     *
+     */
     public void set(double input) {
         this.speed = input;
         main.set(TalonFXControlMode.PercentOutput, input);
