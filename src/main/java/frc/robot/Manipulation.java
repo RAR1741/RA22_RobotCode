@@ -68,16 +68,6 @@ public class Manipulation implements Loggable {
         indexLoad.set(load ? 0.5 : 0.0);
     }
 
-    /**
-     * Fires the scoring elements 
-     * 
-     * @param fire True if it should fire; false if not
-     * 
-     */
-    public void shoot(boolean fire) {
-        indexLoad.set(fire ? 0.75 : 0.0);
-    }
-
     @Override
     public void setupLogging(Logger logger) {
         logger.addAttribute("Manipulation/IntakeWheelSpeed");
