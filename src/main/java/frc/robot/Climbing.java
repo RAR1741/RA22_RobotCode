@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 
+import frc.robot.ClimbingSensors;
 import frc.robot.logging.Loggable;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
@@ -19,11 +20,12 @@ enum ClimbingStates {
 public class Climbing implements Loggable {
     TalonFX climbingMotor, secondaryClimbingMotor;
     Solenoid climberSolenoidA, climberSolenoidB1, climberSolenoidB2, climberSolenoidC;
+    ClimbingSensors touchA, touchB, touchC;
     ClimbingStates currentStage = ClimbingStates.RESTING;
     LoggableTimer timer;
     public Climbing(int climbingMotorID, int secondaryClimbingMotorID, 
                     int climberSolenoidAID, int climberSolenoidB1ID, int climberSolenoidB2ID, int climberSolenoidCID,
-                    int collisionSensorA, int collisionSensorB) {
+                    ClimbingSensors touchA, ClimbingSensors touchB, ClimbingSensors touchC) {
         this.climbingMotor = new TalonFX(climbingMotorID);
         this.secondaryClimbingMotor = new TalonFX(secondaryClimbingMotorID);
 
@@ -31,6 +33,10 @@ public class Climbing implements Loggable {
         this.climberSolenoidB1 = new Solenoid(PneumaticsModuleType.REVPH, climberSolenoidB1ID);
         this.climberSolenoidB2 = new Solenoid(PneumaticsModuleType.REVPH, climberSolenoidB2ID);
         this.climberSolenoidC = new Solenoid(PneumaticsModuleType.REVPH, climberSolenoidCID);
+
+        this.touchA = touchA;
+        this.touchB = touchB;
+        this.touchC = touchC;
 
         secondaryClimbingMotor.setInverted(InvertType.InvertMotorOutput);
         secondaryClimbingMotor.follow(climbingMotor);
@@ -95,8 +101,14 @@ public class Climbing implements Loggable {
         switch (currentStage) {
             case PRE_STAGE:
                 // Check if A is touching yet.
+                if (touchA.get()){
+                    this.setClimbingState(ClimbingStates.TOUCH_A);
+                }
             case TOUCH_A:
                 // Check if B is touching yet.
+                if (touchB.get()){
+                    this.setClimbingState(ClimbingStates.TRANS_AB);
+                }
                 break;
             case TRANS_AB:
                 if (timer.hasElapsed(1)) {
@@ -105,6 +117,9 @@ public class Climbing implements Loggable {
                 break;
             case TOUCH_B:
                 // Check if C is touching yet.
+                if (touchC.get()){
+                    this.setClimbingState(ClimbingStates.TRANS_BC);
+                }
             case TRANS_BC:
                 if (timer.hasElapsed(1)) {
                     this.setClimbingState(ClimbingStates.TOUCH_C);
