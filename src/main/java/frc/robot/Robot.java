@@ -35,8 +35,24 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     pdp = new LoggablePowerDistribution(1, ModuleType.kRev);
     
-    driver = new LoggableController("Driver", 0);
+    climber = new LoggableController("Climber", 0);
     operator = new LoggableController("Operator", 1);
+
+    if(this.climberEnabled) {
+      System.out.println("Initializing climber...");
+      ClimbingSensors touchA = new ClimbingSensors("TouchA", 0, 1);
+      ClimbingSensors touchB = new ClimbingSensors("TouchB", 0, 1);
+      ClimbingSensors touchC = new ClimbingSensors("TouchC", 0, 1);
+      climb = new ClimbingSensors(touchA, touchB, touchC);
+
+      logger.addLoggable(touchA);
+      logger.addLoggable(touchB);
+      logger.addLoggable(touchC);
+      logger.addLoggable(climb);
+    } else {
+      System.out.println("Drivetrain initialization disabled.");
+    }
+
 
     logger = new Logger();
     timer = new LoggableTimer();
