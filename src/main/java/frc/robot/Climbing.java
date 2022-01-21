@@ -9,16 +9,18 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 
 import frc.robot.logging.Loggable;
+import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
 
 enum ClimbingStates {
-    RESTING, PRE_STAGE, FIRST_STAGE, SECOND_STAGE, THIRD_STAGE;
+    RESTING, PRE_STAGE, TOUCH_A, TRANS_AB, TOUCH_B, TRANS_BC, TOUCH_C;
 }
 
 public class Climbing implements Loggable {
     TalonFX climbingMotor, secondaryClimbingMotor;
     Solenoid climberSolenoidA, climberSolenoidB1, climberSolenoidB2, climberSolenoidC;
     ClimbingStates currentStage = ClimbingStates.RESTING;
+    LoggableTimer timer;
     public Climbing(int climbingMotorID, int secondaryClimbingMotorID, 
                     int climberSolenoidAID, int climberSolenoidB1ID, int climberSolenoidB2ID, int climberSolenoidCID,
                     int collisionSensorA, int collisionSensorB) {
@@ -32,33 +34,55 @@ public class Climbing implements Loggable {
 
         secondaryClimbingMotor.setInverted(InvertType.InvertMotorOutput);
         secondaryClimbingMotor.follow(climbingMotor);
+        this.timer = new LoggableTimer("Climbing/Time");
+        
     }
 
     public void setClimbingState(ClimbingStates climbingState) {
         this.currentStage = climbingState;
+        
         switch (climbingState) {
-            case FIRST_STAGE:
+            case PRE_STAGE:
+                this.timer.start();
+                break;
+            case TOUCH_A:
                 climberSolenoidA.set(false);
                 climberSolenoidB1.set(true);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
                 break;
-            case SECOND_STAGE:
+            case TRANS_AB:
+                this.timer.reset();
+                climberSolenoidA.set(false);
+                climberSolenoidB1.set(false);
+                climberSolenoidB2.set(false);
+                climberSolenoidC.set(true);
+                break;
+            case TOUCH_B:
                 climberSolenoidA.set(true);
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
                 break;
-            case THIRD_STAGE:
+            case TRANS_BC:
+                climberSolenoidA.set(true);
+                climberSolenoidB1.set(false);
+                climberSolenoidB2.set(false);
+                climberSolenoidC.set(false);
+                break;
+            case TOUCH_C:
                 climberSolenoidA.set(true);
                 climberSolenoidB1.set(true);
                 climberSolenoidB2.set(true);
                 climberSolenoidC.set(false);
                 break;
-            default:
+            case RESTING:
                 climberSolenoidA.set(false);
                 climberSolenoidB1.set(false);
+                climberSolenoidB2.set(false);
                 climberSolenoidC.set(false);
+                break;
+            default:
                 break;
         }
     }
@@ -68,30 +92,42 @@ public class Climbing implements Loggable {
      */
     public boolean checkClimbingState() {
         // Check whether or not the climber is done climbing during the current stage.
+        switch (currentStage) {
+            case PRE_STAGE:
+                // Check if A is touching yet.
+            case TOUCH_A:
+                // Check if B is touching yet.
+                break;
+            case TRANS_AB:
+                if (timer.hasElapsed(1)) {
+                    this.setClimbingState(ClimbingStates.TOUCH_B);
+                }
+                break;
+            case TOUCH_B:
+                // Check if C is touching yet.
+            case TRANS_BC:
+                if (timer.hasElapsed(1)) {
+                    this.setClimbingState(ClimbingStates.TOUCH_C);
+                }
+                break;
+            case TOUCH_C:
+                // Success! \o/
+                break;
+            default:
+                break;
+        }
         return this.currentStage == ClimbingStates.RESTING;
     }
 
     @Override
     public void setupLogging(Logger logger) {
-        // TODO Auto-generated method stub
-        
+        this.timer.setupLogging(logger);
+
     }
 
     @Override
     public void log(Logger logger) {
-        // TODO Auto-generated method stub
+        this.timer.log(logger);
         
     }
 }
-
-//Upon lineup of Bar A shadow tape: 
-/* 
-- Press button to run climbing function (e.g. Press 'A' button) && When buttons triggered on climbing mechanism 
-   [1] - Measure encoder count/total encoder counts = total rotations 
-   [1] - Rotate to certain point to hit angle for gripping first bar
-    - Activate first solenoid a very small time after the motor is at the correct rotation
-    - Repeat [1] with different measurements
-    - Activate second (double) solenoid a very small time after the motor is at the correct rotation
-    - Repeat [1] with different measurements
-    - Activate third solenoid a very small time after the motor is at the correct rotation
-*/
