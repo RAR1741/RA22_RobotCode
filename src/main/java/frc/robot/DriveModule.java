@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
@@ -29,6 +30,7 @@ public class DriveModule implements Loggable {
         this.main = new TalonFX(mainID);
         this.sub = new TalonFX(subID);
 
+        main.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
         this.sub.follow(this.main);
 
         indexCurrent = 0;
@@ -53,6 +55,15 @@ public class DriveModule implements Loggable {
     public void set(double input) {
         this.speed = input;
         main.set(TalonFXControlMode.PercentOutput, input);
+    }
+
+    /**
+     * Get the velocity of the drive module.
+     * 
+     * @return velocity
+     */
+    public double getSpeed() {
+        return main.getSelectedSensorVelocity();
     }
 
     /**
