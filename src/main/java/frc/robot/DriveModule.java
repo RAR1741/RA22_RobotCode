@@ -51,6 +51,15 @@ public class DriveModule implements Loggable {
         main.set(TalonFXControlMode.PercentOutput, input);
     }
 
+    /**
+     * Gets the average current drawn
+     * 
+     * @return The average current drawn by the motors
+     */
+    public double getCurrent() {
+        return (main.getStatorCurrent()+sub.getStatorCurrent())/2;
+    }
+
     @Override
     public void setupLogging(Logger logger) {
         logger.addAttribute(this.moduleName + "/MotorSpeed");
