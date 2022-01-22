@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
 
   LoggablePowerDistribution pdp;
 
-  boolean manipulationEnabled;
+  boolean manipulationEnabled = true;
 
   /**
    * This function is run when the robot is first started up and should be used for any
