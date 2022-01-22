@@ -89,10 +89,10 @@ public class Drivetrain implements Loggable {
     public void checkGears() {
         if (getShifter()) {
             // if in low speed gear and in low current, shift to high speed gear
-            setShifter(left.getCurrent() > SHIFT_CURRENT_LOW || right.getCurrent() > SHIFT_CURRENT_LOW);
+            setShifter(left.getAccumulatedCurrent() > SHIFT_CURRENT_LOW || right.getAccumulatedCurrent() > SHIFT_CURRENT_LOW);
         } else {
             // if in high speed gear and in high current, shift to low speed gear
-            setShifter(left.getCurrent() > SHIFT_CURRENT_HIGH || right.getCurrent() > SHIFT_CURRENT_HIGH);            
+            setShifter(left.getAccumulatedCurrent() > SHIFT_CURRENT_HIGH || right.getAccumulatedCurrent() > SHIFT_CURRENT_HIGH);            
         }
     }
 

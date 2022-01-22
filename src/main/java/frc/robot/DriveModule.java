@@ -13,6 +13,8 @@ public class DriveModule implements Loggable {
     private String moduleName;
 
     private double speed;
+    private double current[] = new double[20];
+    private int indexCurrent;
 
     /**
      * Constructor
@@ -28,6 +30,8 @@ public class DriveModule implements Loggable {
         this.sub = new TalonFX(subID);
 
         this.sub.follow(this.main);
+
+        indexCurrent = 0;
     }
 
     /**
@@ -56,8 +60,24 @@ public class DriveModule implements Loggable {
      * 
      * @return The average current drawn by the motors
      */
-    public double getCurrent() {
+    public double getInstantCurrent() {
         return (main.getStatorCurrent()+sub.getStatorCurrent())/2;
+    }
+
+    /**
+     * Gets the averagte current drawn over a number of cycles
+     * 
+     * @return The average current drawn by the motore
+     */
+    public double getAccumulatedCurrent() {
+        current[indexCurrent] = getInstantCurrent();
+        indexCurrent = (indexCurrent + 1) % current.length;
+        
+        int total = 0;
+        for(int i = 0; i < current.length; i++){
+            total += current[i];
+        }
+        return total/current.length;
     }
 
     @Override
@@ -69,6 +89,6 @@ public class DriveModule implements Loggable {
     @Override
     public void log(Logger logger) {
         logger.log(this.moduleName + "/MotorSpeed", speed);
-        logger.log(this.moduleName + "/MotorCurrent", getCurrent());
+        logger.log(this.moduleName + "/MotorCurrent", getInstantCurrent());
     }
 }
