@@ -63,11 +63,12 @@ public class DriveModule implements Loggable {
     @Override
     public void setupLogging(Logger logger) {
         logger.addAttribute(this.moduleName + "/MotorSpeed");
-        
+        logger.addAttribute(this.moduleName + "/MotorCurrent");
     }
 
     @Override
     public void log(Logger logger) {
         logger.log(this.moduleName + "/MotorSpeed", speed);
+        logger.log(this.moduleName + "/MotorCurrent", getCurrent());
     }
 }
