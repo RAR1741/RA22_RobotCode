@@ -27,6 +27,10 @@ public class Robot extends TimedRobot {
 
   LoggablePowerDistribution pdp;
 
+  Climbing climb;
+
+  boolean climberEnabled = true;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -35,22 +39,22 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     pdp = new LoggablePowerDistribution(1, ModuleType.kRev);
     
-    climber = new LoggableController("Climber", 0);
+    driver = new LoggableController("Driver", 0);
     operator = new LoggableController("Operator", 1);
 
     if(this.climberEnabled) {
       System.out.println("Initializing climber...");
       ClimbingSensors touchA = new ClimbingSensors("TouchA", 0, 1);
-      ClimbingSensors touchB = new ClimbingSensors("TouchB", 0, 1);
-      ClimbingSensors touchC = new ClimbingSensors("TouchC", 0, 1);
-      climb = new ClimbingSensors(touchA, touchB, touchC);
+      ClimbingSensors touchB = new ClimbingSensors("TouchB", 2, 3);
+      ClimbingSensors touchC = new ClimbingSensors("TouchC", 4, 5);
+      climb = new Climbing(9, 10, 2, 3, 4, 5, touchA, touchB, touchC);
 
       logger.addLoggable(touchA);
       logger.addLoggable(touchB);
       logger.addLoggable(touchC);
       logger.addLoggable(climb);
     } else {
-      System.out.println("Drivetrain initialization disabled.");
+      System.out.println("Climber initialization disabled.");
     }
 
 
