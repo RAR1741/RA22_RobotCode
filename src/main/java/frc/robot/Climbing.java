@@ -133,6 +133,12 @@ public class Climbing implements Loggable {
         }
     }
 
+    public void setPrestage(boolean stage) {
+        if (stage) {
+            this.setClimbingState(ClimbingStates.PRE_STAGE);
+        }
+    }
+
     public void setPower(double power) {
         climbingMotor.set(ControlMode.PercentOutput, power);
     }

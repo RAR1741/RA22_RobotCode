@@ -114,6 +114,12 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     // Robot code goes here
+    if (climberEnabled) {
+      climb.setPrestage(operator.getXButtonPressed());
+      climb.setPower(operator.getRightY()); //Deadband
+      climb.checkClimbingState();
+    }
+
     logger.log();
     logger.writeLine();
   }
