@@ -28,8 +28,8 @@ public class Robot extends TimedRobot {
 
   LoggablePowerDistribution pdp;
 
-  boolean drivetrainEnabled;
-  boolean tankDriveEnabled;
+  boolean drivetrainEnabled = true;
+  boolean tankDriveEnabled = true;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -100,7 +100,6 @@ public class Robot extends TimedRobot {
         tankDriveEnabled = !tankDriveEnabled;
       }
     }
-
 
     logger.log();
     logger.writeLine();
