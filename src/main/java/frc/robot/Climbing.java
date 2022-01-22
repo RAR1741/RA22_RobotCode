@@ -96,7 +96,7 @@ public class Climbing implements Loggable {
      * Updates the current state of the climber.
      * @return true when current state is RESTING
      */
-    public boolean checkClimbingState() {
+    public void checkClimbingState() {
         // Check whether or not the climber is done climbing during the current stage.
         switch (currentStage) {
             case PRE_STAGE:
@@ -131,7 +131,10 @@ public class Climbing implements Loggable {
             default:
                 break;
         }
-        return this.currentStage == ClimbingStates.RESTING;
+    }
+
+    public void setPower(double power) {
+        climbingMotor.set(ControlMode.PercentOutput, power);
     }
 
     @Override
