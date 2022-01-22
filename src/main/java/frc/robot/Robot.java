@@ -85,13 +85,8 @@ public class Robot extends TimedRobot {
       } else if (driver.getLeftBumperPressed()) {
         manipulation.setIntakeExtend(false);
       }
-
-      if (operator.getRightBumper()) {
-        manipulation.setIndexLoad(true);
-      } else {
-        manipulation.setIntakeSpin(operator.getYButton());
-        manipulation.setIndexLoad(operator.getXButton());
-      }
+      manipulation.setIntakeSpin(operator.getYButton());
+      manipulation.setIndexLoad(operator.getXButton());
     }
 
     logger.log();
