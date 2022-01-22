@@ -33,8 +33,7 @@ public class Manipulation implements Loggable {
         this.indexLoad = new CANSparkMax(indexLoadID, MotorType.kBrushless);
         this.intakePneumatics = new DoubleSolenoid(PneumaticsModuleType.REVPH, pneumaticsForwardChannel, pneumaticsReverseChannel);
 
-        intakeWheel
-        .setInverted(true);
+        intakeWheel.setInverted(true);
     }
 
     /**
