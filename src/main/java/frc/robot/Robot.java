@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
       System.out.println("Initializing drivetrain...");
       DriveModule leftModule = new DriveModule("LeftDriveModule", 2, 3);
       DriveModule rightModule = new DriveModule("RightDriveModule", 4, 5);
-      drive = new Drivetrain(leftModule, rightModule);
+      drive = new Drivetrain(leftModule, rightModule, 6);
 
       logger.addLoggable(leftModule);
       logger.addLoggable(rightModule);
