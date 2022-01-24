@@ -215,7 +215,7 @@ public class Logger {
 
     /**
      * Logs data to the Logger
-     * @deprecated Use {@link #addAttribute(String, Supplier<String>, Consumer<String>)} instead
+     * @deprecated Use {@link #addAttribute(String, Supplier, Consumer)} instead
      * @param field key being logged
      * @param data String data to log
      * @return whether the operation succeeded
