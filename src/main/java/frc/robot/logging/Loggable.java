@@ -12,7 +12,7 @@ public interface Loggable {
     /**
      * Logs data in the given Logger object.
      * 
-     * @deprecated See {@link Logger#addAttribute(String, Supplier<String>, Consumer<String>)}.
+     * @deprecated See {@link Logger#addAttribute(String, Supplier, Consumer)}.
      * @param logger Logger class to log data to
      */
     @Deprecated(forRemoval = true)
