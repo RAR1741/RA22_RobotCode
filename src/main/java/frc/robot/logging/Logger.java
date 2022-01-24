@@ -9,16 +9,27 @@ import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.function.BooleanConsumer;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Manages NetworkTable and file logging. */
 public class Logger {
+    private static final String TABLE_PREFIX = "Logging";
     private String filename;
     private BufferedWriter log = null;
+    private Map<String, Supplier<String>> suppliers;
     private Map<String, String> fields;
     private List<Loggable> loggables;
+    @Deprecated(forRemoval = true)
     private NetworkTable table;
 
     public Logger() {
@@ -102,15 +113,86 @@ public class Logger {
 
     /**
      * Adds an attribute to the logger.
-     * @param field
-     * @return
+     * @param field The key to add to the logger
+     * @return Whether the attribute was added
      */
     public boolean addAttribute(String field) {
         if (hasAttribute(field)) {
-            // TODO: Output warning
+            System.out.printf("Attribute \"%s\" already exists! Skipping!%n", field);
             return false; // We already have this attribute
         }
+        fields.put(field, "");
 
+        return true;
+    }
+
+    /**
+     * Adds an attribute to the logger.
+     * @param field The key to add to the logger
+     * @param getter The function to get the value of the attribute
+     * @param setter The function to set the value of the attribute
+     * @return Whether the attribute was added
+     */
+    public boolean addAttribute(String field, Supplier<String> getter, Consumer<String> setter) {
+        if (hasAttribute(field)) {
+            System.out.printf("Attribute \"%s\" already exists! Skipping!%n", field);
+            return false; // We already have this attribute
+        }
+        SmartDashboard.putData((SendableBuilder builder) -> {
+            builder.setSmartDashboardType(TABLE_PREFIX);
+            builder.addStringProperty(field, getter != null ? getter::get : null,
+                    setter != null ? setter::accept : null);
+        });
+
+        suppliers.put(field, getter::get);
+        fields.put(field, "");
+
+        return true;
+    }
+
+    /**
+     * Adds an attribute to the logger.
+     * @param field The key to add to the logger
+     * @param getter The function to get the value of the attribute
+     * @param setter The function to set the value of the attribute
+     * @return Whether the attribute was added
+     */
+    public boolean addAttribute(String field, DoubleSupplier getter, DoubleConsumer setter) {
+        if (hasAttribute(field)) {
+            System.out.printf("Attribute \"%s\" already exists! Skipping!%n", field);
+            return false; // We already have this attribute
+        }
+        SmartDashboard.putData((SendableBuilder builder) -> {
+            builder.setSmartDashboardType(TABLE_PREFIX);
+            builder.addDoubleProperty(field, getter != null ? getter::getAsDouble : null,
+                    setter != null ? setter::accept : null);
+        });
+
+        suppliers.put(field, () -> Double.toString(getter.getAsDouble()));
+        fields.put(field, "");
+
+        return true;
+    }
+
+    /**
+     * Adds an attribute to the logger.
+     * @param field The key to add to the logger
+     * @param getter The function to get the value of the attribute
+     * @param setter The function to set the value of the attribute
+     * @return Whether the attribute was added
+     */
+    public boolean addAttribute(String field, BooleanSupplier getter, BooleanConsumer setter) {
+        if (hasAttribute(field)) {
+            System.out.printf("Attribute \"%s\" already exists! Skipping!%n", field);
+            return false; // We already have this attribute
+        }
+        SmartDashboard.putData((SendableBuilder builder) -> {
+            builder.setSmartDashboardType(TABLE_PREFIX);
+            builder.addBooleanProperty(field, getter != null ? getter::getAsBoolean : null,
+                    setter != null ? setter::accept : null);
+        });
+
+        suppliers.put(field, () -> Boolean.toString(getter.getAsBoolean()));
         fields.put(field, "");
 
         return true;
@@ -118,39 +200,43 @@ public class Logger {
 
     /**
      * Logs data to the Logger.
+     * @deprecated Use {@link #addAttribute(String, DoubleSupplier, DoubleConsumer)} instead
      * @param field Key being logged
      * @param data Number data to log
      * @return Whether the operation succeeded
      */
+    @Deprecated(forRemoval = true)
     public boolean log(String field, double d) {
         if (!hasAttribute(field))
             return false;
-        table.getEntry(field).setDouble(d);
         fields.put(field, Double.toString(d));
         return true;
     }
 
     /**
      * Logs data to the Logger
+     * @deprecated Use {@link #addAttribute(String, Supplier<String>, Consumer<String>)} instead
      * @param field key being logged
      * @param data String data to log
      * @return whether the operation succeeded
      */
+    @Deprecated(forRemoval = true)
     public boolean log(String field, String data) {
         if (!hasAttribute(field))
             return false;
 
-        table.getEntry(field).setString(data);
         fields.put(field, data);
         return true;
     }
 
     /**
      * Logs data to the Logger
+     * @deprecated Use {@link #addAttribute(String, Supplier, Consumer)} instead
      * @param field key being logged
      * @param data data to log
      * @return whether the operation succeeded
      */
+    @Deprecated(forRemoval = true)
     public boolean log(String field, Object data) {
         if (!hasAttribute(field))
             return false;
@@ -232,6 +318,9 @@ public class Logger {
      * Calls the log method of all currently registered Loggables.
      */
     public void log() {
+        for (Map.Entry<String, Supplier<String>> entry : this.suppliers.entrySet()) {
+            this.fields.put(entry.getKey(), entry.getValue().get());
+        }
         for (Loggable l : loggables) {
             l.log(this);
         }

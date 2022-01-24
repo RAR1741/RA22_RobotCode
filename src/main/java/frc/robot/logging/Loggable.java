@@ -3,7 +3,7 @@ package frc.robot.logging;
 /** A class for a loggable subsystem. */
 public interface Loggable {
     /**
-     * Sets up all the keys in the given Logger object.
+     * Sets up all the keys, getters, and setters in the given Logger object.
      * 
      * @param logger Logger class to setup keys in
      */
@@ -12,7 +12,9 @@ public interface Loggable {
     /**
      * Logs data in the given Logger object.
      * 
+     * @deprecated See {@link Logger#addAttribute(String, Supplier<String>, Consumer<String>)}.
      * @param logger Logger class to log data to
      */
-    public abstract void log(Logger logger);
+    @Deprecated(forRemoval = true)
+    public void log(Logger logger);
 }
