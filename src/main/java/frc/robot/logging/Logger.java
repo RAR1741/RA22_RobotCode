@@ -23,12 +23,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Manages NetworkTable and file logging. */
 public class Logger {
+    private static final String ERROR_MSG_ATTRIBUTE_ALREADY_EXISTS = "Attribute \"%s\" already exists! Skipping!%n";
     private static final String TABLE_PREFIX = "Logging";
     private String filename;
     private BufferedWriter log = null;
     private Map<String, Supplier<String>> suppliers;
     private Map<String, String> fields;
     private List<Loggable> loggables;
+    /**
+     * Our NetworkTable instance.
+     * @deprecated Use SmartDashboard Sendables instead.
+     */
     @Deprecated(forRemoval = true)
     private NetworkTable table;
 
@@ -118,7 +123,7 @@ public class Logger {
      */
     public boolean addAttribute(String field) {
         if (hasAttribute(field)) {
-            System.out.printf("Attribute \"%s\" already exists! Skipping!%n", field);
+            System.out.printf(ERROR_MSG_ATTRIBUTE_ALREADY_EXISTS, field);
             return false; // We already have this attribute
         }
         fields.put(field, "");
@@ -135,7 +140,7 @@ public class Logger {
      */
     public boolean addAttribute(String field, Supplier<String> getter, Consumer<String> setter) {
         if (hasAttribute(field)) {
-            System.out.printf("Attribute \"%s\" already exists! Skipping!%n", field);
+            System.out.printf(ERROR_MSG_ATTRIBUTE_ALREADY_EXISTS, field);
             return false; // We already have this attribute
         }
         SmartDashboard.putData((SendableBuilder builder) -> {
@@ -159,7 +164,7 @@ public class Logger {
      */
     public boolean addAttribute(String field, DoubleSupplier getter, DoubleConsumer setter) {
         if (hasAttribute(field)) {
-            System.out.printf("Attribute \"%s\" already exists! Skipping!%n", field);
+            System.out.printf(ERROR_MSG_ATTRIBUTE_ALREADY_EXISTS, field);
             return false; // We already have this attribute
         }
         SmartDashboard.putData((SendableBuilder builder) -> {
@@ -183,7 +188,7 @@ public class Logger {
      */
     public boolean addAttribute(String field, BooleanSupplier getter, BooleanConsumer setter) {
         if (hasAttribute(field)) {
-            System.out.printf("Attribute \"%s\" already exists! Skipping!%n", field);
+            System.out.printf(ERROR_MSG_ATTRIBUTE_ALREADY_EXISTS, field);
             return false; // We already have this attribute
         }
         SmartDashboard.putData((SendableBuilder builder) -> {
