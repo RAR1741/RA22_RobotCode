@@ -9,13 +9,14 @@ public class Drivetrain implements Loggable {
 
     private final double SHIFT_CURRENT_HIGH = 80; //TODO Get actual values when we test drivetrain
     private final double SHIFT_CURRENT_LOW = 0;
+    private final double SHIFT_VELOCITY = 0;
 
     private DriveModule left;
     private DriveModule right;
     private Solenoid shifter;
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param left DriveModule of the drivetrain's left half
      * @param right DriveModule of the drivetrain's right half
@@ -32,7 +33,7 @@ public class Drivetrain implements Loggable {
     }
 
     /**
-     * Controls the power of the motors in the drivetrain
+     * Controls the power of the motors in the drivetrain.
      * 
      * @param leftSpeed The speed of the left motors
      * @param rightSpeed The speed of the right motors
@@ -44,7 +45,7 @@ public class Drivetrain implements Loggable {
     }
 
     /**
-     * Drive with arcade-style controls
+     * Drive with arcade-style controls.
      * 
      * @param turnInput The speed to turn 
      * @param speedInput The speed to drive
@@ -55,7 +56,7 @@ public class Drivetrain implements Loggable {
     }
 
     /**
-     * Tank Drive
+     * Tank Drive.
      * 
      * @param leftDrive The speed to set the left motors
      * @param rightDrive The speed to set the right motors
@@ -66,7 +67,7 @@ public class Drivetrain implements Loggable {
     }
 
     /**
-     * Changes gears for the drivetrain
+     * Changes gears for the drivetrain.
      * 
      * @param lowSpeed true if in low speed gearing, false if in high speed gearing
      */
@@ -75,7 +76,7 @@ public class Drivetrain implements Loggable {
     }
 
     /**
-     * Gets if the gear shift is engaged
+     * Gets if the gear shift is engaged.
      * 
      * @return true if in low gear, false if in high gear
      */
@@ -84,10 +85,13 @@ public class Drivetrain implements Loggable {
     }
 
     /**
-     * Shifts gears based on current
+     * Shifts gears based on current.
      */
     public void checkGears() {
-        if (getShifter()) {
+        if(left.getSpeed() < SHIFT_VELOCITY && right.getSpeed() < SHIFT_VELOCITY){
+            // if low velocity, shift to low gear
+            setShifter(true);
+        } else if (getShifter()) {
             // if in low speed gear and in low current, shift to high speed gear
             setShifter(left.getAccumulatedCurrent() > SHIFT_CURRENT_LOW || right.getAccumulatedCurrent() > SHIFT_CURRENT_LOW);
         } else {

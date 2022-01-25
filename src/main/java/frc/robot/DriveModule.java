@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
@@ -9,16 +8,18 @@ import frc.robot.logging.Logger;
 
 public class DriveModule implements Loggable {
     
+    private final double VELOCITY_COEFFICIENT = 600/2048;
+
     private TalonFX main;
     private TalonFX sub;
     private String moduleName;
 
-    private double speed;
+    private double power;
     private double current[] = new double[20];
     private int indexCurrent;
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param moduleName Name of the attribute to log speed
      * @param mainID CAN id of the main TalonFX
@@ -30,16 +31,15 @@ public class DriveModule implements Loggable {
         this.main = new TalonFX(mainID);
         this.sub = new TalonFX(subID);
 
-        main.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
         this.sub.follow(this.main);
 
         indexCurrent = 0;
     }
 
     /**
-     * Inverts the main TalonFX
+     * Inverts the module.
      * 
-     * @param isInverted True if the TalonFX should be inverted; false if not
+     * @param isInverted True if the module should be inverted; false if not
      * 
      */
     public void setInverted(boolean isInverted) {
@@ -47,27 +47,36 @@ public class DriveModule implements Loggable {
     }
 
     /**
-     * Sets the speed of the main TalonFX
+     * Sets the power of the module.
      * 
-     * @param input The speed to set the TalonFX to
+     * @param input The power to set the module to
      *
      */
     public void set(double input) {
-        this.speed = input;
+        this.power = input;
         main.set(TalonFXControlMode.PercentOutput, input);
     }
 
     /**
-     * Get the velocity of the drive module.
+     * Sets the speed of the module.
      * 
-     * @return velocity
+     * @param speed The speed to set the module to
      */
-    public double getSpeed() {
-        return main.getSelectedSensorVelocity();
+    public void setSpeed(double speed) {
+        main.set(TalonFXControlMode.Velocity, speed / VELOCITY_COEFFICIENT);
     }
 
     /**
-     * Gets the average current drawn
+     * Get the velocity of the module.
+     * 
+     * @return velocity (rpm) of the motor
+     */
+    public double getSpeed() {
+        return main.getSelectedSensorVelocity() * VELOCITY_COEFFICIENT;
+    }
+
+    /**
+     * Gets the average current drawn.
      * 
      * @return The average current drawn by the motors
      */
@@ -76,7 +85,7 @@ public class DriveModule implements Loggable {
     }
 
     /**
-     * Gets the averagte current drawn over a number of cycles
+     * Gets the average current drawn over a number of cycles.
      * 
      * @return The average current drawn by the motore
      */
@@ -93,13 +102,13 @@ public class DriveModule implements Loggable {
 
     @Override
     public void setupLogging(Logger logger) {
-        logger.addAttribute(this.moduleName + "/MotorSpeed");
+        logger.addAttribute(this.moduleName + "/MotorPower");
         logger.addAttribute(this.moduleName + "/MotorCurrent");
     }
 
     @Override
     public void log(Logger logger) {
-        logger.log(this.moduleName + "/MotorSpeed", speed);
+        logger.log(this.moduleName + "/MotorPower", power);
         logger.log(this.moduleName + "/MotorCurrent", getInstantCurrent());
     }
 }
