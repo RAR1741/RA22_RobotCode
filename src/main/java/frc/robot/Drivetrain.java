@@ -88,7 +88,7 @@ public class Drivetrain implements Loggable {
      * Shifts gears based on current.
      */
     public void checkGears() {
-        if(left.getSpeed() < SHIFT_VELOCITY && right.getSpeed() < SHIFT_VELOCITY){
+        if(Math.abs(left.getSpeed()) < SHIFT_VELOCITY && Math.abs(right.getSpeed()) < SHIFT_VELOCITY){
             // if low velocity, shift to low gear
             setShifter(true);
         } else if (getShifter()) {
