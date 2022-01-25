@@ -31,6 +31,17 @@ public class Robot extends TimedRobot {
   boolean drivetrainEnabled = true;
   boolean tankDriveEnabled = true;
 
+  private static final double DEADBAND_LIMIT = 0.01;
+  private static final double SPEED_CAP = 0.6;
+  InputScaler joystickDeadband = new Deadband(DEADBAND_LIMIT);
+  InputScaler joystickSquared = new SquaredInput(DEADBAND_LIMIT);
+  BoostInput boost = new BoostInput(SPEED_CAP);
+
+  public double deadband(double in) {
+    double out = joystickSquared.scale(in);
+    return joystickDeadband.scale(out);
+  }
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -88,13 +99,14 @@ public class Robot extends TimedRobot {
     // Robot code goes here
     if(this.drivetrainEnabled) {
       if(tankDriveEnabled) {
-        double leftInput = driver.getLeftY();
-        double rightInput = driver.getRightY();
+        double leftInput = deadband(driver.getLeftY());
+        double rightInput = deadband(driver.getRightY());
         drive.tankDrive(leftInput, rightInput);
       } else {
-        double turnInput = driver.getRightX();
-        double speedInput = driver.getLeftY();
-        drive.arcadeDrive(turnInput, speedInput);
+        double turnInput = deadband(driver.getRightX());
+        double speedInput = deadband(driver.getLeftY());
+        boost.setEnabled(driver.getRightTriggerAxis() > 0.5);
+        drive.arcadeDrive(turnInput, boost.scale(speedInput));
       }
       if(driver.getXButtonPressed()) {
         tankDriveEnabled = !tankDriveEnabled;

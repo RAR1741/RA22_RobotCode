@@ -40,8 +40,8 @@ public class Drivetrain implements Loggable {
      * 
      */
     public void drive(double leftSpeed, double rightSpeed) { //Probably implement deadbands later
-        left.set(leftSpeed); 
-        right.set(rightSpeed);
+        left.setSpeed(leftSpeed * 6380); 
+        right.setSpeed(rightSpeed * 6380);
     }
 
     /**
