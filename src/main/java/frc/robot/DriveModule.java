@@ -63,7 +63,7 @@ public class DriveModule implements Loggable {
      * @param speed The speed to set the module to
      */
     public void setSpeed(double speed) {
-        main.set(TalonFXControlMode.Velocity, speed / VELOCITY_COEFFICIENT);
+        main.set(TalonFXControlMode.Velocity, speed / VELOCITY_COEFFICIENT * 6380);
     }
 
     /**
@@ -81,7 +81,7 @@ public class DriveModule implements Loggable {
      * @return The average current drawn by the motors
      */
     public double getInstantCurrent() {
-        return (main.getStatorCurrent()+sub.getStatorCurrent())/2;
+        return (main.getStatorCurrent() + sub.getStatorCurrent())/2;
     }
 
     /**
