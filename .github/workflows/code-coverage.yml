@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  the_code_actually_works:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
