@@ -1,9 +1,15 @@
 plugins:
   sonar-java:
     enabled: true
+
   checkstyle:
     enabled: true
+    checks:
+      checkEmptyJavadoc:
+        enabled: false
+
   fixme:
     enabled: true
+
   markdownlint:
     enabled: true
