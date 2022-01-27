@@ -5,7 +5,7 @@ plugins:
   checkstyle:
     enabled: true
     checks:
-      checkEmptyJavadoc:
+      com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck:
         enabled: false
 
   fixme:
