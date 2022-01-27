@@ -1,0 +1,9 @@
+plugins:
+  sonar-java:
+    enabled: true
+  checkstyle:
+    enabled: true
+  fixme:
+    enabled: true
+  markdownlint:
+    enabled: true
