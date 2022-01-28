@@ -46,14 +46,14 @@ public class ConfigTest {
   }
 
   /**
-   * Tests whether default values are properly returned for nonexistant
+   * Tests whether default values are properly returned for nonexistent
    * {@link Config} values
    */
   @Test
   public void configDefaultValueTest() {
     Config config = new Config();
     config.loadFromFile(getClass().getResource("test_config.txt").getPath());
-    assertEquals("default value", config.getSetting("nonexistant_value", "default value"));
+    assertEquals("default value", config.getSetting("nonexistent_value", "default value"));
   }
 
   /**
