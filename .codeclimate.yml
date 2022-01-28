@@ -1,6 +1,3 @@
-exclude_patterns:
-  - "*.xml"
-
 plugins:
   sonar-java:
     enabled: true
@@ -13,6 +10,8 @@ plugins:
     checks:
       com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck:
         enabled: false
+    exclude_patterns:
+      - "*.xml"
 
   fixme:
     enabled: true
