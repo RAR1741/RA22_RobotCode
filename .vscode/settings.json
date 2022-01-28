@@ -32,5 +32,6 @@
     "java",
     "#"
   ],
-  "java.format.enabled": true
+  "java.format.enabled": true,
+  "java.editor.formatOnSave": true,
 }
