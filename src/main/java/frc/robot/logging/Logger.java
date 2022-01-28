@@ -1,5 +1,7 @@
 package frc.robot.logging;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -9,9 +11,6 @@ import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 /** Manages NetworkTable and file logging. */
 public class Logger {
@@ -42,9 +41,10 @@ public class Logger {
         if (new File("/media/sda").exists()) {
             dir = "/media/sda";
         }
-        String name = dir + "/log-" + calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.MONTH) + "-"
-                + calendar.get(Calendar.DAY_OF_MONTH) + "_" + calendar.get(Calendar.HOUR_OF_DAY) + "-"
-                + calendar.get(Calendar.MINUTE) + "-" + calendar.get(Calendar.SECOND) + ".csv";
+        String name = dir + "/log-" + calendar.get(Calendar.YEAR) + "-"
+                + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH) + "_"
+                + calendar.get(Calendar.HOUR_OF_DAY) + "-" + calendar.get(Calendar.MINUTE) + "-"
+                + calendar.get(Calendar.SECOND) + ".csv";
 
         System.out.printf("Logging to file: '%s'%n", new File(name).getAbsolutePath());
         return this.open(name);
@@ -53,8 +53,7 @@ public class Logger {
     /**
      * Opens a file to log to.
      *
-     * @param filepath
-     *            Path of the file to open
+     * @param filepath Path of the file to open
      * @return Whether opening the file succeeded
      */
     public boolean open(String filepath) {
@@ -100,8 +99,7 @@ public class Logger {
     /**
      * Checks to see if the logger already has a specific key.
      *
-     * @param name
-     *            Key to check
+     * @param name Key to check
      * @return Whether the key already exists
      */
     public boolean hasAttribute(String name) {
@@ -128,10 +126,8 @@ public class Logger {
     /**
      * Logs data to the Logger.
      *
-     * @param field
-     *            Key being logged
-     * @param data
-     *            Number data to log
+     * @param field Key being logged
+     * @param data Number data to log
      * @return Whether the operation succeeded
      */
     public boolean log(String field, double d) {
@@ -145,10 +141,8 @@ public class Logger {
     /**
      * Logs data to the Logger
      *
-     * @param field
-     *            key being logged
-     * @param data
-     *            String data to log
+     * @param field key being logged
+     * @param data String data to log
      * @return whether the operation succeeded
      */
     public boolean log(String field, String data) {
@@ -163,10 +157,8 @@ public class Logger {
     /**
      * Logs data to the Logger
      *
-     * @param field
-     *            key being logged
-     * @param data
-     *            data to log
+     * @param field key being logged
+     * @param data data to log
      * @return whether the operation succeeded
      */
     public boolean log(String field, Object data) {
@@ -217,8 +209,7 @@ public class Logger {
     /**
      * Normalizes the name of a key.
      *
-     * @param str
-     *            key name to normalize
+     * @param str key name to normalize
      * @return normalized key name
      */
     String normalize(String str) {
@@ -228,8 +219,7 @@ public class Logger {
     /**
      * Registers a Loggable with the Logger.
      *
-     * @param l
-     *            loggable to register
+     * @param l loggable to register
      */
     public void addLoggable(Loggable l) {
         loggables.add(l);
@@ -245,9 +235,7 @@ public class Logger {
     }
 
     /**
-     * Sets up all currently registered Loggables, along with writing the header
-     * to
-     * the file.
+     * Sets up all currently registered Loggables, along with writing the header to the file.
      */
     public void setup() {
         this.setupLoggables();

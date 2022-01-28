@@ -34,4 +34,5 @@
   ],
   "java.format.enabled": true,
   "java.editor.formatOnSave": true,
+  "java.format.settings.url": ".vscode/eclipse-java-google-style.xml",
 }
