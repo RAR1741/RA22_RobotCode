@@ -11,11 +11,19 @@ public class LoggableController extends XboxController implements Loggable {
     }
 
     @Override
+    /** 
+     * Sets up logging for the controller.
+     */
     public void setupLogging(Logger logger) {
+        // No logging is currently required, so no setup is needed yet.
     }
 
     @Override
+    /**
+     * Logs the controller's values.
+     */
     public void log(Logger logger) {
+        // No logging is currently required.
     }
 
 }
