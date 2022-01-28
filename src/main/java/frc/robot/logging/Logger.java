@@ -2,7 +2,6 @@ package frc.robot.logging;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
