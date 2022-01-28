@@ -87,25 +87,27 @@ public class Drivetrain implements Loggable {
     /**
      * Shifts gears based on current.
      */
-    public void checkGears() { // Check logic, its a bit rushed
+    public void checkGears() {
         if(getShifter()) { 
-            if(left.getAccumulatedCurrent() < SHIFT_CURRENT_LOW && right.getAccumulatedCurrent() < SHIFT_CURRENT_LOW){
-                // if in low speed gear and in low current, shift to high speed gear
+            if(left.getAccumulatedCurrent() > SHIFT_CURRENT_LOW || right.getAccumulatedCurrent() > SHIFT_CURRENT_LOW){
+                // if in high current, stay in low speed gear
                 setShifter(true);
-            } else if(left.getSpeed() > SHIFT_VELOCITY / 10.86 && Math.abs(right.getSpeed()) > SHIFT_VELOCITY / 10.86){
+            } else if(left.getSpeed() > SHIFT_VELOCITY / 10.86 || Math.abs(right.getSpeed()) > SHIFT_VELOCITY / 10.86){
                 // if high velocity, shift to high speed gear
                 setShifter(false);
             } else {
+                // if in low velocity and in low current, stay in low speed gear
                 setShifter(true);
             }
         } else {
             if(left.getAccumulatedCurrent() > SHIFT_CURRENT_HIGH || right.getAccumulatedCurrent() > SHIFT_CURRENT_HIGH){
-                // if in high speed gear and in high current, shift to low speed gear
+                // if in high current, shift to low speed gear
                 setShifter(true);
-            } else if(left.getSpeed() < SHIFT_VELOCITY / 16.37 || Math.abs(right.getSpeed()) < SHIFT_VELOCITY / 16.37){
+            } else if(left.getSpeed() < SHIFT_VELOCITY / 16.37 && Math.abs(right.getSpeed()) < SHIFT_VELOCITY / 16.37){
                 // if low velocity, shift to low speed gear
                 setShifter(true);
             } else {
+                // if in low current and in high velocity, stay in high speed gear
                 setShifter(false);
             }       
         }
