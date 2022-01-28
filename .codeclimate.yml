@@ -1,6 +1,20 @@
-engines:
+plugins:
+  sonar-java:
+    enabled: true
+    checks:
+      squid:S1186:
+        enabled: false
+
   checkstyle:
     enabled: true
     checks:
+      com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck:
+        enabled: false
       com.puppycrawl.tools.checkstyle.checks.imports.CustomImportOrderCheck:
         enabled: false
+
+  fixme:
+    enabled: true
+
+  markdownlint:
+    enabled: true
