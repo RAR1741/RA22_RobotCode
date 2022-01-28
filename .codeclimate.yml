@@ -11,7 +11,7 @@ plugins:
       com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck:
         enabled: false
     exclude_patterns:
-      - "*.xml"
+      - "**/*.xml"
 
   fixme:
     enabled: true
