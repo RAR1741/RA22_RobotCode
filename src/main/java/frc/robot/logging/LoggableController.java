@@ -11,9 +11,11 @@ public class LoggableController extends XboxController implements Loggable {
     }
 
     @Override
-    public void setupLogging(Logger logger) {}
+    public void setupLogging(Logger logger) {
+    }
 
     @Override
-    public void log(Logger logger) {}
+    public void log(Logger logger) {
+    }
 
 }
