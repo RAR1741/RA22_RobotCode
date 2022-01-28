@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * [\w\d_]+
  * </code>
  * </pre>
- *
+ * <p>
  * A value is parse to one of the following types:
  * <br>
  * <br>
@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
  * Any other format will not be loaded into the Config and
  * attempted access with {@link #getSetting(String, Object)} will return
  * the reasonable default.
+ * </p>
  */
 public class Config {
     /**
