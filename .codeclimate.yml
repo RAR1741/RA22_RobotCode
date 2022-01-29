@@ -10,8 +10,7 @@ plugins:
     checks:
       com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck:
         enabled: false
-    exclude_patterns:
-      - "**/*.xml"
+    config: "checkstyle.xml"
 
   fixme:
     enabled: true
