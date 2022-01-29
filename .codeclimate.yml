@@ -10,6 +10,10 @@ plugins:
     checks:
       com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck:
         enabled: false
+      com.puppycrawl.tools.checkstyle.checks.javadoc.NonEmptyAtclauseDescriptionCheck:
+        enabled: false
+      com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck:
+        enabled: false
     config: "checkstyle.xml"
 
   fixme:
@@ -17,3 +21,6 @@ plugins:
 
   markdownlint:
     enabled: true
+    checks:
+      MD022:
+        enabled: false
