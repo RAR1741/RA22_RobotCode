@@ -92,6 +92,9 @@
     <module name="VariableDeclarationUsageDistance" />
     <module name="CustomImportOrder">
       <property name="sortImportsInGroupAlphabetically" value="true" />
+      <property name="customImportOrderRules" value="STATIC###STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE" />
+      <property name="specialImportsRegExp" value="^frc\." />
+      <property name="thirdPartyPackageRegExp" value="^edu\." />
       <property name="separateLineBetweenGroups" value="true" />
     </module>
     <module name="MethodParamPad" />
