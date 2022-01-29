@@ -7,6 +7,7 @@ public class LoggableCompressor extends Compressor implements Loggable {
     public LoggableCompressor(int module, PneumaticsModuleType moduleType) {
         super(module, moduleType);
     }
+
     public LoggableCompressor(PneumaticsModuleType moduleType) {
         super(moduleType);
     }
@@ -15,6 +16,7 @@ public class LoggableCompressor extends Compressor implements Loggable {
     public void setupLogging(Logger logger) {
         logger.addAttribute("PH/pressure");
     }
+
     @Override
     public void log(Logger logger) {
         logger.log("PH/pressure", this.getPressure());
