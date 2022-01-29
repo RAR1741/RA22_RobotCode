@@ -11,11 +11,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A config file. Parses a file and gets values.
+ * A config file. Parses a file and gets values. <br>
  * <br>
- * <br>
- * A configuration item in a file is defined as a variable
- * and value. A configuration item name matches this regex:
+ * A configuration item in a file is defined as a variable and value. A configuration item name
+ * matches this regex:
  *
  * <pre>
  * <code>
@@ -23,19 +22,14 @@ import java.util.regex.Pattern;
  * </code>
  * </pre>
  * <p>
- * A value is parse to one of the following types:
+ * A value is parse to one of the following types: <br>
  * <br>
+ * String, requiring two {@code "}s on either side <br>
+ * Double, based on {@link Double#parseDouble(String)} <br>
+ * Boolean, based on {@link Boolean#parseBoolean(String)} <br>
  * <br>
- * String, requiring two {@code "}s on either side
- * <br>
- * Double, based on {@link Double#parseDouble(String)}
- * <br>
- * Boolean, based on {@link Boolean#parseBoolean(String)}
- * <br>
- * <br>
- * Any other format will not be loaded into the Config and
- * attempted access with {@link #getSetting(String, Object)} will return
- * the reasonable default.
+ * Any other format will not be loaded into the Config and attempted access with
+ * {@link #getSetting(String, Object)} will return the reasonable default.
  * </p>
  */
 public class Config {
@@ -157,10 +151,8 @@ public class Config {
         }
 
         /*
-         * Match exactly 0 '#'
-         * Match as many alphanumeric characters + '_'
-         * Optional ' ' around an '='
-         * Match something
+         * Match exactly 0 '#' Match as many alphanumeric characters + '_' Optional ' ' around an
+         * '=' Match something
          */
         Pattern itemPattern = Pattern.compile("^#{0}([\\w\\d_]+)\\s*?=\\s*?(.+)$");
         Matcher match;
@@ -181,7 +173,7 @@ public class Config {
      */
     private void parseLine(Matcher match) {
         if (match.matches()) {
-            ConfigItem[] tmpItems = { new DoubleItem(), new StringItem(), new BooleanItem() };
+            ConfigItem[] tmpItems = {new DoubleItem(), new StringItem(), new BooleanItem()};
             for (ConfigItem item : tmpItems) {
                 parseItem(item, match.group(1), match.group(2));
             }
@@ -191,8 +183,8 @@ public class Config {
     /**
      * Parses a single item.
      *
-     * @param item    Item type
-     * @param name    Name to store setting
+     * @param item Item type
+     * @param name Name to store setting
      * @param toParse String to parse for setting
      */
     private void parseItem(ConfigItem item, String name, String toParse) {
@@ -202,9 +194,8 @@ public class Config {
     }
 
     /**
-     * Adds a configurable.
-     * Calls {@link Configurable#reloadConfig(Config)} when {@link #reloadConfig()}
-     * is called.
+     * Adds a configurable. Calls {@link Configurable#reloadConfig(Config)} when
+     * {@link #reloadConfig()} is called.
      *
      * @param configurable configurable to add
      * @see Configurable
@@ -239,10 +230,8 @@ public class Config {
     }
 
     /**
-     * Reloads the config from the last specified file from
-     * {@link #loadFromFile(String)}.
-     * Calls each {@link Configurable Configurable's}
-     * {@link Configurable#reloadConfig(Config)}.
+     * Reloads the config from the last specified file from {@link #loadFromFile(String)}. Calls
+     * each {@link Configurable Configurable's} {@link Configurable#reloadConfig(Config)}.
      */
     public void reloadConfig() {
         parse(filename);
@@ -252,8 +241,8 @@ public class Config {
     }
 
     /**
-     * Retrieves the ConfigItem form of a configuration.
-     * If you actually want the value, use {@link #getSetting(String, Object)}.
+     * Retrieves the ConfigItem form of a configuration. If you actually want the value, use
+     * {@link #getSetting(String, Object)}.
      *
      * @param name configuration to get
      * @return specified item
@@ -264,13 +253,12 @@ public class Config {
     }
 
     /**
-     * Retrieves a setting. only supported reasonableDefault types are Boolean,
-     * Double, and String.
+     * Retrieves a setting. only supported reasonableDefault types are Boolean, Double, and String.
      * Returns reasonableDefault if the setting is not found.
      *
-     * @param name              Setting to retrieve
+     * @param name Setting to retrieve
      * @param reasonableDefault Default value to use in event of missing value
-     * @param <T>               return type, matches type of reasonableDefault
+     * @param <T> return type, matches type of reasonableDefault
      * @return The requested value or the reasonableDefault
      */
     @SuppressWarnings("unchecked")
