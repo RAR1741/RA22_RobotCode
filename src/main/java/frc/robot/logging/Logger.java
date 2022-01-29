@@ -1,5 +1,7 @@
 package frc.robot.logging;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -20,6 +22,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.function.BooleanConsumer;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 /** Manages NetworkTable and file logging. */
 public class Logger {
@@ -48,6 +51,7 @@ public class Logger {
 
     /**
      * Opens a file with the name being the current date and time to log to.
+     *
      * @return Whether opening the file succeeded
      */
     public boolean open() {
@@ -66,6 +70,7 @@ public class Logger {
 
     /**
      * Opens a file to log to.
+     *
      * @param filepath Path of the file to open
      * @return Whether opening the file succeeded
      */
@@ -81,6 +86,7 @@ public class Logger {
 
     /**
      * Closes the current log file.
+     *
      * @return Whether closing the file succeeded
      */
     public boolean close() {
@@ -98,6 +104,7 @@ public class Logger {
 
     /**
      * Resets the current log file.
+     *
      * @return true
      */
     public boolean reset() {
@@ -109,6 +116,7 @@ public class Logger {
 
     /**
      * Checks to see if the logger already has a specific key.
+     *
      * @param name Key to check
      * @return Whether the key already exists
      */
@@ -207,7 +215,7 @@ public class Logger {
      * Logs data to the Logger.
      * @deprecated Use {@link #addAttribute(String, DoubleSupplier, DoubleConsumer)} instead
      * @param field Key being logged
-     * @param data Number data to log
+     * @param data  Number data to log
      * @return Whether the operation succeeded
      */
     @Deprecated(forRemoval = true)
@@ -222,7 +230,7 @@ public class Logger {
      * Logs data to the Logger
      * @deprecated Use {@link #addAttribute(String, Supplier, Consumer)} instead
      * @param field key being logged
-     * @param data String data to log
+     * @param data  String data to log
      * @return whether the operation succeeded
      */
     @Deprecated(forRemoval = true)
@@ -238,7 +246,7 @@ public class Logger {
      * Logs data to the Logger
      * @deprecated Use {@link #addAttribute(String, Supplier, Consumer)} instead
      * @param field key being logged
-     * @param data data to log
+     * @param data  data to log
      * @return whether the operation succeeded
      */
     @Deprecated(forRemoval = true)
@@ -253,6 +261,7 @@ public class Logger {
 
     /**
      * Writes the headers to the file.
+     *
      * @return Whether the operation succeeded
      */
     public boolean writeAttributes() {
@@ -271,6 +280,7 @@ public class Logger {
 
     /**
      * Writes the current values to the file.
+     *
      * @return Whether the operation succeeded
      */
     public boolean writeLine() {
@@ -287,6 +297,7 @@ public class Logger {
 
     /**
      * Normalizes the name of a key.
+     *
      * @param str key name to normalize
      * @return normalized key name
      */
@@ -296,6 +307,7 @@ public class Logger {
 
     /**
      * Registers a Loggable with the Logger.
+     *
      * @param l loggable to register
      */
     public void addLoggable(Loggable l) {
@@ -312,7 +324,8 @@ public class Logger {
     }
 
     /**
-     * Sets up all currently registered Loggables, along with writing the header to the file.
+     * Sets up all currently registered Loggables, along with writing the header to
+     * the file.
      */
     public void setup() {
         this.setupLoggables();
