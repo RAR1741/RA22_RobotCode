@@ -2,6 +2,9 @@ package frc.robot.logging;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.function.BooleanConsumer;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,16 +21,10 @@ import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.util.function.BooleanConsumer;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-
 /** Manages NetworkTable and file logging. */
 public class Logger {
-    private static final String ERROR_MSG_ATTRIBUTE_ALREADY_EXISTS = "Attribute \"%s\" already exists! Skipping!%n";
+    private static final String ERROR_MSG_ATTRIBUTE_ALREADY_EXISTS =
+            "Attribute \"%s\" already exists! Skipping!%n";
     private static final String TABLE_PREFIX = "Logging";
     private String filename;
     private BufferedWriter log = null;
@@ -230,12 +227,12 @@ public class Logger {
      * @return Whether the operation succeeded
      */
     @Deprecated(forRemoval = true)
-    public boolean log(String field, double d) {
+    public boolean log(String field, double data) {
         if (!hasAttribute(field)) {
             return false;
         }
         table.getEntry(field).setDouble(data);
-        fields.put(field, Double.toString(d));
+        fields.put(field, Double.toString(data));
         return true;
     }
 
