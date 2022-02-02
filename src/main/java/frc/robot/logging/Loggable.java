@@ -12,8 +12,8 @@ public interface Loggable {
 
     /**
      * Logs data in the given Logger object.
-     * @deprecated See {@link Logger#addAttribute(String, Supplier, Consumer)}.
      * @param logger Logger class to log data to
+     * @deprecated See {@link Logger#addAttribute(String, Supplier, Consumer)}.
      */
     @Deprecated(forRemoval = true)
     public void log(Logger logger);
