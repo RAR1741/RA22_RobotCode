@@ -221,10 +221,10 @@ public class Logger {
 
     /**
      * Logs data to the Logger.
-     * @deprecated Use {@link #addAttribute(String, DoubleSupplier, DoubleConsumer)} instead
      * @param field Key being logged
      * @param data Number data to log
      * @return Whether the operation succeeded
+     * @deprecated Use {@link #addAttribute(String, DoubleSupplier, DoubleConsumer)} instead
      */
     @Deprecated(forRemoval = true)
     public boolean log(String field, double data) {
@@ -238,10 +238,10 @@ public class Logger {
 
     /**
      * Logs data to the Logger
-     * @deprecated Use {@link #addAttribute(String, Supplier, Consumer)} instead
      * @param field key being logged
      * @param data String data to log
      * @return whether the operation succeeded
+     * @deprecated Use {@link #addAttribute(String, Supplier, Consumer)} instead
      */
     @Deprecated(forRemoval = true)
     public boolean log(String field, String data) {
@@ -255,10 +255,10 @@ public class Logger {
 
     /**
      * Logs data to the Logger
-     * @deprecated Use {@link #addAttribute(String, Supplier, Consumer)} instead
      * @param field key being logged
      * @param data to log
      * @return whether the operation succeeded
+     * @deprecated Use {@link #addAttribute(String, Supplier, Consumer)} instead
      */
     @Deprecated(forRemoval = true)
     public boolean log(String field, Object data) {
