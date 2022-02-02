@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.logging.LoggableCompressor;
 import frc.robot.logging.LoggableController;
 import frc.robot.logging.LoggablePowerDistribution;
 import frc.robot.logging.LoggableTimer;
@@ -28,7 +29,7 @@ public class Robot extends TimedRobot {
     LoggableController operator;
 
     LoggablePowerDistribution pdp;
-    Compressor compressor = null;
+    LoggableCompressor compressor;
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -42,7 +43,7 @@ public class Robot extends TimedRobot {
         operator = new LoggableController("Operator", 1);
 
         System.out.print("Initializing compressor...");
-        compressor = new Compressor(PneumaticsModuleType.REVPH);
+        compressor = new LoggableCompressor(PneumaticsModuleType.REVPH);
         System.out.println("done");
 
         logger = new Logger();
