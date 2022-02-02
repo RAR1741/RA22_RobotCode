@@ -10,6 +10,8 @@ import frc.robot.logging.LoggableController;
 import frc.robot.logging.LoggablePowerDistribution;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -26,6 +28,7 @@ public class Robot extends TimedRobot {
     LoggableController operator;
 
     LoggablePowerDistribution pdp;
+    Compressor compressor = null;
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -37,6 +40,10 @@ public class Robot extends TimedRobot {
 
         driver = new LoggableController("Driver", 0);
         operator = new LoggableController("Operator", 1);
+
+        System.out.print("Initializing compressor...");
+        compressor = new Compressor(PneumaticsModuleType.REVPH);
+        System.out.println("done");
 
         logger = new Logger();
         timer = new LoggableTimer();
