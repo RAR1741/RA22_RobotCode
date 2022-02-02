@@ -30,7 +30,7 @@ jobs:
       - name: Run Jacoco
         run: ./gradlew clean build jacocoTestReport
 
-      - name: Upload Coverage Report
+      - name: Upload CodeCov Report
         run: bash <(curl -s https://codecov.io/bash)
 
       - name: Upload CodeClimate Report
