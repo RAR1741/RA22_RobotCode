@@ -27,8 +27,16 @@ jobs:
       - name: Test with Gradle
         run: ./gradlew test
 
-      - name: Run CodeCov
-        run: ./gradlew jacocoTestReport
+      - name: Run Jacoco
+        run: ./gradlew clean build jacocoTestReport
 
       - name: Upload Coverage Report
         run: bash <(curl -s https://codecov.io/bash)
+
+      - name: Upload CodeClimate Report
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
+          JACOCO_SOURCE_PATH: "${{github.workspace}}/src/main/java"
+        with:
+          coverageLocations: ${{github.workspace}}/build/reports/jacoco/test/jacocoTestReport.xml:jacoco
