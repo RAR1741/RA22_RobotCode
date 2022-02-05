@@ -4,8 +4,6 @@ package frc.robot.logging;
 public interface Loggable {
     /**
      * Sets up all the keys, getters, and setters in the given Logger object.
-     * 
-     * Sets up all the keys in the given Logger object.
      * @param logger Logger class to setup keys in
      */
     public abstract void setupLogging(Logger logger);
