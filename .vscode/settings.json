@@ -18,20 +18,15 @@
     {
       "name": "WPIlibUnitTests",
       "workingDirectory": "${workspaceFolder}/build/jni/release",
-      "vmargs": [ "-Djava.library.path=${workspaceFolder}/build/jni/release" ],
+      "vmargs": ["-Djava.library.path=${workspaceFolder}/build/jni/release"],
       "env": {
-        "LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release" ,
+        "LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release",
         "DYLD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release"
       }
-    },
+    }
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
-  "java.completion.importOrder": [
-    "",
-    "javax",
-    "java",
-    "#"
-  ],
+  "java.completion.importOrder": ["", "javax", "java", "#"],
   "java.format.enabled": true,
   "java.editor.formatOnSave": true,
   "java.format.settings.url": ".vscode/eclipse-java-google-style.xml",
@@ -48,4 +43,5 @@
     "markdownlint",
     "puppycrawl"
   ],
+  "wpilib.selectDefaultSimulateExtension": true
 }

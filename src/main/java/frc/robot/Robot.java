@@ -4,106 +4,83 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.robot.logging.LoggableController;
-import frc.robot.logging.LoggablePowerDistribution;
-import frc.robot.logging.LoggableTimer;
-import frc.robot.logging.Logger;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 
-/**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
- */
+import java.util.List;
+
 public class Robot extends TimedRobot {
+    private final XboxController m_controller = new XboxController(0);
 
-    Logger logger;
-    LoggableTimer timer;
+    // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0
+    // to 1.
+    private final SlewRateLimiter m_speedLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
-    LoggableController driver;
-    LoggableController operator;
+    private final Drivetrain m_drive = new Drivetrain();
+    private final RamseteController m_ramsete = new RamseteController();
+    private final Timer m_timer = new Timer();
+    private Trajectory m_trajectory;
 
-    LoggablePowerDistribution pdp;
-
-    /**
-     * This function is run when the robot is first started up and should be used for any
-     * initialization code.
-     */
     @Override
     public void robotInit() {
-        pdp = new LoggablePowerDistribution(1, ModuleType.kRev);
+        // Flush NetworkTables every loop. This ensures that robot pose and other values
+        // are sent during every iteration.
+        setNetworkTablesFlushEnabled(true);
 
-        driver = new LoggableController("Driver", 0);
-        operator = new LoggableController("Operator", 1);
-
-        logger = new Logger();
-        timer = new LoggableTimer();
-
-        logger.addLoggable(timer);
-        logger.addLoggable(driver);
-        logger.addLoggable(operator);
+        m_trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(2, 2, new Rotation2d()),
+                List.of(), new Pose2d(6, 4, new Rotation2d()), new TrajectoryConfig(2, 2));
     }
 
     @Override
     public void robotPeriodic() {
-        // Robot code goes here
+        m_drive.periodic();
     }
 
     @Override
     public void autonomousInit() {
-        resetLogging();
+        m_timer.reset();
+        m_timer.start();
+        m_drive.resetOdometry(m_trajectory.getInitialPose());
     }
 
     @Override
     public void autonomousPeriodic() {
-        // Robot code goes here
-        logger.log();
-        logger.writeLine();
+        double elapsed = m_timer.get();
+        Trajectory.State reference = m_trajectory.sample(elapsed);
+        ChassisSpeeds speeds = m_ramsete.calculate(m_drive.getPose(), reference);
+        m_drive.drive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
     }
 
     @Override
-    public void teleopInit() {
-        resetLogging();
-    }
-
-    @Override
+    @SuppressWarnings("LocalVariableName")
     public void teleopPeriodic() {
-        // Robot code goes here
-        logger.log();
-        logger.writeLine();
+        // Get the x speed. We are inverting this because Xbox controllers return
+        // negative values when we push forward.
+        double xSpeed = -m_speedLimiter.calculate(m_controller.getLeftY()) * Drivetrain.kMaxSpeed;
+
+        // Get the rate of angular rotation. We are inverting this because we want a
+        // positive value when we pull to the left (remember, CCW is positive in
+        // mathematics). Xbox controllers return positive values when you pull to
+        // the right by default.
+        double rot =
+                -m_rotLimiter.calculate(m_controller.getRightX()) * Drivetrain.kMaxAngularSpeed;
+        m_drive.drive(xSpeed, rot);
+
+        System.out.println(m_controller.getLeftY());
     }
 
     @Override
-    public void disabledInit() {
-        logger.close();
-        timer.stop();
-    }
-
-    @Override
-    public void disabledPeriodic() {
-        // Robot code goes here
-        logger.log();
-    }
-
-    @Override
-    public void testInit() {
-        resetLogging();
-    }
-
-    @Override
-    public void testPeriodic() {
-        // Robot code goes here
-        logger.log();
-        logger.writeLine();
-    }
-
-    private void resetLogging() {
-        logger.open();
-        logger.setup();
-
-        timer.reset();
-        timer.start();
+    public void simulationPeriodic() {
+        m_drive.simulationPeriodic();
     }
 }
