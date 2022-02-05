@@ -43,7 +43,7 @@ public class Manipulation implements Loggable {
      * 
      */
     public void setIntakeSpin(boolean spin) {
-        this.speed = spin ? -0.5 : 0.0;
+        this.speed = spin ? 0.3 : 0.0;
         intakeWheel.set(speed);
         this.spinning = spin;
     }
