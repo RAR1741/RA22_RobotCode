@@ -4,6 +4,8 @@ plugins:
     checks:
       squid:S1186:
         enabled: false
+      squid:S106:
+        enabled: false
 
   checkstyle:
     enabled: true
