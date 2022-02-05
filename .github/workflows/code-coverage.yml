@@ -35,7 +35,8 @@ jobs:
         run: ./gradlew clean build jacocoTestReport
 
       - name: Upload CodeCov Report
-        run: bash <(curl -s https://codecov.io/bash)
+        run: curl -s https://codecov.io/bash | bash
+        # run: bash <(curl -s https://codecov.io/bash)
 
       - name: Upload CodeClimate Report
         uses: paambaati/codeclimate-action@v3.0.0
