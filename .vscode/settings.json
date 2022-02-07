@@ -37,11 +37,14 @@
   "cSpell.words": [
     "Atclause",
     "checkstyle",
+    "feedforward",
     "javadoc",
     "loggables",
     "lvuser",
     "markdownlint",
-    "puppycrawl"
+    "Odometry",
+    "puppycrawl",
+    "ramsete"
   ],
   "wpilib.selectDefaultSimulateExtension": true
 }
