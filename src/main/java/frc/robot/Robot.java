@@ -21,10 +21,10 @@ import java.util.List;
 public class Robot extends TimedRobot {
     private final XboxController m_controller = new XboxController(0);
 
-    // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0
-    // to 1.
-    private final SlewRateLimiter m_speedLimiter = new SlewRateLimiter(3);
-    private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
+    // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
+    private final int kSlewRateLimit = 3;
+    private final SlewRateLimiter m_speedLimiter = new SlewRateLimiter(kSlewRateLimit);
+    private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(kSlewRateLimit);
 
     private final Drivetrain m_drive = new Drivetrain();
     private final RamseteController m_ramsete = new RamseteController();
