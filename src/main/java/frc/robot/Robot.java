@@ -72,10 +72,11 @@ public class Robot extends TimedRobot {
         // positive value when we pull to the left (remember, CCW is positive in
         // mathematics). Xbox controllers return positive values when you pull to
         // the right by default.
-        double rot = -m_rotLimiter.calculate(m_controller.getLeftX()) * Drivetrain.kMaxAngularSpeed;
+        double rot = -m_rotLimiter.calculate(m_controller.getRawAxis(2) * Drivetrain.kMaxAngularSpeed;
         m_drive.drive(xSpeed, rot);
 
-        System.out.println(m_controller.getLeftX());
+        // System.out.println(m_controller.getLeftX());
+        System.out.println(m_controller.getRawAxis(2));
     }
 
     @Override
