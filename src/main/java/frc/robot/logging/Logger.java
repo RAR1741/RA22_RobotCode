@@ -234,7 +234,17 @@ public class Logger {
      * @param log loggable to register
      */
     public void addLoggable(Loggable log) {
-        loggables.add(log);
+        if (log != null) {
+            loggables.add(log);
+        } else {
+            System.err.println("A null loggable was passed to the logger!");
+            System.err.println(
+                    "Make sure you are declaring your loggables before you run 'setupLoggables()!");
+            var stackTrace = Thread.currentThread().getStackTrace();
+            for (StackTraceElement stackTraceLine : stackTrace) {
+                System.err.println(stackTraceLine);
+            }
+        }
     }
 
     /**
@@ -242,7 +252,11 @@ public class Logger {
      */
     public void setupLoggables() {
         for (Loggable l : loggables) {
-            l.setupLogging(this);
+            if (l != null) {
+                l.setupLogging(this);
+            } else {
+                // Silently ignore null loggables
+            }
         }
     }
 
@@ -251,7 +265,11 @@ public class Logger {
      */
     public void log() {
         for (Loggable l : loggables) {
-            l.log(this);
+            if (l != null) {
+                l.log(this);
+            } else {
+                // Silently ignore null loggables
+            }
         }
     }
 }
