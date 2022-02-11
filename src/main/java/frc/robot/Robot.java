@@ -37,6 +37,7 @@ public class Robot extends TimedRobot {
 
     boolean drivetrainEnabled = true;
     boolean tankDriveEnabled = true;
+    boolean isLowSpeed = true;
 
     private static final double DEADBAND_LIMIT = 0.01;
     private static final double SPEED_CAP = 0.6;
@@ -124,6 +125,10 @@ public class Robot extends TimedRobot {
             }
             if (driver.getXButtonPressed()) {
                 tankDriveEnabled = !tankDriveEnabled;
+            }
+            if (driver.getYButtonPressed()) {
+                isLowSpeed = !isLowSpeed;
+                drive.setShifter(isLowSpeed);
             }
             if (driver.getLeftBumperPressed()) {
                 drive.setShifter(!drive.getShifter());
