@@ -7,9 +7,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.logging.LoggableController;
+import frc.robot.logging.LoggableCompressor;
 import frc.robot.logging.LoggablePowerDistribution;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -18,15 +20,18 @@ import frc.robot.logging.Logger;
  * project.
  */
 public class Robot extends TimedRobot {
-    
+
     Logger logger;
     LoggableTimer timer;
 
     Drivetrain drive;
+    DriveModule leftModule;
+    DriveModule rightModule;
     LoggableController driver;
     LoggableController operator;
 
     LoggablePowerDistribution pdp;
+    LoggableCompressor compressor;
 
     boolean drivetrainEnabled = true;
     boolean tankDriveEnabled = true;
@@ -52,26 +57,31 @@ public class Robot extends TimedRobot {
 
         driver = new LoggableController("Driver", 0);
         operator = new LoggableController("Operator", 1);
+        // logger = new Logger();
 
         if (this.drivetrainEnabled) {
             System.out.println("Initializing drivetrain...");
-            DriveModule leftModule = new DriveModule("LeftDriveModule", 2, 3);
-            DriveModule rightModule = new DriveModule("RightDriveModule", 4, 5);
+            leftModule = new DriveModule("LeftDriveModule", 2, 3); //2, 3
+            rightModule = new DriveModule("RightDriveModule", 4, 5); //4, 5
             drive = new Drivetrain(leftModule, rightModule, 6);
 
-            logger.addLoggable(leftModule);
-            logger.addLoggable(rightModule);
-            logger.addLoggable(drive);
+            // logger.addLoggable(leftModule);
+            // logger.addLoggable(rightModule);
+            // logger.addLoggable(drive);
         } else {
             System.out.println("Drivetrain initialization disabled.");
         }
 
-        logger = new Logger();
-        timer = new LoggableTimer();
+        System.out.print("Initializing compressor...");
+        compressor = new LoggableCompressor(PneumaticsModuleType.REVPH);
+        System.out.println("done");
 
-        logger.addLoggable(timer);
-        logger.addLoggable(driver);
-        logger.addLoggable(operator);
+
+        // timer = new LoggableTimer();
+
+        // logger.addLoggable(timer);
+        // logger.addLoggable(driver);
+        // logger.addLoggable(operator);
     }
 
     @Override
@@ -81,19 +91,19 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        resetLogging();
+        // resetLogging();
     }
 
     @Override
     public void autonomousPeriodic() {
         // Robot code goes here
-        logger.log();
-        logger.writeLine();
+        // logger.log();
+        // logger.writeLine();
     }
 
     @Override
     public void teleopInit() {
-        resetLogging();
+        // resetLogging();
     }
 
     @Override
@@ -113,41 +123,44 @@ public class Robot extends TimedRobot {
             if (driver.getXButtonPressed()) {
                 tankDriveEnabled = !tankDriveEnabled;
             }
+            if (driver.getLeftBumperPressed()) {
+                drive.setShifter(!drive.getShifter());
+            }
         }
 
-        logger.log();
-        logger.writeLine();
+        // logger.log();
+        // logger.writeLine();
     }
 
     @Override
     public void disabledInit() {
-        logger.close();
-        timer.stop();
+        // logger.close();
+        // timer.stop();
     }
 
     @Override
     public void disabledPeriodic() {
         // Robot code goes here
-        logger.log();
+        // logger.log();
     }
 
     @Override
     public void testInit() {
-        resetLogging();
+        // resetLogging();
     }
 
     @Override
     public void testPeriodic() {
         // Robot code goes here
-        logger.log();
-        logger.writeLine();
+        // logger.log();
+        // logger.writeLine();
     }
 
     private void resetLogging() {
-        logger.open();
-        logger.setup();
+        // logger.open();
+        // logger.setup();
 
-        timer.reset();
-        timer.start();
+        // timer.reset();
+        // timer.start();
     }
 }
