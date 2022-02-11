@@ -3,13 +3,12 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
 import frc.robot.logging.Loggable;
 import frc.robot.logging.Logger;
 
 public class DriveModule implements Loggable {
 
-    private final double VELOCITY_COEFFICIENT = 600/2048;
+    private final double VELOCITY_COEFFICIENT = 600 / 2048;
 
     private TalonFX main;
     private TalonFX sub;
@@ -25,7 +24,6 @@ public class DriveModule implements Loggable {
      * @param moduleName Name of the attribute to log speed
      * @param mainID CAN id of the main TalonFX
      * @param subID CAN id of the sub TalonFX
-     *
      */
     DriveModule(String moduleName, int mainID, int subID) {
         this.moduleName = moduleName;
@@ -44,7 +42,6 @@ public class DriveModule implements Loggable {
      * Inverts the module.
      *
      * @param isInverted True if the module should be inverted; false if not
-     *
      */
     public void setInverted(boolean isInverted) {
         main.setInverted(isInverted);
@@ -55,7 +52,6 @@ public class DriveModule implements Loggable {
      * Sets the power of the module.
      *
      * @param input The power to set the module to
-     *
      */
     public void set(double input) {
         this.power = input;
@@ -86,23 +82,23 @@ public class DriveModule implements Loggable {
      * @return The average current drawn by the motors
      */
     // public double getInstantCurrent() {
-    //     return (main.getStatorCurrent() + sub.getStatorCurrent())/2;
+    // return (main.getStatorCurrent() + sub.getStatorCurrent())/2;
     // }
 
     /**
      * Gets the average current drawn over a number of cycles.
      *
-     * @return The average current drawn by the motore
+     * @return The average current drawn by the motor
      */
     // public double getAccumulatedCurrent() {
-    //     current[indexCurrent] = getInstantCurrent();
-    //     indexCurrent = (indexCurrent + 1) % current.length;
+    // current[indexCurrent] = getInstantCurrent();
+    // indexCurrent = (indexCurrent + 1) % current.length;
 
-    //     int total = 0;
-    //     for(int i = 0; i < current.length; i++){
-    //         total += current[i];
-    //     }
-    //     return total/current.length;
+    // int total = 0;
+    // for(int i = 0; i < current.length; i++){
+    // total += current[i];
+    // }
+    // return total/current.length;
     // }
 
     @Override
