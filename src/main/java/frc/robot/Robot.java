@@ -4,16 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.robot.logging.LoggableController;
 import frc.robot.logging.LoggableCompressor;
+import frc.robot.logging.LoggableController;
 import frc.robot.logging.LoggablePowerDistribution;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -37,7 +35,6 @@ public class Robot extends TimedRobot {
 
     boolean drivetrainEnabled = true;
     boolean tankDriveEnabled = true;
-    boolean isLowSpeed = true;
 
     private static final double DEADBAND_LIMIT = 0.01;
     private static final double SPEED_CAP = 0.6;
@@ -64,8 +61,8 @@ public class Robot extends TimedRobot {
 
         if (this.drivetrainEnabled) {
             System.out.println("Initializing drivetrain...");
-            leftModule = new DriveModule("LeftDriveModule", 2, 3); //2, 3
-            rightModule = new DriveModule("RightDriveModule", 4, 5); //4, 5
+            leftModule = new DriveModule("LeftDriveModule", 2, 3); // 2, 3
+            rightModule = new DriveModule("RightDriveModule", 4, 5); // 4, 5
             drive = new Drivetrain(leftModule, rightModule, 6);
 
             // logger.addLoggable(leftModule);
@@ -78,7 +75,6 @@ public class Robot extends TimedRobot {
         System.out.print("Initializing compressor...");
         compressor = new LoggableCompressor(PneumaticsModuleType.REVPH);
         System.out.println("done");
-
 
         // timer = new LoggableTimer();
 
@@ -125,10 +121,6 @@ public class Robot extends TimedRobot {
             }
             if (driver.getXButtonPressed()) {
                 tankDriveEnabled = !tankDriveEnabled;
-            }
-            if (driver.getYButtonPressed()) {
-                isLowSpeed = !isLowSpeed;
-                drive.setShifter(isLowSpeed);
             }
             if (driver.getLeftBumperPressed()) {
                 drive.setShifter(!drive.getShifter());
