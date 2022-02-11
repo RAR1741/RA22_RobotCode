@@ -48,6 +48,7 @@ public class DriveModule implements Loggable {
      */
     public void setInverted(boolean isInverted) {
         main.setInverted(isInverted);
+        sub.setInverted(isInverted);
     }
 
     /**

@@ -11,6 +11,8 @@ import frc.robot.logging.LoggableCompressor;
 import frc.robot.logging.LoggablePowerDistribution;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
@@ -111,12 +113,12 @@ public class Robot extends TimedRobot {
         // Robot code goes here
         if (this.drivetrainEnabled) {
             if (tankDriveEnabled) {
-                double leftInput = deadband(driver.getLeftY());
-                double rightInput = deadband(driver.getRightY());
+                double leftInput = deadband(-driver.getLeftY());
+                double rightInput = deadband(-driver.getRightY());
                 drive.tankDrive(leftInput, rightInput);
             } else {
                 double turnInput = deadband(driver.getRightX());
-                double speedInput = deadband(driver.getLeftY());
+                double speedInput = deadband(-driver.getLeftY());
                 boost.setEnabled(driver.getRightTriggerAxis() > 0.5);
                 drive.arcadeDrive(turnInput, boost.scale(speedInput));
             }
