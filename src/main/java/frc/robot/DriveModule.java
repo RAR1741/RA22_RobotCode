@@ -114,6 +114,7 @@ public class DriveModule implements Loggable {
     @Override
     public void setupLogging(Logger logger) {
         logger.addAttribute(this.moduleName + "/MotorPower");
+        logger.addAttribute(this.moduleName + "/Distance");
         // logger.addAttribute(this.moduleName + "/MotorCurrent");
     }
 
@@ -121,6 +122,7 @@ public class DriveModule implements Loggable {
     public void log(Logger logger) {
         System.out.println(this.encoder.getDistance());
         logger.log(this.moduleName + "/MotorPower", power);
+        logger.log(this.moduleName + "/Distance", this.encoder.getDistance());
         // logger.log(this.moduleName + "/MotorCurrent", getInstantCurrent());
     }
 }
