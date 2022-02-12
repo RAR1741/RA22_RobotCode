@@ -120,7 +120,7 @@ public class DriveModule implements Loggable {
 
     @Override
     public void log(Logger logger) {
-        System.out.println(this.encoder.getDistance());
+        System.out.println(this.moduleName + "/" + this.encoder.getRate());
         logger.log(this.moduleName + "/MotorPower", power);
         logger.log(this.moduleName + "/Distance", this.encoder.getDistance());
         // logger.log(this.moduleName + "/MotorCurrent", getInstantCurrent());

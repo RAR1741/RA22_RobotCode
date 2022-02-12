@@ -62,10 +62,10 @@ public class Robot extends TimedRobot {
         if (this.drivetrainEnabled) {
             System.out.println("Initializing drivetrain...");
             leftModule = new DriveModule("LeftDriveModule", 2, 3); // 2, 3
-            leftModule.setEncoder(0, 1, true);
+            leftModule.setEncoder(2, 3, false);
 
             rightModule = new DriveModule("RightDriveModule", 4, 5); // 4, 5
-            rightModule.setEncoder(2, 3, false);
+            rightModule.setEncoder(0, 1, true);
 
             drive = new Drivetrain(leftModule, rightModule, 6);
 
