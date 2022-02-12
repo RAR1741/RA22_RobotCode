@@ -3,6 +3,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.logging.Loggable;
 import frc.robot.logging.Logger;
 
@@ -13,6 +14,7 @@ public class DriveModule implements Loggable {
     private TalonFX main;
     private TalonFX sub;
     private String moduleName;
+    private Encoder encoder;
 
     private double power;
     private double current[] = new double[20];
@@ -36,6 +38,14 @@ public class DriveModule implements Loggable {
         this.sub.follow(this.main);
 
         indexCurrent = 0;
+    }
+
+    public void setEncoder(int encoderPortA, int encoderPortB, boolean reverseDirection) {
+        this.encoder = new Encoder(encoderPortA, encoderPortB);
+
+        // 6in wheel, 3:1 encoder ratio, 360 CPR
+        this.encoder.setDistancePerPulse((Math.PI * 6 * 3) / 360.0);
+        this.encoder.setReverseDirection(reverseDirection);
     }
 
     /**
@@ -109,6 +119,7 @@ public class DriveModule implements Loggable {
 
     @Override
     public void log(Logger logger) {
+        System.out.println(this.encoder.getDistance());
         logger.log(this.moduleName + "/MotorPower", power);
         // logger.log(this.moduleName + "/MotorCurrent", getInstantCurrent());
     }
