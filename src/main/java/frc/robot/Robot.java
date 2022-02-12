@@ -57,7 +57,7 @@ public class Robot extends TimedRobot {
 
         driver = new LoggableController("Driver", 0);
         operator = new LoggableController("Operator", 1);
-        // logger = new Logger();
+        logger = new Logger();
 
         if (this.drivetrainEnabled) {
             System.out.println("Initializing drivetrain...");
@@ -65,9 +65,9 @@ public class Robot extends TimedRobot {
             rightModule = new DriveModule("RightDriveModule", 4, 5); // 4, 5
             drive = new Drivetrain(leftModule, rightModule, 6);
 
-            // logger.addLoggable(leftModule);
-            // logger.addLoggable(rightModule);
-            // logger.addLoggable(drive);
+            logger.addLoggable(leftModule);
+            logger.addLoggable(rightModule);
+            logger.addLoggable(drive);
         } else {
             System.out.println("Drivetrain initialization disabled.");
         }
@@ -76,11 +76,12 @@ public class Robot extends TimedRobot {
         compressor = new LoggableCompressor(PneumaticsModuleType.REVPH);
         System.out.println("done");
 
-        // timer = new LoggableTimer();
+        timer = new LoggableTimer();
 
-        // logger.addLoggable(timer);
-        // logger.addLoggable(driver);
+        logger.addLoggable(timer);
+        logger.addLoggable(driver);
         // logger.addLoggable(operator);
+        logger.addLoggable(compressor);
     }
 
     @Override
@@ -90,19 +91,19 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        // resetLogging();
+        resetLogging();
     }
 
     @Override
     public void autonomousPeriodic() {
         // Robot code goes here
-        // logger.log();
-        // logger.writeLine();
+        logger.log();
+        logger.writeLine();
     }
 
     @Override
     public void teleopInit() {
-        // resetLogging();
+        resetLogging();
     }
 
     @Override
@@ -127,14 +128,14 @@ public class Robot extends TimedRobot {
             }
         }
 
-        // logger.log();
-        // logger.writeLine();
+        logger.log();
+        logger.writeLine();
     }
 
     @Override
     public void disabledInit() {
-        // logger.close();
-        // timer.stop();
+        logger.close();
+        timer.stop();
     }
 
     @Override
@@ -145,21 +146,21 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-        // resetLogging();
+        resetLogging();
     }
 
     @Override
     public void testPeriodic() {
         // Robot code goes here
-        // logger.log();
-        // logger.writeLine();
+        logger.log();
+        logger.writeLine();
     }
 
     private void resetLogging() {
-        // logger.open();
-        // logger.setup();
+        logger.open();
+        logger.setup();
 
-        // timer.reset();
-        // timer.start();
+        timer.reset();
+        timer.start();
     }
 }
