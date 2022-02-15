@@ -59,6 +59,9 @@ public class Robot extends TimedRobot {
         operator = new LoggableController("Operator", 1);
         logger = new Logger();
 
+        timer = new LoggableTimer();
+        logger.addLoggable(timer);
+
         if (this.drivetrainEnabled) {
             System.out.println("Initializing drivetrain...");
             leftModule = new DriveModule("LeftDriveModule", 2, 3); // 2, 3
@@ -80,9 +83,6 @@ public class Robot extends TimedRobot {
         compressor = new LoggableCompressor(PneumaticsModuleType.REVPH);
         System.out.println("done");
 
-        timer = new LoggableTimer();
-
-        logger.addLoggable(timer);
         logger.addLoggable(driver);
         // logger.addLoggable(operator);
         logger.addLoggable(compressor);
