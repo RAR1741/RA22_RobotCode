@@ -44,5 +44,6 @@
     "lvuser",
     "markdownlint",
     "puppycrawl"
-  ]
+  ],
+  "java.checkstyle.configuration": "${workspaceFolder}/checkstyle.xml"
 }
