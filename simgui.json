@@ -30,6 +30,11 @@
       "window": {
         "visible": true
       }
+    },
+    "Timing": {
+      "window": {
+        "visible": false
+      }
     }
   },
   "NTProvider": {
@@ -43,31 +48,22 @@
       "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
-      "/LiveWindow/Ungrouped/MotorControllerGroup[1]": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/LiveWindow/Ungrouped/MotorControllerGroup[2]": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/LiveWindow/Ungrouped/PIDController[1]": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/LiveWindow/Ungrouped/PIDController[2]": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Field": {
         "window": {
           "visible": true
         }
       }
     }
+  },
+  "NetworkTables": {
+    "SmartDashboard": {
+      "Field": {
+        "open": true
+      },
+      "open": true
+    }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }
