@@ -1,0 +1,69 @@
+{
+  "HALProvider": {
+    "Analog Inputs": {
+      "window": {
+        "visible": true
+      }
+    },
+    "Encoders": {
+      "0": {
+        "header": {
+          "open": true
+        }
+      },
+      "window": {
+        "visible": true
+      }
+    },
+    "PWM Outputs": {
+      "window": {
+        "visible": true
+      }
+    },
+    "RoboRIO": {
+      "6V Rail": {
+        "open": true
+      },
+      "RoboRIO Input": {
+        "open": true
+      },
+      "window": {
+        "visible": true
+      }
+    },
+    "Timing": {
+      "window": {
+        "visible": false
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/AnalogGyro[0]": "Gyro",
+      "/LiveWindow/Ungrouped/MotorControllerGroup[1]": "Motor Controller",
+      "/LiveWindow/Ungrouped/MotorControllerGroup[2]": "Motor Controller",
+      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/SmartDashboard/Field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "SmartDashboard": {
+      "Field": {
+        "open": true
+      },
+      "open": true
+    }
+  },
+  "NetworkTables View": {
+    "visible": false
+  }
+}
