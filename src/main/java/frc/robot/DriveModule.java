@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.logging.Loggable;
@@ -17,7 +18,7 @@ public class DriveModule implements Loggable {
     private Encoder encoder;
 
     private double power;
-    private double current[] = new double[20];
+    private double current[] = new double[30];
     private int indexCurrent;
 
     /**
@@ -36,6 +37,11 @@ public class DriveModule implements Loggable {
         this.sub.setNeutralMode(NeutralMode.Coast);
 
         this.sub.follow(this.main);
+
+        main.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30);
+        main.config_kP(0, 0.1);
+        main.config_kI(0, 0.001);
+        main.config_kD(0, 5);
 
         indexCurrent = 0;
     }
@@ -74,7 +80,7 @@ public class DriveModule implements Loggable {
      * @param speed The speed to set the module to
      */
     public void setSpeed(double speed) {
-        main.set(TalonFXControlMode.Velocity, speed / VELOCITY_COEFFICIENT * 6380);
+        main.set(TalonFXControlMode.Velocity, speed * 22000);
     }
 
     /**
@@ -83,7 +89,7 @@ public class DriveModule implements Loggable {
      * @return velocity (rpm) of the motor
      */
     public double getSpeed() {
-        return main.getSelectedSensorVelocity() * VELOCITY_COEFFICIENT;
+        return main.getSelectedSensorVelocity();// * VELOCITY_COEFFICIENT;
     }
 
     /**
@@ -91,41 +97,48 @@ public class DriveModule implements Loggable {
      *
      * @return The average current drawn by the motors
      */
-    // public double getInstantCurrent() {
-    // return (main.getStatorCurrent() + sub.getStatorCurrent())/2;
-    // }
+    public double getCurrent() {
+        return (main.getStatorCurrent() + sub.getStatorCurrent()) / 2;
+    }
+
+    /**
+     * Updates the average current drawn for this cycle.
+     */
+    public void updateCurrent() {
+        current[indexCurrent] = getCurrent();
+        indexCurrent = (indexCurrent + 1) % current.length;
+    }
 
     /**
      * Gets the average current drawn over a number of cycles.
      *
      * @return The average current drawn by the motor
      */
-    // public double getAccumulatedCurrent() {
-    // current[indexCurrent] = getInstantCurrent();
-    // indexCurrent = (indexCurrent + 1) % current.length;
-
-    // int total = 0;
-    // for(int i = 0; i < current.length; i++){
-    // total += current[i];
-    // }
-    // return total/current.length;
-    // }
+    public double getAverageCurrent() {
+        double total = 0.0;
+        for (int i = 0; i < current.length; i++) {
+            total += current[i];
+        }
+        return total / current.length;
+    }
 
     @Override
     public void setupLogging(Logger logger) {
         logger.addAttribute(this.moduleName + "/MotorPower");
         logger.addAttribute(this.moduleName + "/Distance");
         logger.addAttribute(this.moduleName + "/EncoderRate");
-        // logger.addAttribute(this.moduleName + "/MotorCurrent");
+        logger.addAttribute(this.moduleName + "/MotorVelocity");
+        logger.addAttribute(this.moduleName + "/MotorCurrent");
+        logger.addAttribute(this.moduleName + "/MotorAverageCurrent");
     }
 
     @Override
     public void log(Logger logger) {
-        System.out.println(this.moduleName + "/" + this.encoder.getRate());
-
         logger.log(this.moduleName + "/MotorPower", power);
         logger.log(this.moduleName + "/Distance", this.encoder.getDistance());
         logger.log(this.moduleName + "/EncoderRate", this.encoder.getRate());
-        // logger.log(this.moduleName + "/MotorCurrent", getInstantCurrent());
+        logger.log(this.moduleName + "/MotorVelocity", getSpeed());
+        logger.log(this.moduleName + "/MotorCurrent", getCurrent());
+        logger.log(this.moduleName + "/MotorAverageCurrent", getAverageCurrent());
     }
 }

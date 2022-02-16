@@ -38,8 +38,8 @@ public class Drivetrain implements Loggable {
      * @param rightSpeed The speed of the right motors
      */
     public void drive(double leftSpeed, double rightSpeed) { // Probably implement deadbands later
-        left.set(leftSpeed);
-        right.set(rightSpeed);
+        left.setSpeed(leftSpeed);
+        right.setSpeed(rightSpeed);
     }
 
     /**
@@ -83,35 +83,38 @@ public class Drivetrain implements Loggable {
     /**
      * Shifts gears based on current.
      */
-    // public void checkGears() {
-    // if(getShifter()) {
-    // if(left.getAccumulatedCurrent() > SHIFT_CURRENT_LOW || right.getAccumulatedCurrent() >
-    // SHIFT_CURRENT_LOW){
-    // // if in high current, stay in low speed gear
-    // setShifter(true);
-    // } else if(left.getSpeed() > SHIFT_VELOCITY / 10.86 || Math.abs(right.getSpeed()) >
-    // SHIFT_VELOCITY / 10.86){
-    // // if high velocity, shift to high speed gear
-    // setShifter(false);
-    // } else {
-    // // if in low velocity and in low current, stay in low speed gear
-    // setShifter(true);
-    // }
-    // } else {
-    // if(left.getAccumulatedCurrent() > SHIFT_CURRENT_HIGH || right.getAccumulatedCurrent() >
-    // SHIFT_CURRENT_HIGH){
-    // // if in high current, shift to low speed gear
-    // setShifter(true);
-    // } else if(left.getSpeed() < SHIFT_VELOCITY / 16.37 && Math.abs(right.getSpeed()) <
-    // SHIFT_VELOCITY / 16.37){
-    // // if low velocity, shift to low speed gear
-    // setShifter(true);
-    // } else {
-    // // if in low current and in high velocity, stay in high speed gear
-    // setShifter(false);
-    // }
-    // }
-    // }
+    public void checkGears() {
+        left.updateCurrent();
+        right.updateCurrent();
+
+        if (getShifter()) {
+            if (left.getAverageCurrent() > SHIFT_CURRENT_LOW
+                    || right.getAverageCurrent() > SHIFT_CURRENT_LOW) {
+                // if in high current, stay in low speed gear
+                setShifter(true);
+            } else if (left.getSpeed() > SHIFT_VELOCITY / 10.86
+                    || Math.abs(right.getSpeed()) > SHIFT_VELOCITY / 10.86) {
+                // if high velocity, shift to high speed gear
+                setShifter(false);
+            } else {
+                // if in low velocity and in low current, stay in low speed gear
+                setShifter(true);
+            }
+        } else {
+            if (left.getAverageCurrent() > SHIFT_CURRENT_HIGH
+                    || right.getAverageCurrent() > SHIFT_CURRENT_HIGH) {
+                // if in high current, shift to low speed gear
+                setShifter(true);
+            } else if (left.getSpeed() < SHIFT_VELOCITY / 16.37
+                    && Math.abs(right.getSpeed()) < SHIFT_VELOCITY / 16.37) {
+                // if low velocity, shift to low speed gear
+                setShifter(true);
+            } else {
+                // if in low current and in high velocity, stay in high speed gear
+                setShifter(false);
+            }
+        }
+    }
 
     @Override
     public void setupLogging(Logger logger) {

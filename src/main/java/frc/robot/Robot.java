@@ -130,6 +130,9 @@ public class Robot extends TimedRobot {
             if (driver.getLeftBumperPressed()) {
                 drive.setShifter(!drive.getShifter());
             }
+
+            leftModule.updateCurrent();
+            rightModule.updateCurrent();
         }
 
         logger.log();
