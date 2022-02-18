@@ -8,7 +8,7 @@ plugins:
         enabled: false
 
   checkstyle:
-    enabled: true
+    enabled: false
     checks:
       com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck:
         enabled: false
