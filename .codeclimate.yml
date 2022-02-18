@@ -9,6 +9,7 @@ plugins:
 
   checkstyle:
     enabled: true
+    channel: "beta"
     checks:
       com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck:
         enabled: false
