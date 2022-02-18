@@ -7,16 +7,16 @@ plugins:
       squid:S106:
         enabled: false
 
-  checkstyle:
-    enabled: false
-    checks:
-      com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck:
-        enabled: false
-      com.puppycrawl.tools.checkstyle.checks.javadoc.NonEmptyAtclauseDescriptionCheck:
-        enabled: false
-      # com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck:
-      #   enabled: false
-    config: "checkstyle.xml"
+  # checkstyle:
+  #   enabled: false
+  #   checks:
+  #     com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck:
+  #       enabled: false
+  #     com.puppycrawl.tools.checkstyle.checks.javadoc.NonEmptyAtclauseDescriptionCheck:
+  #       enabled: false
+  #     # com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck:
+  #     #   enabled: false
+  #   config: "checkstyle.xml"
 
   fixme:
     enabled: true
