@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
     DriveModule rightModule;
     LoggableController driver;
     LoggableController operator;
+    Manipulation manipulation;
 
     LoggablePowerDistribution pdp;
     LoggableCompressor compressor;
@@ -47,6 +48,8 @@ public class Robot extends TimedRobot {
         return joystickDeadband.scale(out);
     }
 
+    boolean manipulationEnabled = true;
+
     /**
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
@@ -57,6 +60,14 @@ public class Robot extends TimedRobot {
 
         driver = new LoggableController("Driver", 0);
         operator = new LoggableController("Operator", 1);
+
+        if (manipulationEnabled) {
+            System.out.println("Initializing manipulation...");
+            manipulation = new Manipulation(0, 1, 7, 8);
+        } else {
+            System.out.println("Manipulation initialization disabled.");
+        }
+
         logger = new Logger();
 
         timer = new LoggableTimer();
@@ -113,6 +124,16 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         // Robot code goes here
+        if (this.manipulationEnabled) {
+            if (driver.getRightBumperPressed()) {
+                manipulation.setIntakeExtend(true);
+            } else if (driver.getLeftBumperPressed()) {
+                manipulation.setIntakeExtend(false);
+            }
+            manipulation.setIntakeSpin(operator.getYButton());
+            manipulation.setIndexLoad(operator.getXButton());
+        }
+
         if (this.drivetrainEnabled) {
             if (tankDriveEnabled) {
                 double leftInput = deadband(-driver.getLeftY());
