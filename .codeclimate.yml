@@ -14,8 +14,8 @@ plugins:
         enabled: false
       com.puppycrawl.tools.checkstyle.checks.javadoc.NonEmptyAtclauseDescriptionCheck:
         enabled: false
-      com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck:
-        enabled: false
+      # com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck:
+      #   enabled: false
     config: "checkstyle.xml"
 
   fixme:
