@@ -119,6 +119,7 @@ public class Climber implements Loggable {
                 if (touchA.get()) {
                     this.setClimbingState(ClimbingStates.TOUCH_A);
                 }
+                break;
             case TOUCH_A:
                 // Check if B is touching yet.
                 if (touchB.get()) {
@@ -135,6 +136,7 @@ public class Climber implements Loggable {
                 if (touchC.get()) {
                     this.setClimbingState(ClimbingStates.TRANS_BC);
                 }
+                break;
             case TRANS_BC:
                 if (timer.hasElapsed(1)) {
                     this.setClimbingState(ClimbingStates.TOUCH_C);
