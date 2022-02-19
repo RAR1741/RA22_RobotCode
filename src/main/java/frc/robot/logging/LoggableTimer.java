@@ -1,14 +1,14 @@
 package frc.robot.logging;
 
-import java.util.function.LongBinaryOperator;
-
 import edu.wpi.first.wpilibj.Timer;
 
 public class LoggableTimer extends Timer implements Loggable {
     String name;
+
     public LoggableTimer() {
         this("Time");
     }
+
     public LoggableTimer(String name) {
         this.name = name;
     }
