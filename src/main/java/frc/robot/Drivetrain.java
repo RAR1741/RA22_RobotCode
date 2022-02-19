@@ -38,8 +38,8 @@ public class Drivetrain implements Loggable {
      * @param rightSpeed The speed of the right motors
      */
     public void drive(double leftSpeed, double rightSpeed) { // Probably implement deadbands later
-        left.setSpeed(leftSpeed);
-        right.setSpeed(rightSpeed);
+        left.set(leftSpeed);
+        right.set(rightSpeed);
     }
 
     /**

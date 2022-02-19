@@ -142,7 +142,7 @@ public class Robot extends TimedRobot {
             if (tankDriveEnabled) {
                 double leftInput = deadband(-driver.getLeftY());
                 double rightInput = deadband(-driver.getRightY());
-                drive.tankDrive(leftInput, rightInput);
+                drive.tankDrive(leftInput * 0.4, rightInput * 0.4);
             } else {
                 double turnInput = deadband(driver.getRightX());
                 double speedInput = deadband(-driver.getLeftY());

@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -45,6 +46,9 @@ public class Climber implements Loggable {
         // this.touchA = touchA;
         // this.touchB = touchB;
         // this.touchC = touchC;
+
+        this.climbingMotor.setNeutralMode(NeutralMode.Coast);
+        this.secondaryClimbingMotor.setNeutralMode(NeutralMode.Coast);
 
         this.climbingMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0,
                 30);
