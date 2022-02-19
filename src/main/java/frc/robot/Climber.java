@@ -32,6 +32,7 @@ public class Climber implements Loggable {
             Solenoid climberSolenoidB1, Solenoid climberSolenoidB2, Solenoid climberSolenoidC,
             ClimberSensors touchA, ClimberSensors touchB, ClimberSensors touchC) {
 
+        // TODO: figure out if the motors are inverted correctly
         this.climbingMotor = new TalonFX(climbingMotorID);
         this.secondaryClimbingMotor = new TalonFX(secondaryClimbingMotorID);
 
@@ -47,7 +48,6 @@ public class Climber implements Loggable {
         secondaryClimbingMotor.setInverted(InvertType.InvertMotorOutput);
         secondaryClimbingMotor.follow(climbingMotor);
         this.timer = new LoggableTimer("Climbing/Time");
-
     }
 
     public void setClimbingState(ClimbingStates climbingState) {
@@ -154,12 +154,42 @@ public class Climber implements Loggable {
     @Override
     public void setupLogging(Logger logger) {
         this.timer.setupLogging(logger);
-
     }
 
     @Override
     public void log(Logger logger) {
         this.timer.log(logger);
+    }
 
+    public boolean getClimberSolenoidAState() {
+        return climberSolenoidA.get();
+    }
+
+    public void setClimberSolenoidAState(Boolean state) {
+        this.climberSolenoidA.set(state);
+    }
+
+    public boolean getClimberSolenoidB1State() {
+        return climberSolenoidB1.get();
+    }
+
+    public void setClimberSolenoidB1State(Boolean state) {
+        this.climberSolenoidB1.set(state);
+    }
+
+    public boolean getClimberSolenoidB2State() {
+        return climberSolenoidB2.get();
+    }
+
+    public void setClimberSolenoidB2State(Boolean state) {
+        this.climberSolenoidB2.set(state);
+    }
+
+    public boolean getClimberSolenoidCState() {
+        return climberSolenoidC.get();
+    }
+
+    public void setClimberSolenoidCState(Boolean state) {
+        this.climberSolenoidC.set(state);
     }
 }

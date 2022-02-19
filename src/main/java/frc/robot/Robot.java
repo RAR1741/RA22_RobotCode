@@ -28,6 +28,9 @@ public class Robot extends TimedRobot {
     Drivetrain drive;
     DriveModule leftModule;
     DriveModule rightModule;
+
+    Climber climber;
+
     LoggableController driver;
     LoggableController operator;
 
@@ -36,6 +39,7 @@ public class Robot extends TimedRobot {
 
     boolean drivetrainEnabled = true;
     boolean tankDriveEnabled = true;
+    boolean climberEnabled = true;
 
     private static final double DEADBAND_LIMIT = 0.01;
     private static final double SPEED_CAP = 0.6;
@@ -47,10 +51,6 @@ public class Robot extends TimedRobot {
         double out = joystickSquared.scale(in);
         return joystickDeadband.scale(out);
     }
-
-    Climber climb;
-
-    boolean climberEnabled = true;
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -78,13 +78,13 @@ public class Robot extends TimedRobot {
             ClimberSensors touchA = new ClimberSensors("TouchA", 0, 1);
             ClimberSensors touchB = new ClimberSensors("TouchB", 2, 3);
             ClimberSensors touchC = new ClimberSensors("TouchC", 4, 5);
-            climb = new Climber(9, 10, climberSolenoidA, climberSolenoidB1, climberSolenoidB2,
+            climber = new Climber(9, 10, climberSolenoidA, climberSolenoidB1, climberSolenoidB2,
                     climberSolenoidC, touchA, touchB, touchC);
 
             logger.addLoggable(touchA);
             logger.addLoggable(touchB);
             logger.addLoggable(touchC);
-            logger.addLoggable(climb);
+            logger.addLoggable(climber);
         } else {
             System.out.println("Climber initialization disabled.");
         }
@@ -109,7 +109,7 @@ public class Robot extends TimedRobot {
         System.out.println("done");
 
         logger.addLoggable(driver);
-        // logger.addLoggable(operator);
+        logger.addLoggable(operator);
         logger.addLoggable(compressor);
     }
 
@@ -160,6 +160,25 @@ public class Robot extends TimedRobot {
             rightModule.updateCurrent();
         }
 
+        if (this.climberEnabled) {
+            if (operator.getYButtonPressed()) {
+                climber.setClimberSolenoidAState(!climber.getClimberSolenoidAState());
+            }
+            if (operator.getBButtonPressed()) {
+                climber.setClimberSolenoidB1State(!climber.getClimberSolenoidB1State());
+            }
+            if (operator.getAButtonPressed()) {
+                climber.setClimberSolenoidB2State(!climber.getClimberSolenoidB2State());
+            }
+            if (operator.getXButtonPressed()) {
+                climber.setClimberSolenoidCState(!climber.getClimberSolenoidCState());
+            }
+
+            // TODO: Enable this when we're ready to test the climber
+            // double climberInput = deadband(operator.getLeftY());
+            // climber.setPower(climberInput);
+        }
+
         logger.log();
         logger.writeLine();
     }
@@ -184,11 +203,11 @@ public class Robot extends TimedRobot {
     @Override
     public void testPeriodic() {
         // Robot code goes here
-        if (climberEnabled) {
-            climb.setPrestage(operator.getXButtonPressed());
-            climb.setPower(operator.getRightY()); // Deadband
-            climb.checkClimbingState();
-        }
+        // if (climberEnabled) {
+        // climber.setPrestage(operator.getXButtonPressed());
+        // climber.setPower(operator.getRightY()); // Deadband
+        // climber.checkClimbingState();
+        // }
 
         logger.log();
         logger.writeLine();
