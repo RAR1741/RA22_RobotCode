@@ -47,12 +47,12 @@ public class Robot extends TimedRobot {
         return joystickDeadband.scale(out);
     }
 
-    Climbing climb;
+    Climber climb;
 
     boolean climberEnabled = true;
 
     /**
-     * This function is run when the robot is first started up and should be used for any 
+     * This function is run when the robot is first started up and should be used for any
      * initialization code.
      */
     @Override
@@ -64,10 +64,10 @@ public class Robot extends TimedRobot {
 
         if (this.climberEnabled) {
             System.out.println("Initializing climber...");
-            ClimbingSensors touchA = new ClimbingSensors("TouchA", 0, 1);
-            ClimbingSensors touchB = new ClimbingSensors("TouchB", 2, 3);
-            ClimbingSensors touchC = new ClimbingSensors("TouchC", 4, 5);
-            climb = new Climbing(9, 10, 2, 3, 4, 5, touchA, touchB, touchC);
+            ClimberSensors touchA = new ClimberSensors("TouchA", 0, 1);
+            ClimberSensors touchB = new ClimberSensors("TouchB", 2, 3);
+            ClimberSensors touchC = new ClimberSensors("TouchC", 4, 5);
+            climb = new Climber(9, 10, 2, 3, 4, 5, touchA, touchB, touchC);
 
             logger.addLoggable(touchA);
             logger.addLoggable(touchB);

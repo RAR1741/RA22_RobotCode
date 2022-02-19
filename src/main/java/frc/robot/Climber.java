@@ -2,13 +2,9 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-
-import frc.robot.ClimbingSensors;
 import frc.robot.logging.Loggable;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
@@ -17,15 +13,15 @@ enum ClimbingStates {
     RESTING, PRE_STAGE, TOUCH_A, TRANS_AB, TOUCH_B, TRANS_BC, TOUCH_C;
 }
 
-public class Climbing implements Loggable {
+public class Climber implements Loggable {
     TalonFX climbingMotor, secondaryClimbingMotor;
     Solenoid climberSolenoidA, climberSolenoidB1, climberSolenoidB2, climberSolenoidC;
-    ClimbingSensors touchA, touchB, touchC;
+    ClimberSensors touchA, touchB, touchC;
     ClimbingStates currentStage = ClimbingStates.RESTING;
     LoggableTimer timer;
-    public Climbing(int climbingMotorID, int secondaryClimbingMotorID, 
+    public Climber(int climbingMotorID, int secondaryClimbingMotorID,
                     int climberSolenoidAID, int climberSolenoidB1ID, int climberSolenoidB2ID, int climberSolenoidCID,
-                    ClimbingSensors touchA, ClimbingSensors touchB, ClimbingSensors touchC) {
+                    ClimberSensors touchA, ClimberSensors touchB, ClimberSensors touchC) {
         this.climbingMotor = new TalonFX(climbingMotorID);
         this.secondaryClimbingMotor = new TalonFX(secondaryClimbingMotorID);
 
@@ -41,12 +37,12 @@ public class Climbing implements Loggable {
         secondaryClimbingMotor.setInverted(InvertType.InvertMotorOutput);
         secondaryClimbingMotor.follow(climbingMotor);
         this.timer = new LoggableTimer("Climbing/Time");
-        
+
     }
 
     public void setClimbingState(ClimbingStates climbingState) {
         this.currentStage = climbingState;
-        
+
         switch (climbingState) {
             case PRE_STAGE:
                 this.timer.start();
@@ -152,6 +148,6 @@ public class Climbing implements Loggable {
     @Override
     public void log(Logger logger) {
         this.timer.log(logger);
-        
+
     }
 }
