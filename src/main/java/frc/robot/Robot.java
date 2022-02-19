@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.logging.LoggableCompressor;
 import frc.robot.logging.LoggableController;
@@ -57,6 +58,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        logger = new Logger();
+        timer = new LoggableTimer();
+        logger.addLoggable(timer);
+
         pdp = new LoggablePowerDistribution(1, ModuleType.kRev);
 
         driver = new LoggableController("Driver", 0);
@@ -64,10 +69,17 @@ public class Robot extends TimedRobot {
 
         if (this.climberEnabled) {
             System.out.println("Initializing climber...");
+
+            Solenoid climberSolenoidA = new Solenoid(PneumaticsModuleType.REVPH, 2);
+            Solenoid climberSolenoidB1 = new Solenoid(PneumaticsModuleType.REVPH, 3);
+            Solenoid climberSolenoidB2 = new Solenoid(PneumaticsModuleType.REVPH, 4);
+            Solenoid climberSolenoidC = new Solenoid(PneumaticsModuleType.REVPH, 5);
+
             ClimberSensors touchA = new ClimberSensors("TouchA", 0, 1);
             ClimberSensors touchB = new ClimberSensors("TouchB", 2, 3);
             ClimberSensors touchC = new ClimberSensors("TouchC", 4, 5);
-            climb = new Climber(9, 10, 2, 3, 4, 5, touchA, touchB, touchC);
+            climb = new Climber(9, 10, climberSolenoidA, climberSolenoidB1, climberSolenoidB2,
+                    climberSolenoidC, touchA, touchB, touchC);
 
             logger.addLoggable(touchA);
             logger.addLoggable(touchB);
@@ -76,11 +88,6 @@ public class Robot extends TimedRobot {
         } else {
             System.out.println("Climber initialization disabled.");
         }
-
-        logger = new Logger();
-
-        timer = new LoggableTimer();
-        logger.addLoggable(timer);
 
         if (this.drivetrainEnabled) {
             System.out.println("Initializing drivetrain...");
@@ -92,8 +99,6 @@ public class Robot extends TimedRobot {
 
             drive = new Drivetrain(leftModule, rightModule, 6);
 
-            logger.addLoggable(leftModule);
-            logger.addLoggable(rightModule);
             logger.addLoggable(drive);
         } else {
             System.out.println("Drivetrain initialization disabled.");
@@ -181,7 +186,7 @@ public class Robot extends TimedRobot {
         // Robot code goes here
         if (climberEnabled) {
             climb.setPrestage(operator.getXButtonPressed());
-            climb.setPower(operator.getRightY()); //Deadband
+            climb.setPower(operator.getRightY()); // Deadband
             climb.checkClimbingState();
         }
 

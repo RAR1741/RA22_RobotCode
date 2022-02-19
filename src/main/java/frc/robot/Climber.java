@@ -3,34 +3,42 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.logging.Loggable;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
 
-enum ClimbingStates {
-    RESTING, PRE_STAGE, TOUCH_A, TRANS_AB, TOUCH_B, TRANS_BC, TOUCH_C;
-}
-
-
 public class Climber implements Loggable {
-    TalonFX climbingMotor, secondaryClimbingMotor;
-    Solenoid climberSolenoidA, climberSolenoidB1, climberSolenoidB2, climberSolenoidC;
-    ClimberSensors touchA, touchB, touchC;
+    enum ClimbingStates {
+        RESTING, PRE_STAGE, TOUCH_A, TRANS_AB, TOUCH_B, TRANS_BC, TOUCH_C;
+    }
+
+    TalonFX climbingMotor;
+    TalonFX secondaryClimbingMotor;
+
+    Solenoid climberSolenoidA;
+    Solenoid climberSolenoidB1;
+    Solenoid climberSolenoidB2;
+    Solenoid climberSolenoidC;
+
+    ClimberSensors touchA;
+    ClimberSensors touchB;
+    ClimberSensors touchC;
+
     ClimbingStates currentStage = ClimbingStates.RESTING;
     LoggableTimer timer;
 
-    public Climber(int climbingMotorID, int secondaryClimbingMotorID, int climberSolenoidAID,
-            int climberSolenoidB1ID, int climberSolenoidB2ID, int climberSolenoidCID,
+    public Climber(int climbingMotorID, int secondaryClimbingMotorID, Solenoid climberSolenoidA,
+            Solenoid climberSolenoidB1, Solenoid climberSolenoidB2, Solenoid climberSolenoidC,
             ClimberSensors touchA, ClimberSensors touchB, ClimberSensors touchC) {
+
         this.climbingMotor = new TalonFX(climbingMotorID);
         this.secondaryClimbingMotor = new TalonFX(secondaryClimbingMotorID);
 
-        this.climberSolenoidA = new Solenoid(PneumaticsModuleType.REVPH, climberSolenoidAID);
-        this.climberSolenoidB1 = new Solenoid(PneumaticsModuleType.REVPH, climberSolenoidB1ID);
-        this.climberSolenoidB2 = new Solenoid(PneumaticsModuleType.REVPH, climberSolenoidB2ID);
-        this.climberSolenoidC = new Solenoid(PneumaticsModuleType.REVPH, climberSolenoidCID);
+        this.climberSolenoidA = climberSolenoidA;
+        this.climberSolenoidB1 = climberSolenoidB1;
+        this.climberSolenoidB2 = climberSolenoidB2;
+        this.climberSolenoidC = climberSolenoidC;
 
         this.touchA = touchA;
         this.touchB = touchB;
@@ -93,7 +101,7 @@ public class Climber implements Loggable {
 
     /**
      * Updates the current state of the climber.
-     * 
+     *
      * @return true when current state is RESTING
      */
     public void checkClimbingState() {

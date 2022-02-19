@@ -6,7 +6,9 @@ import frc.robot.logging.Logger;
 
 public class ClimberSensors implements Loggable {
     String name;
-    DigitalInput a, b;
+
+    DigitalInput a;
+    DigitalInput b;
 
     public ClimberSensors(String name, int aID, int bID) {
         this.name = name;
