@@ -13,15 +13,17 @@ enum ClimbingStates {
     RESTING, PRE_STAGE, TOUCH_A, TRANS_AB, TOUCH_B, TRANS_BC, TOUCH_C;
 }
 
+
 public class Climber implements Loggable {
     TalonFX climbingMotor, secondaryClimbingMotor;
     Solenoid climberSolenoidA, climberSolenoidB1, climberSolenoidB2, climberSolenoidC;
     ClimberSensors touchA, touchB, touchC;
     ClimbingStates currentStage = ClimbingStates.RESTING;
     LoggableTimer timer;
-    public Climber(int climbingMotorID, int secondaryClimbingMotorID,
-                    int climberSolenoidAID, int climberSolenoidB1ID, int climberSolenoidB2ID, int climberSolenoidCID,
-                    ClimberSensors touchA, ClimberSensors touchB, ClimberSensors touchC) {
+
+    public Climber(int climbingMotorID, int secondaryClimbingMotorID, int climberSolenoidAID,
+            int climberSolenoidB1ID, int climberSolenoidB2ID, int climberSolenoidCID,
+            ClimberSensors touchA, ClimberSensors touchB, ClimberSensors touchC) {
         this.climbingMotor = new TalonFX(climbingMotorID);
         this.secondaryClimbingMotor = new TalonFX(secondaryClimbingMotorID);
 
@@ -88,8 +90,10 @@ public class Climber implements Loggable {
                 break;
         }
     }
+
     /**
      * Updates the current state of the climber.
+     * 
      * @return true when current state is RESTING
      */
     public void checkClimbingState() {
@@ -97,12 +101,12 @@ public class Climber implements Loggable {
         switch (currentStage) {
             case PRE_STAGE:
                 // Check if A is touching yet.
-                if (touchA.get()){
+                if (touchA.get()) {
                     this.setClimbingState(ClimbingStates.TOUCH_A);
                 }
             case TOUCH_A:
                 // Check if B is touching yet.
-                if (touchB.get()){
+                if (touchB.get()) {
                     this.setClimbingState(ClimbingStates.TRANS_AB);
                 }
                 break;
@@ -113,7 +117,7 @@ public class Climber implements Loggable {
                 break;
             case TOUCH_B:
                 // Check if C is touching yet.
-                if (touchC.get()){
+                if (touchC.get()) {
                     this.setClimbingState(ClimbingStates.TRANS_BC);
                 }
             case TRANS_BC:
