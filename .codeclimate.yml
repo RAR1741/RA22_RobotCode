@@ -1,0 +1,28 @@
+plugins:
+  sonar-java:
+    enabled: true
+    checks:
+      squid:S1186:
+        enabled: false
+      squid:S106:
+        enabled: false
+
+  checkstyle:
+    enabled: true
+    checks:
+      com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck:
+        enabled: false
+      com.puppycrawl.tools.checkstyle.checks.javadoc.NonEmptyAtclauseDescriptionCheck:
+        enabled: false
+      com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck:
+        enabled: false
+    config: "checkstyle.xml"
+
+  fixme:
+    enabled: true
+
+  markdownlint:
+    enabled: true
+    checks:
+      MD022:
+        enabled: false
