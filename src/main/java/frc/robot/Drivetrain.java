@@ -118,8 +118,8 @@ public class Drivetrain implements Loggable {
 
     @Override
     public void setupLogging(Logger logger) {
-        logger.addLoggable(left);
-        logger.addLoggable(right);
+        // logger.addLoggable(left);
+        // logger.addLoggable(right);
     }
 
     @Override

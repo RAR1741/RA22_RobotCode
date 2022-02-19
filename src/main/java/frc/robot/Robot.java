@@ -75,15 +75,15 @@ public class Robot extends TimedRobot {
             Solenoid climberSolenoidB2 = new Solenoid(PneumaticsModuleType.REVPH, 4);
             Solenoid climberSolenoidC = new Solenoid(PneumaticsModuleType.REVPH, 5);
 
-            ClimberSensors touchA = new ClimberSensors("TouchA", 0, 1);
-            ClimberSensors touchB = new ClimberSensors("TouchB", 2, 3);
-            ClimberSensors touchC = new ClimberSensors("TouchC", 4, 5);
+            // ClimberSensors touchA = new ClimberSensors("TouchA", 0, 1);
+            // ClimberSensors touchB = new ClimberSensors("TouchB", 2, 3);
+            // ClimberSensors touchC = new ClimberSensors("TouchC", 4, 5);
             climber = new Climber(9, 10, climberSolenoidA, climberSolenoidB1, climberSolenoidB2,
-                    climberSolenoidC, touchA, touchB, touchC);
+                    climberSolenoidC);// , touchA, touchB, touchC);
 
-            logger.addLoggable(touchA);
-            logger.addLoggable(touchB);
-            logger.addLoggable(touchC);
+            // logger.addLoggable(touchA);
+            // logger.addLoggable(touchB);
+            // logger.addLoggable(touchC);
             logger.addLoggable(climber);
         } else {
             System.out.println("Climber initialization disabled.");
@@ -175,8 +175,8 @@ public class Robot extends TimedRobot {
             }
 
             // TODO: Enable this when we're ready to test the climber
-            // double climberInput = deadband(operator.getLeftY());
-            // climber.setPower(climberInput);
+            double climberInput = deadband(operator.getLeftY());
+            climber.setSpeed(climberInput);
         }
 
         logger.log();

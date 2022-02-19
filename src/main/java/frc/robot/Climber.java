@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.logging.Loggable;
@@ -29,8 +30,8 @@ public class Climber implements Loggable {
     LoggableTimer timer;
 
     public Climber(int climbingMotorID, int secondaryClimbingMotorID, Solenoid climberSolenoidA,
-            Solenoid climberSolenoidB1, Solenoid climberSolenoidB2, Solenoid climberSolenoidC,
-            ClimberSensors touchA, ClimberSensors touchB, ClimberSensors touchC) {
+            Solenoid climberSolenoidB1, Solenoid climberSolenoidB2, Solenoid climberSolenoidC) {
+        // ClimberSensors touchA, ClimberSensors touchB, ClimberSensors touchC) {
 
         // TODO: figure out if the motors are inverted correctly
         this.climbingMotor = new TalonFX(climbingMotorID);
@@ -41,9 +42,15 @@ public class Climber implements Loggable {
         this.climberSolenoidB2 = climberSolenoidB2;
         this.climberSolenoidC = climberSolenoidC;
 
-        this.touchA = touchA;
-        this.touchB = touchB;
-        this.touchC = touchC;
+        // this.touchA = touchA;
+        // this.touchB = touchB;
+        // this.touchC = touchC;
+
+        this.climbingMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0,
+                30);
+        this.climbingMotor.config_kP(0, 0.1);
+        this.climbingMotor.config_kI(0, 0.001);
+        this.climbingMotor.config_kD(0, 5);
 
         secondaryClimbingMotor.setInverted(InvertType.InvertMotorOutput);
         secondaryClimbingMotor.follow(climbingMotor);
@@ -148,17 +155,31 @@ public class Climber implements Loggable {
     }
 
     public void setPower(double power) {
-        climbingMotor.set(ControlMode.PercentOutput, power);
+        climbingMotor.set(ControlMode.PercentOutput, power * 0.3);
+    }
+
+    public void setSpeed(double speed) {
+        climbingMotor.set(ControlMode.Velocity, speed * 6000);
+    }
+
+    public double getSpeed() {
+        return climbingMotor.getSelectedSensorVelocity();
     }
 
     @Override
     public void setupLogging(Logger logger) {
         this.timer.setupLogging(logger);
+        logger.addAttribute("LeftClimberCurrent");
+        logger.addAttribute("RightClimberCurrent");
+        logger.addAttribute("ClimberSpeed");
     }
 
     @Override
     public void log(Logger logger) {
         this.timer.log(logger);
+        logger.log("LeftClimberCurrent", getLeftCurrent());
+        logger.log("RightClimberMotorCurrent", getRightCurrent());
+        logger.log("ClimberSpeed", getSpeed());
     }
 
     public boolean getClimberSolenoidAState() {
@@ -191,5 +212,13 @@ public class Climber implements Loggable {
 
     public void setClimberSolenoidCState(Boolean state) {
         this.climberSolenoidC.set(state);
+    }
+
+    public double getLeftCurrent() {
+        return climbingMotor.getStatorCurrent();
+    }
+
+    public double getRightCurrent() {
+        return secondaryClimbingMotor.getStatorCurrent();
     }
 }
