@@ -161,18 +161,7 @@ public class Robot extends TimedRobot {
         }
 
         if (this.climberEnabled) {
-            if (operator.getYButtonPressed()) {
-                climber.setClimberSolenoidAState(!climber.getClimberSolenoidAState());
-            }
-            if (operator.getBButtonPressed()) {
-                climber.setClimberSolenoidB1State(!climber.getClimberSolenoidB1State());
-            }
-            if (operator.getAButtonPressed()) {
-                climber.setClimberSolenoidB2State(!climber.getClimberSolenoidB2State());
-            }
-            if (operator.getXButtonPressed()) {
-                climber.setClimberSolenoidCState(!climber.getClimberSolenoidCState());
-            }
+            climber.checkClimbingState(operator.getAButtonPressed());
 
             // TODO: Enable this when we're ready to test the climber
             double climberInput = deadband(operator.getLeftY());

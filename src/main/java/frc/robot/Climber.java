@@ -111,34 +111,34 @@ public class Climber implements Loggable {
      *
      * @return true when current state is RESTING
      */
-    public void checkClimbingState() {
+    public void checkClimbingState(boolean advanceStage) {
         // Check whether or not the climber is done climbing during the current stage.
         switch (currentStage) {
             case PRE_STAGE:
                 // Check if A is touching yet.
-                if (touchA.get()) {
+                if (advanceStage) {
                     this.setClimbingState(ClimbingStates.TOUCH_A);
                 }
                 break;
             case TOUCH_A:
                 // Check if B is touching yet.
-                if (touchB.get()) {
+                if (advanceStage) {
                     this.setClimbingState(ClimbingStates.TRANS_AB);
                 }
                 break;
             case TRANS_AB:
-                if (timer.hasElapsed(1)) {
+                if (advanceStage) {
                     this.setClimbingState(ClimbingStates.TOUCH_B);
                 }
                 break;
             case TOUCH_B:
                 // Check if C is touching yet.
-                if (touchC.get()) {
+                if (advanceStage) {
                     this.setClimbingState(ClimbingStates.TRANS_BC);
                 }
                 break;
             case TRANS_BC:
-                if (timer.hasElapsed(1)) {
+                if (advanceStage) {
                     this.setClimbingState(ClimbingStates.TOUCH_C);
                 }
                 break;
