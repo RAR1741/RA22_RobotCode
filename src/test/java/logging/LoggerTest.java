@@ -1,13 +1,12 @@
 package logging;
 
 import static org.junit.Assert.assertEquals;
-
-
-import frc.robot.logging.Logger;
 import org.junit.Test;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import frc.robot.logging.Logger;
 
 public class LoggerTest {
     /**
