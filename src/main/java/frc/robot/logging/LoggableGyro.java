@@ -3,7 +3,6 @@ package frc.robot.logging;
 import com.kauailabs.navx.frc.AHRS;
 
 public class LoggableGyro extends AHRS implements Loggable {
-
     public LoggableGyro() {
         super();
     }
