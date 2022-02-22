@@ -7,6 +7,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
@@ -258,9 +259,7 @@ public class Logger {
      * @return String of the log filename
      */
     public static String getFilename(Calendar calendar) {
-        return "log-" + calendar.get(Calendar.YEAR) + "-"
-                + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH) + "_"
-                + calendar.get(Calendar.HOUR_OF_DAY) + "-" + calendar.get(Calendar.MINUTE) + "-"
-                + calendar.get(Calendar.SECOND) + ".csv";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        return "log-" + format.format(calendar.getTime()) + ".csv";
     }
 }
