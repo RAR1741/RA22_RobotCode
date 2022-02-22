@@ -42,10 +42,7 @@ public class Logger {
         if (new File("/media/sda").exists()) {
             dir = "/media/sda";
         }
-        String name = dir + "/log-" + calendar.get(Calendar.YEAR) + "-"
-                + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH) + "_"
-                + calendar.get(Calendar.HOUR_OF_DAY) + "-" + calendar.get(Calendar.MINUTE) + "-"
-                + calendar.get(Calendar.SECOND) + ".csv";
+        String name = dir + "/" + getFilename(calendar);
 
         System.out.printf("Logging to file: '%s'%n", new File(name).getAbsolutePath());
         return this.open(name);
@@ -253,5 +250,17 @@ public class Logger {
         for (Loggable l : loggables) {
             l.log(this);
         }
+    }
+
+    /**
+     * Generates a log filename for a given calendar date.
+     * @param calendar Calendar to get the filename for
+     * @return String of the log filename
+     */
+    public static String getFilename(Calendar calendar) {
+        return "log-" + calendar.get(Calendar.YEAR) + "-"
+                + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH) + "_"
+                + calendar.get(Calendar.HOUR_OF_DAY) + "-" + calendar.get(Calendar.MINUTE) + "-"
+                + calendar.get(Calendar.SECOND) + ".csv";
     }
 }
