@@ -162,6 +162,7 @@ public class Robot extends TimedRobot {
 
         if (this.climberEnabled) {
             climber.checkClimbingState(operator.getAButtonPressed());
+            // TODO: Create a way for motors to go 'limp' when needed, reading loggableGyro
 
             // TODO: Enable this when we're ready to test the climber
             double climberInput = deadband(operator.getLeftY());
