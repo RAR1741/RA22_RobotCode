@@ -119,21 +119,6 @@ public class Climber implements Loggable {
         }
     }
 
-    public void setMotorState(MotorStates state) {
-        this.currentState = state;
-
-        switch (state) {
-            case STATIC:
-                break;
-
-            case ACTIVE:
-                break;
-
-            default:
-                break;
-        }
-    }
-
     /**
      * Updates the current state of the climber.
      *
