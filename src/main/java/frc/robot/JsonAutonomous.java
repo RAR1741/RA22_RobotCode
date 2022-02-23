@@ -110,7 +110,7 @@ public class JsonAutonomous extends Autonomous {
             reset();
         }
         if (instructions.size() == step) {
-            drive.swerve(0, 0, 0, getAngle() - navxStart, false);
+            drive.drive(0, 0);
             return;
         }
         AutoInstruction ai = instructions.get(step);
@@ -140,7 +140,7 @@ public class JsonAutonomous extends Autonomous {
     }
 
     private void drive(AutoInstruction ai) {
-        
+
     }
 
     private void turnDegrees(AutoInstruction ai) {
