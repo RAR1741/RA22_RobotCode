@@ -93,6 +93,15 @@ public class DriveModule implements Loggable {
     }
 
     /**
+     * Get the main sensor position (in raw sensor units).
+     * 
+     * @return Position of selected sensor (in raw sensor units).
+     */
+    public double getDriveEnc() {
+        return main.getSelectedSensorPosition();
+    }
+ 
+    /**
      * Gets the average current drawn.
      *
      * @return The average current drawn by the motors

@@ -81,6 +81,15 @@ public class Drivetrain implements Loggable {
     }
 
     /**
+     * Gets the encoder information for the left DriveModule
+     * 
+     * @return Position of left sensor (in raw sensor units).
+     */
+    public double getEncoder() {
+        return left.getDriveEnc();
+    }
+
+    /**
      * Shifts gears based on current.
      */
     public void checkGears() {
