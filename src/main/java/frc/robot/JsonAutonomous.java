@@ -117,23 +117,19 @@ public class JsonAutonomous extends Autonomous {
 
         switch (ai.type) {
             case "drive":
-                drive(ai, false);
-                break;
-
-            case "drive-fo":
-                drive(ai, true);
+                drive(ai);
                 break;
 
             case "turnDeg":
-                turnDegrees(ai, false);
-                break;
-
-            case "turnDeg-fo":
-                turnDegrees(ai, true);
+                turnDegrees(ai);
                 break;
 
             case "wait":
                 wait(ai);
+                break;
+
+            case "shoot":
+                shoot(ai);
                 break;
 
             default:
@@ -143,4 +139,31 @@ public class JsonAutonomous extends Autonomous {
         }
     }
 
+    private void drive(AutoInstruction ai) {
+        
+    }
+
+    private void turnDegrees(AutoInstruction ai) {
+
+    }
+
+    private void wait(AutoInstruction ai) {
+        if (timer.get() >= ai.args.get(0)) {
+            reset();
+        }
+    }
+
+    private void shoot(AutoInstruction ai) {
+
+    }
+
+    private void reset() {
+        navxStart = getAngle();
+        timer.reset();
+        timer.start();
+    }
+
+    private double getAngle() {
+        return gyro.getAngle();
+    }
 }
