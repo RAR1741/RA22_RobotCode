@@ -117,21 +117,6 @@ public class Climber implements Loggable {
         }
     }
 
-    public void setMotorState(MotorStates state){
-        this.currentState = state;
-
-        switch (state) {
-            case STATIC:
-                break;
-            
-            case ACTIVE:
-                break;
-            
-            default:
-                break;
-        }
-    }
-
     /**
      * Updates the current state of the climber.
      *
@@ -154,6 +139,7 @@ public class Climber implements Loggable {
                 break;
             case TRANS_AB:
                 if (advanceStage) {
+                    this.setMotorState(MotorStates.STATIC);
                     this.setClimbingState(ClimbingStates.TOUCH_B);
                 }
                 break;
@@ -165,6 +151,7 @@ public class Climber implements Loggable {
                 break;
             case TRANS_BC:
                 if (advanceStage) {
+                    this.setMotorState(MotorStates.STATIC);
                     this.setClimbingState(ClimbingStates.TOUCH_C);
                 }
                 break;
@@ -192,6 +179,45 @@ public class Climber implements Loggable {
 
     public double getSpeed() {
         return climbingMotor.getSelectedSensorVelocity();
+    }
+
+    public void setMotorState(MotorStates currentState) {
+        this.currentState = currentState;
+    }
+
+    public void setMotors(double value) {
+        if (value != 0) {
+            setMotorState(MotorStates.ACTIVE);
+        }
+        switch (currentState) {
+            case STATIC:
+                setPower(0);
+                break;
+            
+            case ACTIVE:
+                setSpeed(value);
+                break;
+            
+            default:
+                setPower(0);
+                break;
+        }
+    }
+
+    public void checkMotorState() {
+        switch (currentState) {
+            case STATIC:
+                if (Math.abs(gyro.getVelocityY()) < 2 && Math.abs(gyro.getWorldLinearAccelY()) < 0.1) {
+                    setMotorState(MotorStates.ACTIVE);
+                }
+                break;
+            
+            case ACTIVE:
+                break;
+            
+            default:
+                break;
+        }
     }
 
     @Override

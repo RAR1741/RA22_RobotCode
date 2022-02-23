@@ -169,7 +169,7 @@ public class Robot extends TimedRobot {
 
             // TODO: Enable this when we're ready to test the climber
             double climberInput = deadband(operator.getLeftY());
-            climber.setSpeed(climberInput);
+            climber.setMotors(climberInput);
         }
 
         logger.log();
