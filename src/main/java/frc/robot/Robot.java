@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.logging.LoggableCompressor;
 import frc.robot.logging.LoggableController;
+import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.LoggablePowerDistribution;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
     DriveModule rightModule;
 
     Climber climber;
+    LoggableGyro gyro;
 
     LoggableController driver;
     LoggableController operator;
@@ -61,6 +63,7 @@ public class Robot extends TimedRobot {
         logger = new Logger();
         timer = new LoggableTimer();
         logger.addLoggable(timer);
+        gyro = new LoggableGyro();
 
         pdp = new LoggablePowerDistribution(1, ModuleType.kRev);
 
@@ -79,7 +82,7 @@ public class Robot extends TimedRobot {
             // ClimberSensors touchB = new ClimberSensors("TouchB", 2, 3);
             // ClimberSensors touchC = new ClimberSensors("TouchC", 4, 5);
             climber = new Climber(9, 10, climberSolenoidA, climberSolenoidB1, climberSolenoidB2,
-                    climberSolenoidC);// , touchA, touchB, touchC);
+                    climberSolenoidC, gyro);// , touchA, touchB, touchC);
 
             // logger.addLoggable(touchA);
             // logger.addLoggable(touchB);
