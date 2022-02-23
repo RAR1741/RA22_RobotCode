@@ -180,8 +180,24 @@ public class JsonAutonomous extends Autonomous {
         return false;
     }
 
-    private void turnDegrees(AutoInstruction ai) {
+    private boolean rotateDegrees(double leftSpeed, double rightSpeed, double deg) {
+        if(Math.abs(getAngle()-navxStart-deg)<0.5) {
+            return true;
+        } else {
+            drive.drive(leftSpeed, rightSpeed);
+            return false;
+        }
+    }
 
+    public void turnDegrees(AutoInstruction ai) {
+        //ai args:
+            //0: leftPower
+            //1: rightPower
+            //amount: degrees to turn
+        if(rotateDegrees(ai.args.get(0), ai.args.get(1), ai.amount)) {
+            drive.drive(0, 0); // Stop turning
+            reset();
+        }
     }
 
     private void wait(AutoInstruction ai) {
