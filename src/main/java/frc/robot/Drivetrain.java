@@ -31,6 +31,11 @@ public class Drivetrain implements Loggable {
         right.setInverted(true);
     }
 
+    public void update() {
+        this.left.update();
+        this.right.update();
+    }
+
     /**
      * Controls the power of the motors in the drivetrain.
      *
@@ -84,9 +89,6 @@ public class Drivetrain implements Loggable {
      * Shifts gears based on current.
      */
     public void checkGears() {
-        left.updateCurrent();
-        right.updateCurrent();
-
         if (getShifter()) {
             if (left.getAverageCurrent() > SHIFT_CURRENT_LOW
                     || right.getAverageCurrent() > SHIFT_CURRENT_LOW) {

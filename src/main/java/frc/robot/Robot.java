@@ -119,6 +119,8 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         // Robot code goes here
+        drive.update();
+        climber.update();
     }
 
     @Override

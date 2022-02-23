@@ -37,6 +37,9 @@ public class Climber implements Loggable {
     LoggableTimer timer;
     LoggableGyro gyro;
 
+    LoggableFirstOrderFilter leftFilter;
+    LoggableFirstOrderFilter rightFilter;
+
     public Climber(int climbingMotorID, int secondaryClimbingMotorID, Solenoid climberSolenoidA,
             Solenoid climberSolenoidB1, Solenoid climberSolenoidB2, Solenoid climberSolenoidC,
             LoggableGyro gyro) {
@@ -68,6 +71,14 @@ public class Climber implements Loggable {
         secondaryClimbingMotor.follow(climbingMotor);
         this.timer = new LoggableTimer("Climbing/Time");
         this.gyro = gyro;
+
+        this.leftFilter = new LoggableFirstOrderFilter(10, "Climbing/LeftCurrent");
+        this.rightFilter = new LoggableFirstOrderFilter(10, "Climbing/RightCurrent");
+    }
+
+    public void update() {
+        this.leftFilter.update(climbingMotor.getStatorCurrent());
+        this.rightFilter.update(secondaryClimbingMotor.getStatorCurrent());
     }
 
     public void setClimbingState(ClimbingStates climbingState) {

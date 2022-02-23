@@ -46,6 +46,10 @@ public class DriveModule implements Loggable {
         indexCurrent = 0;
     }
 
+    public void update() {
+        updateCurrent();
+    }
+
     public void setEncoder(int encoderPortA, int encoderPortB, boolean reverseDirection) {
         this.encoder = new Encoder(encoderPortA, encoderPortB);
 

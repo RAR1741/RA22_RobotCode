@@ -1,26 +1,41 @@
 package frc.robot;
 
-public class FirstOrderFilter {
+import frc.robot.logging.Loggable;
+
+public class LoggableFirstOrderFilter implements Loggable {
     private double[] previousValues;
     private int index = 0;
     private int range;
+    private String name;
 
-    public FirstOrderFilter(int range) {
+    public LoggableFirstOrderFilter(int range, String name) {
         this.range = range;
+        this.name = name;
         this.previousValues = new double[range];
     }
 
-    public double update(double value) {
+    public void update(double value) {
         this.previousValues[this.index] = this.value;
         this.index = (this.index + 1) % this.range;
-        return value;
     }
 
     public double get() {
         double total = 0.0;
+
         for (int i = 0; i < range; i++) {
             total += this.previousValues[i];
         }
+
         return total / this.range;
+    }
+
+    @Override
+    public void setupLogging(Logger logger) {
+        logger.addAttribute(this.name + "/Average");
+    }
+
+    @Override
+    public void log(Logger logger) {
+        logger.log(this.name + "/Average", get());
     }
 }
