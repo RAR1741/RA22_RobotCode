@@ -140,7 +140,44 @@ public class JsonAutonomous extends Autonomous {
     }
 
     private void drive(AutoInstruction ai) {
+        AutoInstruction.Unit u = ai.unit;
+        //ai args:
+            //0: leftPower
+            //1: rightPower
+        if(u.equals(AutoInstruction.Unit.SECONDS) || u.equals(AutoInstruction.Unit.MILLISECONDS)) {
+            //amount: (milli)seconds to drive
+            if(driveTime(ai.args.get(0), ai.args.get(1), (u.equals(AutoInstruction.Unit.SECONDS) ? ai.amount : ai.amount/1000.0))) {
+                reset();
+            }
+        } else if(u.equals(AutoInstruction.Unit.ENCODER_TICKS) || u.equals(AutoInstruction.Unit.ROTATIONS)) {
+            //amount: rotations/encoder ticks to drive
+            if(driveDistance(ai.args.get(0), ai.args.get(1), (u.equals(AutoInstruction.Unit.ENCODER_TICKS) ? ai.amount : ai.amount * TICKS_PER_ROTATION))) {
+                reset();
+            }
+        } else if(u.equals(AutoInstruction.Unit.FEET) || u.equals(AutoInstruction.Unit.INCHES)) {
+            //amount: feet/inches to drive
+            if(driveDistance(ai.args.get(0), ai.args.get(0), (u.equals(AutoInstruction.Unit.INCHES) ? ai.amount * TICKS_PER_INCH : ai.amount))) {
+                reset();
+            }
+        }
+    }
 
+    private boolean driveDistance(double leftPower, double rightPower, double distance) {
+        if(Math.abs(drive.getEncoder() - start) < distance) {
+            drive.drive(leftPower, rightPower);
+        } else {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean driveTime(double leftPower, double rightPower, double time) {
+        if(timer.get() < time) {
+            drive.drive(leftPower, rightPower);
+        } else {
+            return true;
+        }
+        return false;
     }
 
     private void turnDegrees(AutoInstruction ai) {
@@ -159,6 +196,7 @@ public class JsonAutonomous extends Autonomous {
 
     private void reset() {
         navxStart = getAngle();
+        start = drive.getEncoder();
         timer.reset();
         timer.start();
     }
