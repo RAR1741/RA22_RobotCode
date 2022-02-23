@@ -1,6 +1,7 @@
 package frc.robot;
 
 import frc.robot.logging.Loggable;
+import frc.robot.logging.Logger;
 
 public class LoggableFirstOrderFilter implements Loggable {
     private double[] previousValues;
@@ -15,7 +16,7 @@ public class LoggableFirstOrderFilter implements Loggable {
     }
 
     public void update(double value) {
-        this.previousValues[this.index] = this.value;
+        this.previousValues[this.index] = value;
         this.index = (this.index + 1) % this.range;
     }
 
