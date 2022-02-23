@@ -7,14 +7,15 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.logging.Loggable;
+import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
-import frc.robot.logging.LoggableGyro;
 
 public class Climber implements Loggable {
     enum ClimbingStates {
         RESTING, PRE_STAGE, TOUCH_A, TRANS_AB, TOUCH_B, TRANS_BC, TOUCH_C;
     }
+
     enum MotorStates {
         STATIC, ACTIVE;
     }
@@ -37,7 +38,8 @@ public class Climber implements Loggable {
     LoggableGyro gyro;
 
     public Climber(int climbingMotorID, int secondaryClimbingMotorID, Solenoid climberSolenoidA,
-            Solenoid climberSolenoidB1, Solenoid climberSolenoidB2, Solenoid climberSolenoidC, LoggableGyro gyro) {
+            Solenoid climberSolenoidB1, Solenoid climberSolenoidB2, Solenoid climberSolenoidC,
+            LoggableGyro gyro) {
         // ClimberSensors touchA, ClimberSensors touchB, ClimberSensors touchC) {
 
         // TODO: figure out if the motors are inverted correctly
@@ -193,11 +195,11 @@ public class Climber implements Loggable {
             case STATIC:
                 setPower(0);
                 break;
-            
+
             case ACTIVE:
                 setSpeed(value);
                 break;
-            
+
             default:
                 setPower(0);
                 break;
@@ -207,14 +209,15 @@ public class Climber implements Loggable {
     public void checkMotorState() {
         switch (currentState) {
             case STATIC:
-                if (Math.abs(gyro.getVelocityY()) < 2 && Math.abs(gyro.getWorldLinearAccelY()) < 0.1) {
+                if (Math.abs(gyro.getVelocityY()) < 2
+                        && Math.abs(gyro.getWorldLinearAccelY()) < 0.1) {
                     setMotorState(MotorStates.ACTIVE);
                 }
                 break;
-            
+
             case ACTIVE:
                 break;
-            
+
             default:
                 break;
         }
