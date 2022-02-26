@@ -126,6 +126,17 @@ public class Climber implements Loggable {
         this.leftFilter.update(climbingMotor.getStatorCurrent());
         this.rightFilter.update(secondaryClimbingMotor.getStatorCurrent());
 
+        // Make sure we're not pulling too much current instantly
+        if (climbingMotor.getStatorCurrent() > MAX_INSTANT_CURRENT
+                || secondaryClimbingMotor.getStatorCurrent() > MAX_INSTANT_CURRENT) {
+            setClimbingState(ClimbingStates.ERROR);
+        }
+
+        // Make sure we're not pulling too much current over time
+        if (leftFilter.get() > MAX_AVERAGE_CURRENT || rightFilter.get() > MAX_AVERAGE_CURRENT) {
+            setClimbingState(ClimbingStates.ERROR);
+        }
+
         switch (this.currentStage) {
             // 00 RESTING: Default resting
             case RESTING:
