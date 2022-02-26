@@ -164,6 +164,10 @@ public class Climber implements Loggable {
             // 15 ROTATE_B: Rotate to B bar (photogate)
             case ROTATE_B:
                 // TODO: set motor power here
+                if (climbingMotor.getStatorCurrent() > NEXT_STATE_CURRENT
+                        || secondaryClimbingMotor.getStatorCurrent() > NEXT_STATE_CURRENT) {
+                    setClimbingState(ClimbingStates.TOUCH_AB);
+                }
                 break;
 
             // 20 TOUCH_AB: Pin B (high current/sensor)
@@ -196,6 +200,11 @@ public class Climber implements Loggable {
             // 40 ROTATE_C: Rotate to C bar (gyro/accel)
             case ROTATE_C:
                 // TODO: set motor target here
+
+                if (climbingMotor.getStatorCurrent() > NEXT_STATE_CURRENT
+                        || secondaryClimbingMotor.getStatorCurrent() > NEXT_STATE_CURRENT) {
+                    setClimbingState(ClimbingStates.TOUCH_BC);
+                }
                 break;
 
             // 50 TOUCH_BC: Pin C (high current/sensor)
