@@ -7,13 +7,16 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import com.kauailabs.navx.frc.AHRS;
+import frc.robot.logging.Loggable;
 import frc.robot.logging.LoggableTimer;
+import frc.robot.logging.Logger;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JsonAutonomous extends Autonomous {
+public class JsonAutonomous extends Autonomous implements Loggable {
 
     private static final double TICKS_PER_ROTATION = 1; //TODO: Get values
     private static final double TICKS_PER_INCH = 1;
@@ -219,5 +222,15 @@ public class JsonAutonomous extends Autonomous {
 
     private double getAngle() {
         return gyro.getAngle();
+    }
+
+    @Override
+    public void setupLogging(Logger logger) {
+        logger.addAttribute("Autonomous/step");
+    }
+
+    @Override
+    public void log(Logger logger) {
+        logger.log("Autonomous/step", this.step);
     }
 }
