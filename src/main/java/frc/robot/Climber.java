@@ -14,9 +14,26 @@ import frc.robot.logging.Logger;
 
 public class Climber implements Loggable {
     enum ClimbingStates {
-        RESTING(0, "Resting"), PRE_STAGE(10, "Pre-stage"), TOUCH_A(20, "Latched A"), TRANS_AB(25,
-                "Latched A and B"), TOUCH_B(30,
-                        "Latched B"), TRANS_BC(35, "Latched B and C"), TOUCH_C(40, "Latched C");
+        RESTING(0, "Default resting"), PRE_STAGE(5,
+                "Rotate climber and set pre-stage pin position (button)"), TOUCH_A(10,
+                        "Pin A (button/sensor)"), ROTATE_B(15, "Rotate to B bar (photo)"), TOUCH_AB(
+                                20, "Pin B (high current/sensor)"), ROTATE_AB_DOWN(25,
+                                        "Rotate down to plumb (photo)"), RELEASE_A(30,
+                                                "Unpin A (gyro/accel)"), ROTATE_B_DOWN(35,
+                                                        "Wait for swinging (photo)"), ROTATE_C(40,
+                                                                "Rotate to C bar (gyro/accel)"), TOUCH_BC(
+                                                                        50,
+                                                                        "Pin C (high current/sensor)"), ROTATE_BC_DOWN(
+                                                                                55,
+                                                                                "Rotate down to plumb (photo)"), RELEASE_B(
+                                                                                        60,
+                                                                                        "Unpin B (gyro/accel)"), ROTATE_C_DOWN(
+                                                                                                65,
+                                                                                                "Wait for swinging ()"), DONE(
+                                                                                                        70,
+                                                                                                        "Climbing is done"), ERROR(
+                                                                                                                100,
+                                                                                                                "Error");
 
         public int id;
         public String name;
@@ -26,6 +43,22 @@ public class Climber implements Loggable {
             this.name = name;
         }
     }
+
+    // 00 RESTING: Default resting
+    // 05 PRE_STAGE: Rotate climber and set pre-stage pin position (button)
+    // 10 TOUCH_A: Pin A (button/sensor)
+    // 15 ROTATE_B: Rotate to B bar (photo)
+    // 20 TOUCH_AB: Pin B (high current/sensor)
+    // 25 ROTATE_AB_DOWN: Rotate down to plumb (photo)
+    // 30 RELEASE_A: Unpin A (gyro/accel)
+    // 35 ROTATE_B_DOWN: Wait for swinging (photo)
+    // 40 ROTATE_C: Rotate to C bar (gyro/accel)
+    // 50 TOUCH_BC: Pin C (high current/sensor)
+    // 55 ROTATE_BC_DOWN: Rotate down to plumb (photo)
+    // 60 RELEASE_B: Unpin B (gyro/accel)
+    // 65 ROTATE_C_DOWN: Wait for swinging ()
+    // 70 DONE: Climbing is done
+    // 100 ERROR: Error
 
     enum MotorStates {
         STATIC, ACTIVE;
@@ -105,7 +138,7 @@ public class Climber implements Loggable {
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
                 break;
-            case TRANS_AB:
+            case TOUCH_AB:
                 this.timer.reset();
                 climberSolenoidA.set(false);
                 climberSolenoidB1.set(false);
@@ -158,10 +191,10 @@ public class Climber implements Loggable {
             case TOUCH_A:
                 // Check if B is touching yet.
                 if (advanceStage) {
-                    this.setClimbingState(ClimbingStates.TRANS_AB);
+                    this.setClimbingState(ClimbingStates.TOUCH_AB);
                 }
                 break;
-            case TRANS_AB:
+            case TOUCH_AB:
                 if (advanceStage) {
                     this.setMotorState(MotorStates.STATIC);
                     this.setClimbingState(ClimbingStates.TOUCH_B);
