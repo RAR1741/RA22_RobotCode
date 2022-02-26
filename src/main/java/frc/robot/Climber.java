@@ -70,11 +70,11 @@ public class Climber implements Loggable {
 
         secondaryClimbingMotor.setInverted(InvertType.InvertMotorOutput);
         secondaryClimbingMotor.follow(climbingMotor);
-        this.timer = new LoggableTimer("Climbing/Time");
+        this.timer = new LoggableTimer("Climber/Time");
         this.gyro = gyro;
 
-        this.leftFilter = new LoggableFirstOrderFilter(10, "Climbing/LeftCurrent");
-        this.rightFilter = new LoggableFirstOrderFilter(10, "Climbing/RightCurrent");
+        this.leftFilter = new LoggableFirstOrderFilter(10, "Climber/Left/Current");
+        this.rightFilter = new LoggableFirstOrderFilter(10, "Climber/Right/Current");
     }
 
     public void update() {
@@ -243,26 +243,25 @@ public class Climber implements Loggable {
     @Override
     public void setupLogging(Logger logger) {
         this.timer.setupLogging(logger);
-        logger.addAttribute("LeftClimberCurrent");
-        logger.addAttribute("RightClimberCurrent");
 
-        logger.addAttribute("LeftClimberFilter");
-        logger.addAttribute("RightClimberFilter");
+        logger.addLoggable(this.leftFilter);
+        logger.addLoggable(this.rightFilter);
+        this.leftFilter.setupLogging(logger);
+        this.rightFilter.setupLogging(logger);
 
-        logger.addAttribute("ClimberSpeed");
+        logger.addAttribute("Climber/Left/Current");
+        logger.addAttribute("Climber/Right/Current");
+
+        logger.addAttribute("Climber/Speed");
     }
 
     @Override
     public void log(Logger logger) {
         this.timer.log(logger);
-        logger.log("LeftClimberCurrent", getLeftCurrent());
-        logger.log("RightClimberCurrent", getRightCurrent());
-        logger.log("RightClimberMotorCurrent", getRightCurrent());
+        logger.log("Climber/Left/Current", getLeftCurrent());
+        logger.log("Climber/Right/Current", getRightCurrent());
 
-        logger.log("LeftClimberFilter", leftFilter.get());
-        logger.log("RightClimberFilter", rightFilter.get());
-
-        logger.log("ClimberSpeed", getSpeed());
+        logger.log("Climber/Speed", getSpeed());
     }
 
     public boolean getClimberSolenoidAState() {
