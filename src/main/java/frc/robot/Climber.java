@@ -194,7 +194,7 @@ public class Climber implements Loggable {
                 break;
 
             // 40 ROTATE_C: Rotate to C bar (gyro/accel)
-            case ROTATE_B_DOWN:
+            case ROTATE_C:
                 // TODO: set motor target here
                 break;
 
@@ -268,46 +268,46 @@ public class Climber implements Loggable {
      *
      * @return true when current state is RESTING
      */
-    public void checkClimbingState(boolean advanceStage) {
-        // Check whether or not the climber is done climbing during the current stage.
-        switch (currentStage) {
-            case PRE_STAGE:
-                // Check if A is touching yet.
-                if (advanceStage) { // touch.getA()
-                    this.setClimbingState(ClimbingStates.TOUCH_A);
-                }
-                break;
-            case TOUCH_A:
-                // Check if B is touching yet.
-                if (advanceStage) { // touch.getB()
-                    this.setClimbingState(ClimbingStates.TOUCH_AB);
-                }
-                break;
-            case TOUCH_AB:
-                if (advanceStage) {
-                    this.setMotorState(MotorStates.STATIC);
-                    this.setClimbingState(ClimbingStates.TOUCH_B);
-                }
-                break;
-            case TOUCH_B:
-                // Check if C is touching yet.
-                if (advanceStage) { // touch.getC()
-                    this.setClimbingState(ClimbingStates.TOUCH_BC);
-                }
-                break;
-            case TOUCH_BC:
-                if (advanceStage) {
-                    this.setMotorState(MotorStates.STATIC);
-                    this.setClimbingState(ClimbingStates.TOUCH_C);
-                }
-                break;
-            case TOUCH_C:
-                // Success! \o/
-                break;
-            default:
-                break;
-        }
-    }
+    // public void checkClimbingState(boolean advanceStage) {
+    // // Check whether or not the climber is done climbing during the current stage.
+    // switch (currentStage) {
+    // case PRE_STAGE:
+    // // Check if A is touching yet.
+    // if (advanceStage) { // touch.getA()
+    // this.setClimbingState(ClimbingStates.TOUCH_A);
+    // }
+    // break;
+    // case TOUCH_A:
+    // // Check if B is touching yet.
+    // if (advanceStage) { // touch.getB()
+    // this.setClimbingState(ClimbingStates.TOUCH_AB);
+    // }
+    // break;
+    // case TOUCH_AB:
+    // if (advanceStage) {
+    // this.setMotorState(MotorStates.STATIC);
+    // this.setClimbingState(ClimbingStates.TOUCH_B);
+    // }
+    // break;
+    // case TOUCH_B:
+    // // Check if C is touching yet.
+    // if (advanceStage) { // touch.getC()
+    // this.setClimbingState(ClimbingStates.TOUCH_BC);
+    // }
+    // break;
+    // case TOUCH_BC:
+    // if (advanceStage) {
+    // this.setMotorState(MotorStates.STATIC);
+    // this.setClimbingState(ClimbingStates.TOUCH_C);
+    // }
+    // break;
+    // case TOUCH_C:
+    // // Success! \o/
+    // break;
+    // default:
+    // break;
+    // }
+    // }
 
     public void setPrestage(boolean stage) {
         if (stage) {
