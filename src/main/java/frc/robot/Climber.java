@@ -72,9 +72,7 @@ public class Climber implements Loggable {
     Solenoid climberSolenoidB2;
     Solenoid climberSolenoidC;
 
-    ClimberSensors touchA;
-    ClimberSensors touchB;
-    ClimberSensors touchC;
+    ClimberSensors touch;
 
     MotorStates currentState = MotorStates.STATIC;
     ClimbingStates currentStage = ClimbingStates.RESTING;
@@ -87,7 +85,7 @@ public class Climber implements Loggable {
     public Climber(int climbingMotorID, int secondaryClimbingMotorID, Solenoid climberSolenoidA,
             Solenoid climberSolenoidB1, Solenoid climberSolenoidB2, Solenoid climberSolenoidC,
             LoggableGyro gyro) {
-        // ClimberSensors touchA, ClimberSensors touchB, ClimberSensors touchC) {
+        // ClimberSensors touch) {
 
         // TODO: figure out if the motors are inverted correctly
         this.climbingMotor = new TalonFX(climbingMotorID);
@@ -98,9 +96,7 @@ public class Climber implements Loggable {
         this.climberSolenoidB2 = climberSolenoidB2;
         this.climberSolenoidC = climberSolenoidC;
 
-        // this.touchA = touchA;
-        // this.touchB = touchB;
-        // this.touchC = touchC;
+        // this.touch = touch;
 
         this.climbingMotor.setNeutralMode(NeutralMode.Coast);
         this.secondaryClimbingMotor.setNeutralMode(NeutralMode.Coast);
@@ -128,7 +124,24 @@ public class Climber implements Loggable {
     public void setClimbingState(ClimbingStates climbingState) {
         this.currentStage = climbingState;
 
+        // 00 RESTING: Default resting
+
+        // 10 TOUCH_A: Pin A (button/sensor)
+        // 15 ROTATE_B: Rotate to B bar (photo)
+        // 20 TOUCH_AB: Pin B (high current/sensor)
+        // 25 ROTATE_AB_DOWN: Rotate down to plumb (photo)
+        // 30 RELEASE_A: Unpin A (gyro/accel)
+        // 35 ROTATE_B_DOWN: Wait for swinging (photo)
+        // 40 ROTATE_C: Rotate to C bar (gyro/accel)
+        // 50 TOUCH_BC: Pin C (high current/sensor)
+        // 55 ROTATE_BC_DOWN: Rotate down to plumb (photo)
+        // 60 RELEASE_B: Unpin B (gyro/accel)
+        // 65 ROTATE_C_DOWN: Wait for swinging ()
+        // 70 DONE: Climbing is done
+        // 100 ERROR: Error
+
         switch (climbingState) {
+            
             case PRE_STAGE:
                 this.timer.start();
                 break;
@@ -151,7 +164,7 @@ public class Climber implements Loggable {
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
                 break;
-            case TRANS_BC:
+            case TOUCH_BC:
                 climberSolenoidA.set(true);
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
@@ -184,13 +197,13 @@ public class Climber implements Loggable {
         switch (currentStage) {
             case PRE_STAGE:
                 // Check if A is touching yet.
-                if (advanceStage) {
+                if (advanceStage) { // touch.getA()
                     this.setClimbingState(ClimbingStates.TOUCH_A);
                 }
                 break;
             case TOUCH_A:
                 // Check if B is touching yet.
-                if (advanceStage) {
+                if (advanceStage) { // touch.getB()
                     this.setClimbingState(ClimbingStates.TOUCH_AB);
                 }
                 break;
@@ -202,11 +215,11 @@ public class Climber implements Loggable {
                 break;
             case TOUCH_B:
                 // Check if C is touching yet.
-                if (advanceStage) {
-                    this.setClimbingState(ClimbingStates.TRANS_BC);
+                if (advanceStage) { // touch.getC()
+                    this.setClimbingState(ClimbingStates.TOUCH_BC);
                 }
                 break;
-            case TRANS_BC:
+            case TOUCH_BC:
                 if (advanceStage) {
                     this.setMotorState(MotorStates.STATIC);
                     this.setClimbingState(ClimbingStates.TOUCH_C);
