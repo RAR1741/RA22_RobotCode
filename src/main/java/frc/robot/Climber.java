@@ -239,6 +239,10 @@ public class Climber implements Loggable {
         this.timer.setupLogging(logger);
         logger.addAttribute("LeftClimberCurrent");
         logger.addAttribute("RightClimberCurrent");
+
+        logger.addAttribute("LeftClimberFilter");
+        logger.addAttribute("RightClimberFilter");
+
         logger.addAttribute("ClimberSpeed");
     }
 
@@ -247,6 +251,10 @@ public class Climber implements Loggable {
         this.timer.log(logger);
         logger.log("LeftClimberCurrent", getLeftCurrent());
         logger.log("RightClimberMotorCurrent", getRightCurrent());
+
+        logger.log("LeftClimberFilter", leftFilter.get());
+        logger.log("RightClimberFilter", rightFilter.get());
+
         logger.log("ClimberSpeed", getSpeed());
     }
 
