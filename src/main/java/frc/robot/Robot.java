@@ -163,10 +163,16 @@ public class Robot extends TimedRobot {
         }
 
         if (this.climberEnabled) {
-            climber.checkClimbingState(operator.getAButtonPressed());
+            if (operator.getAButtonPressed()) {
+                climber.setClimbingState(climber.getNextClimbingState());
+            }
+            // climber.checkClimbingState(operator.getAButtonPressed());
+
             // TODO: Create a way for motors to go 'limp' when needed, reading loggableGyro
-            if(operator.getRightBumperPressed()){
-                climber.setMotorState(climber.getMotorState()==MotorStates.ACTIVE?MotorStates.STATIC:MotorStates.ACTIVE);
+            if (operator.getRightBumperPressed()) {
+                climber.setMotorState(
+                        climber.getMotorState() == MotorStates.ACTIVE ? MotorStates.STATIC
+                                : MotorStates.ACTIVE);
             }
             // TODO: Enable this when we're ready to test the climber
             double climberInput = deadband(operator.getLeftY());

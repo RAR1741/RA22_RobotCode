@@ -172,7 +172,6 @@ public class Climber implements Loggable {
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
-                // TODO: set motor target here
                 break;
 
             // 25 ROTATE_AB_DOWN: Rotate down to plumb (photogate)
@@ -234,10 +233,12 @@ public class Climber implements Loggable {
             // 100 ERROR: Error
             case ERROR:
                 System.out.println("Climber ERROR: something has gone wrong");
+                disableClimber();
                 break;
 
             default:
                 System.out.println("Climber: Invalid state");
+                disableClimber();
                 break;
         }
     }
@@ -260,9 +261,6 @@ public class Climber implements Loggable {
         climberSolenoidB1.set(false);
         climberSolenoidB2.set(false);
         climberSolenoidC.set(false);
-
-        // Set the current stage to the default
-        setClimbingState(ClimbingStates.ERROR);
     }
 
     /**
