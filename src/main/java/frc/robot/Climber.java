@@ -14,7 +14,17 @@ import frc.robot.logging.Logger;
 
 public class Climber implements Loggable {
     enum ClimbingStates {
-        RESTING, PRE_STAGE, TOUCH_A, TRANS_AB, TOUCH_B, TRANS_BC, TOUCH_C;
+        RESTING(0, "Resting"), PRE_STAGE(10, "Pre-stage"), TOUCH_A(20, "Latched A"), TRANS_AB(25,
+                "Latched A and B"), TOUCH_B(30,
+                        "Latched B"), TRANS_BC(35, "Latched B and C"), TOUCH_C(40, "Latched C");
+
+        public int id;
+        public String name;
+
+        ClimbingStates(int id, String name) {
+            this.id = id;
+            this.name = name;
+        }
     }
 
     enum MotorStates {
