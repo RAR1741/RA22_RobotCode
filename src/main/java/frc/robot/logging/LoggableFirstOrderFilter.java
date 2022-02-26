@@ -1,7 +1,4 @@
-package frc.robot;
-
-import frc.robot.logging.Loggable;
-import frc.robot.logging.Logger;
+package frc.robot.logging;
 
 public class LoggableFirstOrderFilter implements Loggable {
     private double[] previousValues;

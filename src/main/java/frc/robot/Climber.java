@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.logging.Loggable;
+import frc.robot.logging.LoggableFirstOrderFilter;
 import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
@@ -244,6 +245,10 @@ public class Climber implements Loggable {
         this.timer.setupLogging(logger);
         logger.addAttribute("LeftClimberCurrent");
         logger.addAttribute("RightClimberCurrent");
+
+        logger.addAttribute("LeftClimberFilter");
+        logger.addAttribute("RightClimberFilter");
+
         logger.addAttribute("ClimberSpeed");
     }
 
@@ -252,6 +257,11 @@ public class Climber implements Loggable {
         this.timer.log(logger);
         logger.log("LeftClimberCurrent", getLeftCurrent());
         logger.log("RightClimberCurrent", getRightCurrent());
+        logger.log("RightClimberMotorCurrent", getRightCurrent());
+
+        logger.log("LeftClimberFilter", leftFilter.get());
+        logger.log("RightClimberFilter", rightFilter.get());
+
         logger.log("ClimberSpeed", getSpeed());
     }
 
