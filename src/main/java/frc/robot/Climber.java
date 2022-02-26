@@ -246,6 +246,10 @@ public class Climber implements Loggable {
         this.currentStage = climbingState;
     }
 
+    public ClimbingStates getNextClimbingState() {
+        return ClimbingStates.values()[this.currentStage.ordinal() + 1];
+    }
+
     public void disableClimber() {
         // Stop the motors
         this.climbingMotor.set(ControlMode.PercentOutput, 0);
