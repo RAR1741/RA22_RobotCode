@@ -14,9 +14,28 @@ import frc.robot.logging.Logger;
 
 public class Climber implements Loggable {
     enum ClimbingStates {
-        RESTING(0, "Resting"), PRE_STAGE(10, "Pre-stage"), TOUCH_A(20, "Latched A"), TRANS_AB(25,
-                "Latched A and B"), TOUCH_B(30,
-                        "Latched B"), TRANS_BC(35, "Latched B and C"), TOUCH_C(40, "Latched C");
+        RESTING(0, "Default resting"), PRE_STAGE(5,
+                "Rotate climber and set pre-stage pin position (button)"), TOUCH_A(10,
+                        "Pin A (button/sensor)"), ROTATE_B(15,
+                                "Rotate to B bar (photogate)"), TOUCH_AB(20,
+                                        "Pin B (high current/sensor)"), ROTATE_AB_DOWN(25,
+                                                "Rotate down to plumb (photogate)"), RELEASE_A(30,
+                                                        "Unpin A (gyro/accel)"), ROTATE_B_DOWN(35,
+                                                                "Wait for swinging (photogate)"), ROTATE_C(
+                                                                        40,
+                                                                        "Rotate to C bar (gyro/accel)"), TOUCH_BC(
+                                                                                50,
+                                                                                "Pin C (high current/sensor)"), ROTATE_BC_DOWN(
+                                                                                        55,
+                                                                                        "Rotate down to plumb (photogate)"), RELEASE_B(
+                                                                                                60,
+                                                                                                "Unpin B (gyro/accel)"), ROTATE_C_DOWN(
+                                                                                                        65,
+                                                                                                        "Wait for swinging ()"), DONE(
+                                                                                                                70,
+                                                                                                                "Climbing is done"), ERROR(
+                                                                                                                        100,
+                                                                                                                        "Error");
 
         public int id;
         public String name;
@@ -27,9 +46,29 @@ public class Climber implements Loggable {
         }
     }
 
+    // 00 RESTING: Default resting
+    // 05 PRE_STAGE: Rotate climber and set pre-stage pin position (button)
+    // 10 TOUCH_A: Pin A (button/sensor)
+    // 15 ROTATE_B: Rotate to B bar (photogate)
+    // 20 TOUCH_AB: Pin B (high current/sensor)
+    // 25 ROTATE_AB_DOWN: Rotate down to plumb (photogate)
+    // 30 RELEASE_A: Unpin A (gyro/accel)
+    // 35 ROTATE_B_DOWN: Wait for swinging (photogate)
+    // 40 ROTATE_C: Rotate to C bar (gyro/accel)
+    // 50 TOUCH_BC: Pin C (high current/sensor)
+    // 55 ROTATE_BC_DOWN: Rotate down to plumb (photogate)
+    // 60 RELEASE_B: Unpin B (gyro/accel)
+    // 65 ROTATE_C_DOWN: Wait for swinging ()
+    // 70 DONE: Climbing is done
+    // 100 ERROR: Error
+
     enum MotorStates {
         STATIC, ACTIVE;
     }
+
+    public static double MAX_INSTANT_CURRENT = 70.0;
+    public static double MAX_AVERAGE_CURRENT = 50.0;
+    public static double NEXT_STATE_CURRENT = 50.0;
 
     TalonFX climbingMotor;
     TalonFX secondaryClimbingMotor;
@@ -86,55 +125,151 @@ public class Climber implements Loggable {
     public void update() {
         this.leftFilter.update(climbingMotor.getStatorCurrent());
         this.rightFilter.update(secondaryClimbingMotor.getStatorCurrent());
-    }
 
-    public void setClimbingState(ClimbingStates climbingState) {
-        this.currentStage = climbingState;
+        // Make sure we're not pulling too much current instantly
+        if (climbingMotor.getStatorCurrent() > MAX_INSTANT_CURRENT
+                || secondaryClimbingMotor.getStatorCurrent() > MAX_INSTANT_CURRENT) {
+            setClimbingState(ClimbingStates.ERROR);
+        }
 
-        switch (climbingState) {
+        // Make sure we're not pulling too much current over time
+        if (leftFilter.get() > MAX_AVERAGE_CURRENT || rightFilter.get() > MAX_AVERAGE_CURRENT) {
+            setClimbingState(ClimbingStates.ERROR);
+        }
+
+        switch (this.currentStage) {
+            // 00 RESTING: Default resting
+            case RESTING:
+                break;
+
+            // 05 PRE_STAGE: Rotate climber and set pre-stage pin position (button)
             case PRE_STAGE:
                 this.timer.start();
+
+                climberSolenoidA.set(false);
+                climberSolenoidB1.set(false);
+                climberSolenoidB2.set(false);
+                climberSolenoidC.set(false);
+                // TODO: set motor target here
                 break;
+
+            // 10 TOUCH_A: Pin A (button/sensor)
             case TOUCH_A:
                 climberSolenoidA.set(false);
                 climberSolenoidB1.set(true);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
                 break;
-            case TRANS_AB:
-                this.timer.reset();
+
+            // 15 ROTATE_B: Rotate to B bar (photogate)
+            case ROTATE_B:
+                // TODO: set motor power here
+                if (climbingMotor.getStatorCurrent() > NEXT_STATE_CURRENT
+                        || secondaryClimbingMotor.getStatorCurrent() > NEXT_STATE_CURRENT) {
+                    setClimbingState(ClimbingStates.TOUCH_AB);
+                }
+                break;
+
+            // 20 TOUCH_AB: Pin B (high current/sensor)
+            case TOUCH_AB:
                 climberSolenoidA.set(false);
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
                 break;
-            case TOUCH_B:
+
+            // 25 ROTATE_AB_DOWN: Rotate down to plumb (photogate)
+            case ROTATE_AB_DOWN:
+                // TODO: set motor target here
+                break;
+
+            // 30 RELEASE_A: Unpin A (gyro/accel)
+            case RELEASE_A:
                 climberSolenoidA.set(true);
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
+                // TODO: set motor target here
                 break;
-            case TRANS_BC:
+
+            // 35 ROTATE_B_DOWN: Wait for swinging (photogate)
+            case ROTATE_B_DOWN:
+                // TODO: set motor target here
+                break;
+
+            // 40 ROTATE_C: Rotate to C bar (gyro/accel)
+            case ROTATE_C:
+                // TODO: set motor target here
+
+                if (climbingMotor.getStatorCurrent() > NEXT_STATE_CURRENT
+                        || secondaryClimbingMotor.getStatorCurrent() > NEXT_STATE_CURRENT) {
+                    setClimbingState(ClimbingStates.TOUCH_BC);
+                }
+                break;
+
+            // 50 TOUCH_BC: Pin C (high current/sensor)
+            case TOUCH_BC:
                 climberSolenoidA.set(true);
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(false);
+                // TODO: set motor target here
                 break;
-            case TOUCH_C:
+
+            // 55 ROTATE_BC_DOWN: Rotate down to plumb (photogate)
+            case ROTATE_BC_DOWN:
+                // TODO: set motor target here
+                break;
+
+            // 60 RELEASE_B: Unpin B (gyro/accel)
+            case RELEASE_B:
                 climberSolenoidA.set(true);
                 climberSolenoidB1.set(true);
                 climberSolenoidB2.set(true);
                 climberSolenoidC.set(false);
                 break;
-            case RESTING:
-                climberSolenoidA.set(false);
-                climberSolenoidB1.set(false);
-                climberSolenoidB2.set(false);
-                climberSolenoidC.set(false);
+
+            // 65 ROTATE_C_DOWN: Wait for swinging ()
+            case ROTATE_C_DOWN:
+                // TODO: set motor target here
                 break;
+
+            // 70 DONE: Climbing is done
+            case DONE:
+                // Success! \o/
+                break;
+
+            // 100 ERROR: Error
+            case ERROR:
+                System.out.println("Climber ERROR: something has gone wrong");
+                disableClimber();
+                break;
+
             default:
+                System.out.println("Climber: Invalid state");
+                disableClimber();
                 break;
         }
+    }
+
+    public void setClimbingState(ClimbingStates climbingState) {
+        this.currentStage = climbingState;
+    }
+
+    public ClimbingStates getNextClimbingState() {
+        return ClimbingStates.values()[this.currentStage.ordinal() + 1];
+    }
+
+    public void disableClimber() {
+        // Stop the motors
+        this.climbingMotor.set(ControlMode.PercentOutput, 0);
+        this.secondaryClimbingMotor.set(ControlMode.PercentOutput, 0);
+
+        // Set the solenoids to their default extended positions
+        climberSolenoidA.set(false);
+        climberSolenoidB1.set(false);
+        climberSolenoidB2.set(false);
+        climberSolenoidC.set(false);
     }
 
     /**
@@ -142,46 +277,46 @@ public class Climber implements Loggable {
      *
      * @return true when current state is RESTING
      */
-    public void checkClimbingState(boolean advanceStage) {
-        // Check whether or not the climber is done climbing during the current stage.
-        switch (currentStage) {
-            case PRE_STAGE:
-                // Check if A is touching yet.
-                if (advanceStage) { //touch.getA()
-                    this.setClimbingState(ClimbingStates.TOUCH_A);
-                }
-                break;
-            case TOUCH_A:
-                // Check if B is touching yet.
-                if (advanceStage) { //touch.getB()
-                    this.setClimbingState(ClimbingStates.TRANS_AB);
-                }
-                break;
-            case TRANS_AB:
-                if (advanceStage) {
-                    this.setMotorState(MotorStates.STATIC);
-                    this.setClimbingState(ClimbingStates.TOUCH_B);
-                }
-                break;
-            case TOUCH_B:
-                // Check if C is touching yet.
-                if (advanceStage) { //touch.getC()
-                    this.setClimbingState(ClimbingStates.TRANS_BC);
-                }
-                break;
-            case TRANS_BC:
-                if (advanceStage) {
-                    this.setMotorState(MotorStates.STATIC);
-                    this.setClimbingState(ClimbingStates.TOUCH_C);
-                }
-                break;
-            case TOUCH_C:
-                // Success! \o/
-                break;
-            default:
-                break;
-        }
-    }
+    // public void checkClimbingState(boolean advanceStage) {
+    // // Check whether or not the climber is done climbing during the current stage.
+    // switch (currentStage) {
+    // case PRE_STAGE:
+    // // Check if A is touching yet.
+    // if (advanceStage) { // touch.getA()
+    // this.setClimbingState(ClimbingStates.TOUCH_A);
+    // }
+    // break;
+    // case TOUCH_A:
+    // // Check if B is touching yet.
+    // if (advanceStage) { // touch.getB()
+    // this.setClimbingState(ClimbingStates.TOUCH_AB);
+    // }
+    // break;
+    // case TOUCH_AB:
+    // if (advanceStage) {
+    // this.setMotorState(MotorStates.STATIC);
+    // this.setClimbingState(ClimbingStates.TOUCH_B);
+    // }
+    // break;
+    // case TOUCH_B:
+    // // Check if C is touching yet.
+    // if (advanceStage) { // touch.getC()
+    // this.setClimbingState(ClimbingStates.TOUCH_BC);
+    // }
+    // break;
+    // case TOUCH_BC:
+    // if (advanceStage) {
+    // this.setMotorState(MotorStates.STATIC);
+    // this.setClimbingState(ClimbingStates.TOUCH_C);
+    // }
+    // break;
+    // case TOUCH_C:
+    // // Success! \o/
+    // break;
+    // default:
+    // break;
+    // }
+    // }
 
     public void setPrestage(boolean stage) {
         if (stage) {
