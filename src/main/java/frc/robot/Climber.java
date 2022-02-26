@@ -198,7 +198,12 @@ public class Climber implements Loggable {
         this.currentState = currentState;
     }
 
+    public MotorStates getMotorState() {
+        return this.currentState;
+    }
+
     public void setMotors(double value) {
+        checkMotorState();
         if (value != 0) {
             setMotorState(MotorStates.ACTIVE);
         }
@@ -246,7 +251,7 @@ public class Climber implements Loggable {
     public void log(Logger logger) {
         this.timer.log(logger);
         logger.log("LeftClimberCurrent", getLeftCurrent());
-        logger.log("RightClimberMotorCurrent", getRightCurrent());
+        logger.log("RightClimberCurrent", getRightCurrent());
         logger.log("ClimberSpeed", getSpeed());
     }
 

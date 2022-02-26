@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.Climber.MotorStates;
 import frc.robot.logging.LoggableCompressor;
 import frc.robot.logging.LoggableController;
 import frc.robot.logging.LoggableGyro;
@@ -168,7 +169,9 @@ public class Robot extends TimedRobot {
         if (this.climberEnabled) {
             climber.checkClimbingState(operator.getAButtonPressed());
             // TODO: Create a way for motors to go 'limp' when needed, reading loggableGyro
-
+            if(operator.getRightBumperPressed()){
+                climber.setMotorState(climber.getMotorState()==MotorStates.ACTIVE?MotorStates.STATIC:MotorStates.ACTIVE);
+            }
             // TODO: Enable this when we're ready to test the climber
             double climberInput = deadband(operator.getLeftY());
             climber.setMotors(climberInput);
