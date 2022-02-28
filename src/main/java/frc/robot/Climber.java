@@ -69,6 +69,7 @@ public class Climber implements Loggable {
     public static double MAX_INSTANT_CURRENT = 70.0;
     public static double MAX_AVERAGE_CURRENT = 50.0;
     public static double NEXT_STATE_CURRENT = 50.0;
+    public static int FILTER_FRAME_RANGE = 10;
 
     TalonFX climbingMotor;
     TalonFX secondaryClimbingMotor;
@@ -80,8 +81,8 @@ public class Climber implements Loggable {
 
     ClimberSensors touch;
 
-    MotorStates currentState = MotorStates.STATIC;
-    ClimbingStates currentStage = ClimbingStates.RESTING;
+    MotorStates currentMotorState = MotorStates.STATIC;
+    ClimbingStates currentClimberState = ClimbingStates.RESTING;
     LoggableTimer timer;
     LoggableGyro gyro;
 
@@ -93,7 +94,6 @@ public class Climber implements Loggable {
             LoggableGyro gyro) {
         // ClimberSensors touch) {
 
-        // TODO: figure out if the motors are inverted correctly
         this.climbingMotor = new TalonFX(climbingMotorID);
         this.secondaryClimbingMotor = new TalonFX(secondaryClimbingMotorID);
 
@@ -115,11 +115,13 @@ public class Climber implements Loggable {
 
         secondaryClimbingMotor.setInverted(InvertType.InvertMotorOutput);
         secondaryClimbingMotor.follow(climbingMotor);
+
         this.timer = new LoggableTimer("Climber/Time");
         this.gyro = gyro;
 
-        this.leftFilter = new LoggableFirstOrderFilter(10, "Climber/Left/Current");
-        this.rightFilter = new LoggableFirstOrderFilter(10, "Climber/Right/Current");
+        this.leftFilter = new LoggableFirstOrderFilter(FILTER_FRAME_RANGE, "Climber/Left/Current");
+        this.rightFilter =
+                new LoggableFirstOrderFilter(FILTER_FRAME_RANGE, "Climber/Right/Current");
     }
 
     public void update() {
@@ -137,7 +139,7 @@ public class Climber implements Loggable {
             setClimbingState(ClimbingStates.ERROR);
         }
 
-        switch (this.currentStage) {
+        switch (this.currentClimberState) {
             // 00 RESTING: Default resting
             case RESTING:
                 break;
@@ -253,11 +255,11 @@ public class Climber implements Loggable {
     }
 
     public void setClimbingState(ClimbingStates climbingState) {
-        this.currentStage = climbingState;
+        this.currentClimberState = climbingState;
     }
 
     public ClimbingStates getNextClimbingState() {
-        return ClimbingStates.values()[this.currentStage.ordinal() + 1];
+        return ClimbingStates.values()[this.currentClimberState.ordinal() + 1];
     }
 
     public void disableClimber() {
@@ -337,11 +339,11 @@ public class Climber implements Loggable {
     }
 
     public void setMotorState(MotorStates currentState) {
-        this.currentState = currentState;
+        this.currentMotorState = currentState;
     }
 
     public MotorStates getMotorState() {
-        return this.currentState;
+        return this.currentMotorState;
     }
 
     public void setMotors(double value) {
@@ -349,7 +351,7 @@ public class Climber implements Loggable {
         if (value != 0) {
             setMotorState(MotorStates.ACTIVE);
         }
-        switch (currentState) {
+        switch (currentMotorState) {
             case STATIC:
                 setPower(0);
                 break;
@@ -365,7 +367,7 @@ public class Climber implements Loggable {
     }
 
     public void checkMotorState() {
-        switch (currentState) {
+        switch (currentMotorState) {
             case STATIC:
                 if (Math.abs(gyro.getVelocityY()) < 2
                         && Math.abs(gyro.getWorldLinearAccelY()) < 0.1) {
@@ -394,6 +396,10 @@ public class Climber implements Loggable {
         logger.addAttribute("Climber/Right/Current");
 
         logger.addAttribute("Climber/Speed");
+
+        logger.addAttribute("Climber/State/Name");
+        logger.addAttribute("Climber/State/Id");
+        logger.addAttribute("Climber/State/Ordinal");
     }
 
     @Override
@@ -403,6 +409,10 @@ public class Climber implements Loggable {
         logger.log("Climber/Right/Current", getRightCurrent());
 
         logger.log("Climber/Speed", getSpeed());
+
+        logger.log("Climber/State/Name", this.currentClimberState.name);
+        logger.log("Climber/State/Id", this.currentClimberState.id);
+        logger.log("Climber/State/Ordinal", this.currentClimberState.ordinal());
     }
 
     public boolean getClimberSolenoidAState() {
