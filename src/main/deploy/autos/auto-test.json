@@ -1,0 +1,28 @@
+{
+    "auto": [
+        {
+            "type": "drive",
+            "unit": "SECONDS",
+            "amount": 2,
+            "args": [
+                1, 
+                1
+            ]
+        },
+        {
+            "type": "wait",
+            "args": [
+                1
+            ]
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 90,
+            "args": [
+                1,
+                -1
+            ]
+        }   
+    ]
+}
