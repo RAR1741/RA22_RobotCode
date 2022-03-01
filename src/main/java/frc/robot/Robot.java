@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -36,6 +37,10 @@ public class Robot extends TimedRobot {
     boolean drivetrainEnabled = true;
     boolean tankDriveEnabled = true;
 
+    private JsonAutonomous auto;
+
+    AHRS gyro; // Replace with LoggableGyro when Logging is updated
+
     private static final double DEADBAND_LIMIT = 0.01;
     private static final double SPEED_CAP = 0.6;
     InputScaler joystickDeadband = new Deadband(DEADBAND_LIMIT);
@@ -61,6 +66,9 @@ public class Robot extends TimedRobot {
 
         timer = new LoggableTimer();
         logger.addLoggable(timer);
+
+        gyro = new AHRS(); // I don't know what to do here, sorry
+        gyro.enableLogging(false);
 
         if (this.drivetrainEnabled) {
             System.out.println("Initializing drivetrain...");
@@ -95,6 +103,15 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        logger.open();
+        logger.setup();
+
+        timer.reset();
+        timer.start();
+
+        gyro.reset();
+        auto = new JsonAutonomous("/home/lvuser/deploy/autos/auto-test.json", gyro, drive);
+
         resetLogging();
     }
 
