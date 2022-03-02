@@ -14,21 +14,21 @@ import frc.robot.logging.Logger;
 
 public class Climber implements Loggable {
     enum ClimbingStates {
-        RESTING(0, "Default resting"), PRE_STAGE(5,
-                "Rotate climber and set pre-stage pin position (button)"), TOUCH_A(10,
-                "Pin A (button/sensor)"), ROTATE_B(15,
-                "Rotate to B bar (photogate)"), TOUCH_AB(20,
-                "Pin B (high current/sensor)"), ROTATE_AB_DOWN(25,
-                "Rotate down to plumb (photogate)"), RELEASE_A(30,
-                "Unpin A (gyro/accel)"), ROTATE_B_DOWN(35,
-                "Wait for swinging (photogate)"), ROTATE_C(40,
-                "Rotate to C bar (gyro/accel)"), TOUCH_BC(50,
-                "Pin C (high current/sensor)"), ROTATE_BC_DOWN(55,
-                "Rotate down to plumb (photogate)"), RELEASE_B(60,
-                "Unpin B (gyro/accel)"), ROTATE_C_DOWN(65,
-                "Wait for swinging ()"), DONE(70,
-                "Climbing is done"), ERROR(100,
-                "Error");
+        RESTING(0, "Default resting"), 
+        PRE_STAGE(5,"Rotate climber and set pre-stage pin position (button)"), 
+        TOUCH_A(10,"Pin A (button/sensor)"), 
+        ROTATE_B(15,"Rotate to B bar (photogate)"), 
+        TOUCH_AB(20,"Pin B (high current/sensor)"), 
+        ROTATE_AB_DOWN(25,"Rotate down to plumb (photogate)"), 
+        RELEASE_A(30,"Unpin A (gyro/accel)"), 
+        ROTATE_B_DOWN(35,"Wait for swinging (photogate)"), 
+        ROTATE_C(40,"Rotate to C bar (gyro/accel)"), 
+        TOUCH_BC(50,"Pin C (high current/sensor)"), 
+        ROTATE_BC_DOWN(55,"Rotate down to plumb (photogate)"), 
+        RELEASE_B(60,"Unpin B (gyro/accel)"), 
+        ROTATE_C_DOWN(65,"Wait for swinging ()"), 
+        DONE(70,"Climbing is done"), 
+        ERROR(100,"Error");
 
         public int id;
         public String name;
