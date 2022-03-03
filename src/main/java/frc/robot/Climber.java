@@ -74,6 +74,7 @@ public class Climber implements Loggable {
     Solenoid climberSolenoidC;
 
     ClimberSensors touch;
+    ClimberGates gates;
 
     MotorStates currentMotorState = MotorStates.STATIC;
     ClimbingStates currentClimberState = ClimbingStates.RESTING;
@@ -84,9 +85,10 @@ public class Climber implements Loggable {
     LoggableFirstOrderFilter rightFilter;
 
     public Climber(int climbingMotorID, int secondaryClimbingMotorID, Solenoid climberSolenoidA,
-            Solenoid climberSolenoidB1, Solenoid climberSolenoidB2, Solenoid climberSolenoidC) {
-        // LoggableGyro gyro) {
-        // ClimberSensors touch) {
+            Solenoid climberSolenoidB1, Solenoid climberSolenoidB2, Solenoid climberSolenoidC   //) {
+            , ClimberGates gates) {
+        // , LoggableGyro gyro) {
+        // , ClimberSensors touch) {
 
         this.climbingMotor = new TalonFX(climbingMotorID);
         this.secondaryClimbingMotor = new TalonFX(secondaryClimbingMotorID);
@@ -97,6 +99,7 @@ public class Climber implements Loggable {
         this.climberSolenoidC = climberSolenoidC;
 
         // this.touch = touch;
+        this.gates = gates;
 
         this.climbingMotor.setNeutralMode(NeutralMode.Coast);
         this.secondaryClimbingMotor.setNeutralMode(NeutralMode.Coast);
@@ -161,6 +164,11 @@ public class Climber implements Loggable {
                 climberSolenoidB1.set(true);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
+
+                // Uncomment after testing
+                // if (gates.getA()) {
+                //     setClimbingState(ClimbingStates.ROTATE_B);
+                // }
                 break;
 
             // 15 ROTATE_B: Rotate to B bar (photogate)
@@ -180,6 +188,9 @@ public class Climber implements Loggable {
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
+                if (gates.getB1()) {
+                    setClimbingState(ClimbingStates.ROTATE_AB_DOWN);
+                }
                 break;
 
             // 25 ROTATE_AB_DOWN: Rotate down to plumb (photogate)
@@ -195,6 +206,9 @@ public class Climber implements Loggable {
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
                 // TODO: set motor target here
+                if (!gates.getA()) {
+                    setClimbingState(ClimbingStates.ROTATE_B_DOWN);;
+                }
                 break;
 
             // 35 ROTATE_B_DOWN: Wait for swinging (photogate)
@@ -221,6 +235,9 @@ public class Climber implements Loggable {
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(false);
                 // TODO: set motor target here
+                if (gates.getC()) {
+                    setClimbingState(ClimbingStates.ROTATE_BC_DOWN);
+                }
                 break;
 
             // 55 ROTATE_BC_DOWN: Rotate down to plumb (photogate)
@@ -235,6 +252,9 @@ public class Climber implements Loggable {
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(true);
                 climberSolenoidC.set(false);
+                if (!gates.getB2()) {
+                    setClimbingState(ClimbingStates.ROTATE_C_DOWN);
+                }
                 break;
 
             // 65 ROTATE_C_DOWN: Wait for swinging ()
