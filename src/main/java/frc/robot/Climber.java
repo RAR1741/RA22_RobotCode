@@ -39,22 +39,6 @@ public class Climber implements Loggable {
         }
     }
 
-    // 00 RESTING: Default resting
-    // 05 PRE_STAGE: Rotate climber and set pre-stage pin position (button)
-    // 10 TOUCH_A: Pin A (button/sensor)
-    // 15 ROTATE_B: Rotate to B bar (photogate)
-    // 20 TOUCH_AB: Pin B (high current/sensor)
-    // 25 ROTATE_AB_DOWN: Rotate down to plumb (photogate)
-    // 30 RELEASE_A: Unpin A (gyro/accel)
-    // 35 ROTATE_B_DOWN: Wait for swinging (photogate)
-    // 40 ROTATE_C: Rotate to C bar (gyro/accel)
-    // 50 TOUCH_BC: Pin C (high current/sensor)
-    // 55 ROTATE_BC_DOWN: Rotate down to plumb (photogate)
-    // 60 RELEASE_B: Unpin B (gyro/accel)
-    // 65 ROTATE_C_DOWN: Wait for swinging ()
-    // 70 DONE: Climbing is done
-    // 100 ERROR: Error
-
     enum MotorStates {
         STATIC, ACTIVE;
     }
@@ -65,11 +49,11 @@ public class Climber implements Loggable {
     public static double NEXT_BC_STATE_CURRENT = 35.0;
     public static int FILTER_FRAME_RANGE = 10;
 
-    public static double TOUCH_A_POSITION = 0; //TBD
-    public static double SWING_AB_POSITION = 0; //TBD
-    public static double SWING_B_POSITION = 0; //TBD
-    public static double SWING_BC_POSITION = 0; //TBD
-    public static double SWING_MIN_VELOCITY = 1000; //TBD
+    public static double TOUCH_A_POSITION = 0; // TBD
+    public static double SWING_AB_POSITION = 0; // TBD
+    public static double SWING_B_POSITION = 0; // TBD
+    public static double SWING_BC_POSITION = 0; // TBD
+    public static double SWING_MIN_VELOCITY = 1000; // TBD
 
     TalonFX climbingMotor;
     TalonFX secondaryClimbingMotor;
@@ -91,7 +75,7 @@ public class Climber implements Loggable {
     LoggableFirstOrderFilter rightFilter;
 
     public Climber(int climbingMotorID, int secondaryClimbingMotorID, Solenoid climberSolenoidA,
-            Solenoid climberSolenoidB1, Solenoid climberSolenoidB2, Solenoid climberSolenoidC   //) {
+            Solenoid climberSolenoidB1, Solenoid climberSolenoidB2, Solenoid climberSolenoidC // ) {
             , ClimberGates gates) {
         // , LoggableGyro gyro) {
         // , ClimberSensors touch) {
@@ -175,7 +159,7 @@ public class Climber implements Loggable {
 
                 // Uncomment after testing
                 // if (gates.getA()) {
-                //     setClimbingState(ClimbingStates.ROTATE_B);
+                // setClimbingState(ClimbingStates.ROTATE_B);
                 // }
                 break;
 
@@ -205,7 +189,8 @@ public class Climber implements Loggable {
             case ROTATE_AB_DOWN:
                 this.setPower(0);
                 // TODO: set motor target here
-                if (Math.abs(climbingMotor.getSelectedSensorPosition()-SWING_AB_POSITION) < 500)  {//Determine tolerance
+                if (Math.abs(climbingMotor.getSelectedSensorPosition() - SWING_AB_POSITION) < 500) {// Determine
+                                                                                                    // tolerance
                     System.out.println("DONE SWINGING!");
                     // setClimbingState(ClimbingStates.RELEASE_A);
                 }
@@ -227,8 +212,10 @@ public class Climber implements Loggable {
             case ROTATE_B_DOWN:
                 // TODO: set motor target here
                 this.setPower(0);
-                if (Math.abs(climbingMotor.getSelectedSensorPosition()-SWING_B_POSITION) < 500
-                    && Math.abs(climbingMotor.getSelectedSensorVelocity()) < SWING_MIN_VELOCITY)  {//Determine tolerance
+                if (Math.abs(climbingMotor.getSelectedSensorPosition() - SWING_B_POSITION) < 500
+                        && Math.abs(
+                                climbingMotor.getSelectedSensorVelocity()) < SWING_MIN_VELOCITY) {// Determine
+                                                                                                  // tolerance
                     System.out.println("DONE SWINGING!");
                     // setClimbingState(ClimbingStates.ROTATE_C);
                 }
@@ -261,7 +248,8 @@ public class Climber implements Loggable {
             case ROTATE_BC_DOWN:
                 // TODO: set motor target here
                 this.setPower(0);
-                if (Math.abs(climbingMotor.getSelectedSensorPosition()-SWING_BC_POSITION) < 500)  {//Determine tolerance
+                if (Math.abs(climbingMotor.getSelectedSensorPosition() - SWING_BC_POSITION) < 500) {// Determine
+                                                                                                    // tolerance
                     System.out.println("DONE SWINGING!");
                     // setClimbingState(ClimbingStates.RELEASE_B);
                 }
