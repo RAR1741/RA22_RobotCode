@@ -149,8 +149,8 @@ public class Climber implements Loggable {
             // 00 RESTING: Default resting
             case RESTING:
                 climberSolenoidA.set(false);
-                climberSolenoidB1.set(false);
-                climberSolenoidB2.set(false);
+                climberSolenoidB1.set(true);
+                climberSolenoidB2.set(true);
                 climberSolenoidC.set(false);
                 break;
 
