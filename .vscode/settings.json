@@ -43,6 +43,7 @@
     "loggables",
     "lvuser",
     "markdownlint",
+    "photogate",
     "puppycrawl"
   ],
   "java.checkstyle.configuration": "${workspaceFolder}/checkstyle.xml",
