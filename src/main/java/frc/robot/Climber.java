@@ -166,9 +166,11 @@ public class Climber implements Loggable {
             // 15 ROTATE_B: Rotate to B bar (photogate)
             case ROTATE_B:
                 // TODO: set motor power here
+                climbingMotor.set(ControlMode.Velocity, 0.15);
                 if (climbingMotor.getStatorCurrent() > NEXT_AB_STATE_CURRENT
                         || secondaryClimbingMotor.getStatorCurrent() > NEXT_AB_STATE_CURRENT) {
                     setClimbingState(ClimbingStates.TOUCH_AB);
+                    climbingMotor.set(ControlMode.Velocity, 0);
                 }
                 break;
 
@@ -182,6 +184,7 @@ public class Climber implements Loggable {
 
             // 25 ROTATE_AB_DOWN: Rotate down to plumb (photogate)
             case ROTATE_AB_DOWN:
+                climbingMotor.set(ControlMode.PercentOutput, 0);
                 // TODO: set motor target here
                 break;
 
@@ -197,15 +200,17 @@ public class Climber implements Loggable {
             // 35 ROTATE_B_DOWN: Wait for swinging (photogate)
             case ROTATE_B_DOWN:
                 // TODO: set motor target here
+                climbingMotor.set(ControlMode.PercentOutput, 0);
                 break;
 
             // 40 ROTATE_C: Rotate to C bar (gyro/accel)
             case ROTATE_C:
                 // TODO: set motor target here
-
+                climbingMotor.set(ControlMode.Velocity, 0.15);
                 if (climbingMotor.getStatorCurrent() > NEXT_BC_STATE_CURRENT
                         || secondaryClimbingMotor.getStatorCurrent() > NEXT_BC_STATE_CURRENT) {
                     setClimbingState(ClimbingStates.TOUCH_BC);
+                    climbingMotor.set(ControlMode.Velocity, 0);
                 }
                 break;
 
@@ -221,6 +226,7 @@ public class Climber implements Loggable {
             // 55 ROTATE_BC_DOWN: Rotate down to plumb (photogate)
             case ROTATE_BC_DOWN:
                 // TODO: set motor target here
+                climbingMotor.set(ControlMode.PercentOutput, 0);
                 break;
 
             // 60 RELEASE_B: Unpin B (gyro/accel)
@@ -234,6 +240,7 @@ public class Climber implements Loggable {
             // 65 ROTATE_C_DOWN: Wait for swinging ()
             case ROTATE_C_DOWN:
                 // TODO: set motor target here
+                climbingMotor.set(ControlMode.PercentOutput, 0);
                 break;
 
             // 70 DONE: Climbing is done
