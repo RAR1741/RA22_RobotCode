@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
     DriveModule rightModule;
 
     Climber climber;
-    LoggableGyro gyro;
+    // LoggableGyro gyro;
 
     LoggableController driver;
     LoggableController operator;
@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
         logger = new Logger();
         timer = new LoggableTimer();
         logger.addLoggable(timer);
-        gyro = new LoggableGyro();
+        // gyro = new LoggableGyro();
 
         pdp = new LoggablePowerDistribution(1, ModuleType.kRev);
 
@@ -82,7 +82,7 @@ public class Robot extends TimedRobot {
             // ClimberSensors climberSensors = new ClimberSensors(0, 1, 2, 3, 4, 5);
             // ClimberGates climberGates = new ClimberGates(6, 7, 8, 9, 10, 11, 12, 13);
             climber = new Climber(9, 10, climberSolenoidA, climberSolenoidB1, climberSolenoidB2,
-                    climberSolenoidC, gyro);// , climberSensors);
+                    climberSolenoidC);// ,gyro, climberSensors);
 
             // logger.addLoggable(climberSensors);
             logger.addLoggable(climber);
@@ -164,7 +164,7 @@ public class Robot extends TimedRobot {
         }
 
         if (this.climberEnabled) {
-            if (operator.getAButtonPressed()) {
+            if (operator.getLeftBumperPressed()) {
                 climber.setClimbingState(climber.getNextClimbingState());
             }
             // climber.checkClimbingState(operator.getAButtonPressed());
