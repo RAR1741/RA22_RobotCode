@@ -93,7 +93,6 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
                     Double amount = o.has("amount") ? o.get("amount").getAsDouble() : null;
 
-
                     AutoInstruction ai = unit == null ? new AutoInstruction(type, extraArgs)
                             : new AutoInstruction(type, unit, amount, extraArgs);
                     instructions.add(ai);
