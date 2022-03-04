@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
         timer = new LoggableTimer();
         logger.addLoggable(timer);
 
-        gyro = new AHRS(); // I don't know what to do here, sorry
+        gyro = new AHRS();
         gyro.enableLogging(false);
 
         if (this.drivetrainEnabled) {

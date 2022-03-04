@@ -91,14 +91,15 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                     String unitString = o.has("unit") ? o.get("unit").getAsString() : null;
                     AutoInstruction.Unit unit = unitString != null ? parseUnit(unitString) : null;
 
-                    double amount = o.has("amount") ? o.get("amount").getAsDouble() : null;
+                    Double amount = o.has("amount") ? o.get("amount").getAsDouble() : null;
+
 
                     AutoInstruction ai = unit == null ? new AutoInstruction(type, extraArgs)
                             : new AutoInstruction(type, unit, amount, extraArgs);
                     instructions.add(ai);
                 }
             }
-        } catch (JsonIOException | JsonSyntaxException | FileNotFoundException e) {
+        } catch (JsonIOException | JsonSyntaxException | FileNotFoundException  e) {
             e.printStackTrace();
         }
     }
@@ -214,6 +215,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     }
 
     private void reset() {
+        step++;
         navxStart = getAngle();
         start = drive.getEncoder();
         timer.reset();
