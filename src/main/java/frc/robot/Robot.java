@@ -103,16 +103,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        logger.open();
-        logger.setup();
-
-        timer.reset();
-        timer.start();
+        resetLogging();
 
         gyro.reset();
-        auto = new JsonAutonomous("/home/lvuser/deploy/autos/auto-test.json", gyro, drive);
-
-        resetLogging();
+        auto = new JsonAutonomous("/home/lvuser/deploy/autos/auto-test.json", gyro, drive);        
     }
 
     @Override
