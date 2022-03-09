@@ -118,6 +118,8 @@ public class JsonAutonomous extends Autonomous implements Loggable {
         }
         AutoInstruction ai = instructions.get(step);
 
+        System.out.println(ai.type);
+
         switch (ai.type) {
             case "drive":
                 drive(ai);
