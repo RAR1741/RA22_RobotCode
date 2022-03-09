@@ -3,10 +3,10 @@
         {
             "type": "drive",
             "unit": "SECONDS",
-            "amount": 2,
+            "amount": 0.1,
             "args": [
-                1, 
-                1
+                -0.05, 
+                -0.05
             ]
         },
         {
@@ -18,11 +18,11 @@
         {
             "type": "turnDeg",
             "unit": "DEGREES",
-            "amount": 90,
+            "amount": -90,
             "args": [
-                1,
-                -1
+                0.1,
+                -0.1
             ]
-        }   
+        }
     ]
 }

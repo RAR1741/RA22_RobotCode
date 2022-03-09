@@ -18,7 +18,7 @@ import java.util.List;
 
 public class JsonAutonomous extends Autonomous implements Loggable {
 
-    private static final double TICKS_PER_ROTATION = 1; //TODO: Get values
+    private static final double TICKS_PER_ROTATION = 1; // TODO: Get values
     private static final double TICKS_PER_INCH = 1;
     private JsonElement auto;
     private List<AutoInstruction> instructions;
@@ -59,8 +59,9 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     /**
      * Creates a JsonAutonomous from the specified file
+     * 
      * @param file The location of the file to parse
-    */
+     */
     public JsonAutonomous(String file, AHRS gyro, Drivetrain drive) {
         this.drive = drive;
         this.gyro = gyro;
@@ -98,7 +99,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                     instructions.add(ai);
                 }
             }
-        } catch (JsonIOException | JsonSyntaxException | FileNotFoundException  e) {
+        } catch (JsonIOException | JsonSyntaxException | FileNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -135,6 +136,9 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                 shoot(ai);
                 break;
 
+            case "stop":
+                stop();
+                break;
             default:
                 System.out.println("Invalid Command");
                 reset();
@@ -144,29 +148,35 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     private void drive(AutoInstruction ai) {
         AutoInstruction.Unit u = ai.unit;
-        //ai args:
-            //0: leftPower
-            //1: rightPower
-        if(u.equals(AutoInstruction.Unit.SECONDS) || u.equals(AutoInstruction.Unit.MILLISECONDS)) {
-            //amount: (milli)seconds to drive
-            if(driveTime(ai.args.get(0), ai.args.get(1), (u.equals(AutoInstruction.Unit.SECONDS) ? ai.amount : ai.amount/1000.0))) {
+        // ai args:
+        // 0: leftPower
+        // 1: rightPower
+        if (u.equals(AutoInstruction.Unit.SECONDS) || u.equals(AutoInstruction.Unit.MILLISECONDS)) {
+            // amount: (milli)seconds to drive
+            if (driveTime(ai.args.get(0), ai.args.get(1),
+                    (u.equals(AutoInstruction.Unit.SECONDS) ? ai.amount : ai.amount / 1000.0))) {
                 reset();
             }
-        } else if(u.equals(AutoInstruction.Unit.ENCODER_TICKS) || u.equals(AutoInstruction.Unit.ROTATIONS)) {
-            //amount: rotations/encoder ticks to drive
-            if(driveDistance(ai.args.get(0), ai.args.get(1), (u.equals(AutoInstruction.Unit.ENCODER_TICKS) ? ai.amount : ai.amount * TICKS_PER_ROTATION))) {
+        } else if (u.equals(AutoInstruction.Unit.ENCODER_TICKS)
+                || u.equals(AutoInstruction.Unit.ROTATIONS)) {
+            // amount: rotations/encoder ticks to drive
+            if (driveDistance(ai.args.get(0), ai.args.get(1),
+                    (u.equals(AutoInstruction.Unit.ENCODER_TICKS) ? ai.amount
+                            : ai.amount * TICKS_PER_ROTATION))) {
                 reset();
             }
-        } else if(u.equals(AutoInstruction.Unit.FEET) || u.equals(AutoInstruction.Unit.INCHES)) {
-            //amount: feet/inches to drive
-            if(driveDistance(ai.args.get(0), ai.args.get(0), (u.equals(AutoInstruction.Unit.INCHES) ? ai.amount * TICKS_PER_INCH : ai.amount))) {
+        } else if (u.equals(AutoInstruction.Unit.FEET) || u.equals(AutoInstruction.Unit.INCHES)) {
+            // amount: feet/inches to drive
+            if (driveDistance(ai.args.get(0), ai.args.get(0),
+                    (u.equals(AutoInstruction.Unit.INCHES) ? ai.amount * TICKS_PER_INCH
+                            : ai.amount))) {
                 reset();
             }
         }
     }
 
     private boolean driveDistance(double leftPower, double rightPower, double distance) {
-        if(Math.abs(drive.getEncoder() - start) < distance) {
+        if (Math.abs(drive.getEncoder() - start) < distance) {
             drive.drive(leftPower, rightPower);
         } else {
             return true;
@@ -175,7 +185,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     }
 
     private boolean driveTime(double leftPower, double rightPower, double time) {
-        if(timer.get() < time) {
+        if (timer.get() < time) {
             drive.drive(leftPower, rightPower);
         } else {
             return true;
@@ -184,7 +194,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     }
 
     private boolean rotateDegrees(double leftSpeed, double rightSpeed, double deg) {
-        if(Math.abs(getAngle()-navxStart-deg)<0.5) {
+        if (Math.abs(getAngle() - navxStart - deg) < 0.5) {
             return true;
         } else {
             drive.drive(leftSpeed, rightSpeed);
@@ -193,11 +203,12 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     }
 
     public void turnDegrees(AutoInstruction ai) {
-        //ai args:
-            //0: leftPower
-            //1: rightPower
-            //amount: degrees to turn
-        if(rotateDegrees(ai.args.get(0), ai.args.get(1), ai.amount)) {
+        // ai args:
+        // 0: leftPower
+        // 1: rightPower
+        // amount: degrees to turn
+        System.out.println(getAngle());
+        if (rotateDegrees(ai.args.get(0), ai.args.get(1), ai.amount)) {
             drive.drive(0, 0); // Stop turning
             reset();
         }
@@ -211,6 +222,10 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     private void shoot(AutoInstruction ai) {
 
+    }
+
+    private void stop() {
+        drive.drive(0, 0);
     }
 
     private void reset() {
