@@ -113,7 +113,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         // Robot code goes here
-        //auto.run();
+        auto.run();
 
         logger.log();
         logger.writeLine();
