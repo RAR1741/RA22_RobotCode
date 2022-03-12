@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
