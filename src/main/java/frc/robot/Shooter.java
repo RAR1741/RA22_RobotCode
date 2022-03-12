@@ -9,8 +9,8 @@ import frc.robot.logging.Logger;
 
 public class Shooter implements Loggable {
     TalonFX shooterMotor;
-    public Shooter(TalonFX s) {
-        this.shooterMotor = s;
+    public Shooter(int shooterID) {
+        this.shooterMotor = new TalonFX(shooterID);
 
         this.shooterMotor.setNeutralMode(NeutralMode.Coast);
     }
