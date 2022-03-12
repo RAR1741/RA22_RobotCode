@@ -114,7 +114,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         gyro.reset();
 
-        auto = new JsonAutonomous("/home/lvuser/deploy/autos/distance-test.json", gyro, drive);
+        auto = new JsonAutonomous("/home/lvuser/deploy/autos/shooter-test.json", gyro, drive, shooter);
         logger.addLoggable(auto);
         resetLogging();
     }
