@@ -86,7 +86,11 @@ public class Drivetrain implements Loggable {
      * @return Position of left sensor (in raw sensor units).
      */
     public double getEncoder() {
-        return left.getDriveEnc();
+        return (left.getDriveEnc() + right.getDriveEnc()) / 2;
+    }
+
+    public double getAverageCurrent() {
+        return (left.getAverageCurrent() + right.getAverageCurrent()) / 2;
     }
 
     /**
