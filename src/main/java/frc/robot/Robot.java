@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.logging.LoggableCompressor;
 import frc.robot.logging.LoggableController;
+import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.LoggablePowerDistribution;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
@@ -39,7 +40,7 @@ public class Robot extends TimedRobot {
 
     private JsonAutonomous auto;
 
-    AHRS gyro; // Replace with LoggableGyro when Logging is updated
+    LoggableGyro gyro;
 
     private static final double DEADBAND_LIMIT = 0.01;
     private static final double SPEED_CAP = 0.6;
@@ -67,7 +68,7 @@ public class Robot extends TimedRobot {
         timer = new LoggableTimer();
         logger.addLoggable(timer);
 
-        gyro = new AHRS();
+        gyro = new LoggableGyro();
         gyro.enableLogging(false);
 
         if (this.drivetrainEnabled) {
@@ -105,7 +106,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         gyro.reset();
 
-        auto = new JsonAutonomous("/home/lvuser/deploy/autos/auto-test.json", gyro, drive);
+        auto = new JsonAutonomous("/home/lvuser/deploy/autos/distance-test.json", gyro, drive);
         logger.addLoggable(auto);
         resetLogging();
     }
