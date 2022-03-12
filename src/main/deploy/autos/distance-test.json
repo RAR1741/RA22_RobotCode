@@ -1,0 +1,76 @@
+{
+    "auto": [
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 50,
+            "args": [
+                -0.05,
+                -0.05
+            ]
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 90,
+            "args": [
+                -0.05,
+                0.05
+            ]
+        },
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 50,
+            "args": [
+                -0.05,
+                -0.05
+            ]
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 90,
+            "args": [
+                -0.05,
+                0.05
+            ]
+        },
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 50,
+            "args": [
+                -0.05,
+                -0.05
+            ]
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 90,
+            "args": [
+                -0.05,
+                0.05
+            ]
+        },
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 50,
+            "args": [
+                -0.05,
+                -0.05
+            ]
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 90,
+            "args": [
+                -0.05,
+                0.05
+            ]
+        }
+    ]
+}
