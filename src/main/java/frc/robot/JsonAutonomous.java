@@ -6,8 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
-import com.kauailabs.navx.frc.AHRS;
 import frc.robot.logging.Loggable;
+import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
 
@@ -20,15 +20,18 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     private static final double TICKS_PER_ROTATION = 16750; //TODO: Update value for 2022 robot
     private static final double TICKS_PER_INCH = TICKS_PER_ROTATION / (6 * Math.PI); //TODO: Update formula for 2022 robot
+    private static final double SHOOTER_SPEED = 1;
     private JsonElement auto;
     private List<AutoInstruction> instructions;
     private int step;
     private LoggableTimer timer;
     private double start;
     private double navxStart;
-    private AHRS gyro;
+    private LoggableGyro gyro;
 
     private Drivetrain drive;
+
+    private Shooter shooter;
 
     private FileReader fr;
     private JsonReader jr;
@@ -41,7 +44,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
         public List<Double> args;
 
         public enum Unit {
-            SECONDS, MILLISECONDS, ENCODER_TICKS, ROTATIONS, INCHES, FEET, DEGREES, INVALID
+            SECONDS, MILLISECONDS, ENCODER_TICKS, ROTATIONS, INCHES, FEET, CURRENT, DEGREES, SPEED, POWER, INVALID
         }
 
         public AutoInstruction(String type, List<Double> args) {
@@ -61,9 +64,10 @@ public class JsonAutonomous extends Autonomous implements Loggable {
      * Creates a JsonAutonomous from the specified file
      * @param file The location of the file to parse
     */
-    public JsonAutonomous(String file, AHRS gyro, Drivetrain drive) {
+    public JsonAutonomous(String file, LoggableGyro gyro, Drivetrain drive, Shooter shooter) {
         this.drive = drive;
         this.gyro = gyro;
+        this.shooter = shooter;
 
         parseFile(file);
     }
@@ -162,6 +166,9 @@ public class JsonAutonomous extends Autonomous implements Loggable {
             if(driveDistance(ai.args.get(0), ai.args.get(0), (u.equals(AutoInstruction.Unit.INCHES) ? ai.amount * TICKS_PER_INCH : ai.amount))) {
                 reset();
             }
+        } else if(u.equals(AutoInstruction.Unit.CURRENT)) {
+            //amount: motor current to stop at
+            if(driveCurrent(ai.args.get(0), ai.args.get(0), ai.amount));
         }
     }
 
@@ -176,6 +183,15 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     private boolean driveTime(double leftPower, double rightPower, double time) {
         if(timer.get() < time) {
+            drive.drive(leftPower, rightPower);
+        } else {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean driveCurrent(double leftPower, double rightPower, double current) {
+        if(drive.getAverageCurrent() < current) {
             drive.drive(leftPower, rightPower);
         } else {
             return true;
@@ -210,7 +226,32 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     }
 
     private void shoot(AutoInstruction ai) {
-
+        AutoInstruction.Unit u = ai.unit;
+        if(u == AutoInstruction.Unit.SPEED) {
+            if(shooter.getSpeed() < SHOOTER_SPEED) {
+                shooter.setSpeed(SHOOTER_SPEED);
+            } else {
+                timer.reset();
+                if(timer.get() < ai.args.get(0)) {
+                    shooter.setSpeed(SHOOTER_SPEED);
+                } else {
+                    shooter.setSpeed(0);
+                    reset();
+                }
+            }
+        } else if(u == AutoInstruction.Unit.POWER) {
+            if(shooter.getSpeed() < SHOOTER_SPEED) {
+                shooter.setPower(SHOOTER_SPEED);
+            } else {
+                timer.reset();
+                if(timer.get() < ai.args.get(0)) {
+                    shooter.setPower(SHOOTER_SPEED);
+                } else {
+                    shooter.setPower(0);
+                    reset();
+                }
+            }
+        }
     }
 
     private void reset() {

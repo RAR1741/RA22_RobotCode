@@ -3,10 +3,7 @@
         {
             "type": "shoot",
             "unit": "SPEED",
-            "amount": 1,
-            "args": [
-                0                
-            ]
+            "amount": 1
         }
     ]
 }
