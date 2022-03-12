@@ -30,12 +30,14 @@ public class Robot extends TimedRobot {
     DriveModule rightModule;
     LoggableController driver;
     LoggableController operator;
+    Shooter shooter;
 
     LoggablePowerDistribution pdp;
     LoggableCompressor compressor;
 
     boolean drivetrainEnabled = true;
     boolean tankDriveEnabled = true;
+    boolean shooterEnabled = true;
 
     private JsonAutonomous auto;
 
@@ -85,6 +87,13 @@ public class Robot extends TimedRobot {
             logger.addLoggable(drive);
         } else {
             System.out.println("Drivetrain initialization disabled.");
+        }
+        if (this.shooterEnabled) {
+            System.out.println("Initializing shooter");
+            shooter = new Shooter(6);
+            logger.addLoggable(shooter);
+        } else {
+            System.out.println("Shooter initialization disabled.");
         }
 
         System.out.print("Initializing compressor...");
