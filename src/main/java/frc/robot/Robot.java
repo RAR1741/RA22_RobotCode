@@ -30,12 +30,14 @@ public class Robot extends TimedRobot {
     DriveModule rightModule;
     LoggableController driver;
     LoggableController operator;
+    Manipulation manipulation;
 
     LoggablePowerDistribution pdp;
     LoggableCompressor compressor;
 
     boolean drivetrainEnabled = true;
     boolean tankDriveEnabled = true;
+    boolean manipulationEnabled = true;
 
     private JsonAutonomous auto;
 
@@ -85,6 +87,12 @@ public class Robot extends TimedRobot {
             logger.addLoggable(drive);
         } else {
             System.out.println("Drivetrain initialization disabled.");
+        }
+        if (manipulationEnabled) {
+            System.out.println("Initializing manipulation...");
+            manipulation = new Manipulation(0, 1, 7, 8);
+        } else {
+            System.out.println("Manipulation initialization disabled.");
         }
 
         System.out.print("Initializing compressor...");
@@ -147,6 +155,15 @@ public class Robot extends TimedRobot {
 
             leftModule.updateCurrent();
             rightModule.updateCurrent();
+        }
+        if (this.manipulationEnabled) {
+            if (driver.getRightBumperPressed()) {
+              manipulation.setIntakeExtend(true);
+            } else if (driver.getLeftBumperPressed()) {
+              manipulation.setIntakeExtend(false);
+            }
+            manipulation.setIntakeSpin(operator.getYButton());
+            manipulation.setIndexLoad(operator.getXButton());
         }
 
         logger.log();
