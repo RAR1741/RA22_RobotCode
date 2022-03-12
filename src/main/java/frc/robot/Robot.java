@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
     LoggableController driver;
     LoggableController operator;
     Manipulation manipulation;
+    Shooter shooter;
 
     LoggablePowerDistribution pdp;
     LoggableCompressor compressor;
@@ -38,6 +39,7 @@ public class Robot extends TimedRobot {
     boolean drivetrainEnabled = true;
     boolean tankDriveEnabled = true;
     boolean manipulationEnabled = true;
+    boolean shooterEnabled = true;
 
     private JsonAutonomous auto;
 
@@ -93,6 +95,13 @@ public class Robot extends TimedRobot {
             manipulation = new Manipulation(0, 1, 7, 8);
         } else {
             System.out.println("Manipulation initialization disabled.");
+        }
+        if (this.shooterEnabled) {
+            System.out.println("Initializing shooter");
+            shooter = new Shooter(6);
+            logger.addLoggable(shooter);
+        } else {
+            System.out.println("Shooter initialization disabled.");
         }
 
         System.out.print("Initializing compressor...");
