@@ -45,8 +45,8 @@ public class Climber implements Loggable {
 
     public static double MAX_INSTANT_CURRENT = 200.0;
     public static double MAX_AVERAGE_CURRENT = 110.0;
-    public static double NEXT_AB_STATE_CURRENT = 55.0;
-    public static double NEXT_BC_STATE_CURRENT = 35.0;
+    public static double NEXT_AB_STATE_CURRENT = 65.0;
+    public static double NEXT_BC_STATE_CURRENT = 45.0;
     public static int FILTER_FRAME_RANGE = 10;
 
     public static double TOUCH_A_POSITION = 0; // TBD
@@ -101,7 +101,7 @@ public class Climber implements Loggable {
         this.climbingMotor.config_kI(0, 0.001);
         this.climbingMotor.config_kD(0, 5);
 
-        secondaryClimbingMotor.setInverted(InvertType.InvertMotorOutput);
+        climbingMotor.setInverted(InvertType.InvertMotorOutput);
         secondaryClimbingMotor.follow(climbingMotor);
 
         this.timer = new LoggableTimer("Climber/Time");
@@ -166,7 +166,7 @@ public class Climber implements Loggable {
             // 15 ROTATE_B: Rotate to B bar (photogate)
             case ROTATE_B:
                 // TODO: set motor power here
-                this.setSpeed(0.15);
+                this.setSpeed(-0.4);
                 if (climbingMotor.getStatorCurrent() > NEXT_AB_STATE_CURRENT
                         || secondaryClimbingMotor.getStatorCurrent() > NEXT_AB_STATE_CURRENT) {
                     setClimbingState(ClimbingStates.TOUCH_AB);
@@ -176,13 +176,14 @@ public class Climber implements Loggable {
 
             // 20 TOUCH_AB: Pin B (high current/sensor)
             case TOUCH_AB:
+                this.setSpeed(0);
                 climberSolenoidA.set(false);
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
-                if (gates.getB1()) {
-                    setClimbingState(ClimbingStates.ROTATE_AB_DOWN);
-                }
+                // if (gates.getB1()) {
+                // setClimbingState(ClimbingStates.ROTATE_AB_DOWN);
+                // }
                 break;
 
             // 25 ROTATE_AB_DOWN: Rotate down to plumb (photogate)
@@ -198,14 +199,15 @@ public class Climber implements Loggable {
 
             // 30 RELEASE_A: Unpin A (gyro/accel)
             case RELEASE_A:
+                this.setPower(0);
                 climberSolenoidA.set(true);
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
                 // TODO: set motor target here
-                if (!gates.getA()) {
-                    setClimbingState(ClimbingStates.ROTATE_B_DOWN);;
-                }
+                // if (!gates.getA()) {
+                // setClimbingState(ClimbingStates.ROTATE_B_DOWN);;
+                // }
                 break;
 
             // 35 ROTATE_B_DOWN: Wait for swinging (photogate)
@@ -224,7 +226,7 @@ public class Climber implements Loggable {
             // 40 ROTATE_C: Rotate to C bar (gyro/accel)
             case ROTATE_C:
                 // TODO: set motor target here
-                this.setSpeed(0.15);
+                this.setSpeed(-0.2);
                 if (climbingMotor.getStatorCurrent() > NEXT_BC_STATE_CURRENT
                         || secondaryClimbingMotor.getStatorCurrent() > NEXT_BC_STATE_CURRENT) {
                     setClimbingState(ClimbingStates.TOUCH_BC);
@@ -234,14 +236,15 @@ public class Climber implements Loggable {
 
             // 50 TOUCH_BC: Pin C (high current/sensor)
             case TOUCH_BC:
+                this.setSpeed(-0.05);
                 climberSolenoidA.set(true);
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(false);
                 // TODO: set motor target here
-                if (gates.getC()) {
-                    setClimbingState(ClimbingStates.ROTATE_BC_DOWN);
-                }
+                // if (gates.getC()) {
+                // setClimbingState(ClimbingStates.ROTATE_BC_DOWN);
+                // }
                 break;
 
             // 55 ROTATE_BC_DOWN: Rotate down to plumb (photogate)
@@ -257,13 +260,14 @@ public class Climber implements Loggable {
 
             // 60 RELEASE_B: Unpin B (gyro/accel)
             case RELEASE_B:
+                this.setPower(0);
                 climberSolenoidA.set(true);
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(true);
                 climberSolenoidC.set(false);
-                if (!gates.getB2()) {
-                    setClimbingState(ClimbingStates.ROTATE_C_DOWN);
-                }
+                // if (!gates.getB2()) {
+                // setClimbingState(ClimbingStates.ROTATE_C_DOWN);
+                // }
                 break;
 
             // 65 ROTATE_C_DOWN: Wait for swinging ()
@@ -432,6 +436,7 @@ public class Climber implements Loggable {
         logger.addAttribute("Climber/Right/Current");
 
         logger.addAttribute("Climber/Speed");
+        logger.addAttribute("Climber/Position");
 
         logger.addAttribute("Climber/State/Name");
         logger.addAttribute("Climber/State/Id");
@@ -445,6 +450,7 @@ public class Climber implements Loggable {
         logger.log("Climber/Right/Current", getRightCurrent());
 
         logger.log("Climber/Speed", getSpeed());
+        logger.log("Climber/Position", climbingMotor.getSelectedSensorPosition());
 
         logger.log("Climber/State/Name", this.currentClimberState.name);
         logger.log("Climber/State/Id", this.currentClimberState.id);

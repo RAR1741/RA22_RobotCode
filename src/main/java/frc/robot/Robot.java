@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
     boolean climberEnabled = true;
 
     private static final double DEADBAND_LIMIT = 0.01;
-    private static final double SPEED_CAP = 0.6;
+    private static final double SPEED_CAP = 0.3;
     InputScaler joystickDeadband = new Deadband(DEADBAND_LIMIT);
     InputScaler joystickSquared = new SquaredInput(DEADBAND_LIMIT);
     BoostInput boost = new BoostInput(SPEED_CAP);
@@ -145,7 +145,7 @@ public class Robot extends TimedRobot {
             if (tankDriveEnabled) {
                 double leftInput = deadband(-driver.getLeftY());
                 double rightInput = deadband(-driver.getRightY());
-                drive.tankDrive(leftInput * 0.4, rightInput * 0.4);
+                drive.tankDrive(leftInput, rightInput);
             } else {
                 double turnInput = deadband(driver.getRightX());
                 double speedInput = deadband(-driver.getLeftY());
@@ -164,6 +164,8 @@ public class Robot extends TimedRobot {
         }
 
         if (this.climberEnabled) {
+            double climberInput = deadband(operator.getLeftY());
+            climber.setMotors(climberInput);
             if (operator.getLeftBumperPressed()) {
                 climber.setClimbingState(climber.getNextClimbingState());
             }
@@ -176,8 +178,6 @@ public class Robot extends TimedRobot {
                                 : MotorStates.ACTIVE);
             }
             // TODO: Enable this when we're ready to test the climber
-            double climberInput = deadband(operator.getLeftY());
-            climber.setMotors(climberInput);
         }
 
         logger.log();
