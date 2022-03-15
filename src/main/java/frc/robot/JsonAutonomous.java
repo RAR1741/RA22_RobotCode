@@ -32,6 +32,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     private Drivetrain drive;
 
     private Shooter shooter;
+    private Manipulation manipulation;
 
     private FileReader fr;
     private JsonReader jr;
@@ -64,10 +65,11 @@ public class JsonAutonomous extends Autonomous implements Loggable {
      * Creates a JsonAutonomous from the specified file
      * @param file The location of the file to parse
     */
-    public JsonAutonomous(String file, LoggableGyro gyro, Drivetrain drive, Shooter shooter) {
+    public JsonAutonomous(String file, LoggableGyro gyro, Drivetrain drive, Shooter shooter, Manipulation manipulation) {
         this.drive = drive;
         this.gyro = gyro;
         this.shooter = shooter;
+        this.manipulation = manipulation;
 
         parseFile(file);
     }
@@ -191,9 +193,11 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     }
 
     public boolean driveCurrent(double leftPower, double rightPower, double current) {
+        System.out.println(drive.getAverageCurrent());
         if(drive.getAverageCurrent() < current) {
             drive.drive(leftPower, rightPower);
         } else {
+            drive.drive(0, 0);
             return true;
         }
         return false;
@@ -234,8 +238,10 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                 timer.reset();
                 if(timer.get() < ai.args.get(0)) {
                     shooter.setSpeed(SHOOTER_SPEED);
+                    manipulation.setIntakeSpin(true);
                 } else {
                     shooter.setSpeed(0);
+                    manipulation.setIntakeSpin(false);
                     reset();
                 }
             }
@@ -246,8 +252,10 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                 timer.reset();
                 if(timer.get() < ai.args.get(0)) {
                     shooter.setPower(SHOOTER_SPEED);
+                    manipulation.setIntakeSpin(true);
                 } else {
                     shooter.setPower(0);
+                    manipulation.setIntakeSpin(false);
                     reset();
                 }
             }
