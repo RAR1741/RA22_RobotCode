@@ -195,12 +195,9 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     }
 
     public boolean driveCurrent(double leftPower, double rightPower, double current) {
-        System.out.println(drive.getAverageCurrent());
         if(drive.getAverageCurrent() < current) {
-            System.out.println("Driving");
             drive.drive(leftPower, rightPower);
         } else {
-            System.out.println("Not Driving");
             drive.drive(0, 0);
             return true;
         }
