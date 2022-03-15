@@ -165,12 +165,14 @@ public class JsonAutonomous extends Autonomous implements Loggable {
             }
         } else if(u.equals(AutoInstruction.Unit.FEET) || u.equals(AutoInstruction.Unit.INCHES)) {
             //amount: feet/inches to drive
-            if(driveDistance(ai.args.get(0), ai.args.get(0), (u.equals(AutoInstruction.Unit.INCHES) ? ai.amount * TICKS_PER_INCH : ai.amount))) {
+            if(driveDistance(ai.args.get(0), ai.args.get(0), (u.equals(AutoInstruction.Unit.INCHES) ? ai.amount * TICKS_PER_INCH : (ai.amount * TICKS_PER_INCH) * 12))) {
                 reset();
             }
         } else if(u.equals(AutoInstruction.Unit.CURRENT)) {
             //amount: motor current to stop at
-            if(driveCurrent(ai.args.get(0), ai.args.get(0), ai.amount));
+            if(driveCurrent(ai.args.get(0), ai.args.get(0), ai.amount)) {
+                reset();
+            }
         }
     }
 
@@ -195,8 +197,10 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     public boolean driveCurrent(double leftPower, double rightPower, double current) {
         System.out.println(drive.getAverageCurrent());
         if(drive.getAverageCurrent() < current) {
+            System.out.println("Driving");
             drive.drive(leftPower, rightPower);
         } else {
+            System.out.println("Not Driving");
             drive.drive(0, 0);
             return true;
         }
