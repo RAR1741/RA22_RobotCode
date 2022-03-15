@@ -2,11 +2,11 @@
     "auto": [
         {
             "type": "drive",
-            "unit": "SECONDS",
-            "amount": 0.1,
+            "unit": "CURRENT",
+            "amount": 20,
             "args": [
-                -0.05, 
-                -0.05
+                0.05,
+                0.05
             ]
         },
         {
@@ -16,12 +16,12 @@
             ]
         },
         {
-            "type": "turnDeg",
-            "unit": "DEGREES",
-            "amount": -90,
+            "type": "drive",
+            "unit": "FEET",
+            "amount": 5,
             "args": [
-                0.1,
-                -0.1
+                -0.05,
+                -0.05
             ]
         }
     ]
