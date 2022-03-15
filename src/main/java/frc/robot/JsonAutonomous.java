@@ -36,7 +36,6 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     private FileReader fr;
     private JsonReader jr;
-    private JsonParser jp;
 
     public static class AutoInstruction {
         public String type;
