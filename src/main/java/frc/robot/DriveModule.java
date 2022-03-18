@@ -83,6 +83,10 @@ public class DriveModule implements Loggable {
         main.set(TalonFXControlMode.Velocity, speed * 22000);
     }
 
+    public void setPower(double power) {
+        main.set(TalonFXControlMode.PercentOutput, power);
+    }
+
     /**
      * Get the velocity of the module.
      *

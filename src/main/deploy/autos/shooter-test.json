@@ -3,7 +3,15 @@
         {
             "type": "shoot",
             "unit": "SPEED",
-            "amount": 1
+            "args": [
+                1000
+            ]
+        },
+        {
+            "type": "wait",
+            "args": [
+                5
+            ]
         }
     ]
 }

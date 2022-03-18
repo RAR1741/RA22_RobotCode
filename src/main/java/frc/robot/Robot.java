@@ -76,10 +76,10 @@ public class Robot extends TimedRobot {
 
         if (this.drivetrainEnabled) {
             System.out.println("Initializing drivetrain...");
-            leftModule = new DriveModule("LeftDriveModule", 2, 3); // 2, 3
+            leftModule = new DriveModule("LeftDriveModule", 5, 7); // 2, 3
             leftModule.setEncoder(2, 3, false);
 
-            rightModule = new DriveModule("RightDriveModule", 4, 5); // 4, 5
+            rightModule = new DriveModule("RightDriveModule", 8, 10); // 4, 5
             rightModule.setEncoder(0, 1, true);
 
             drive = new Drivetrain(leftModule, rightModule, 6);
@@ -90,7 +90,7 @@ public class Robot extends TimedRobot {
         } else {
             System.out.println("Drivetrain initialization disabled.");
         }
-        if (manipulationEnabled) {
+        if (this.manipulationEnabled) {
             System.out.println("Initializing manipulation...");
             manipulation = new Manipulation(0, 1, 7, 8);
         } else {
@@ -98,8 +98,9 @@ public class Robot extends TimedRobot {
         }
         if (this.shooterEnabled) {
             System.out.println("Initializing shooter");
-            shooter = new Shooter(6);
+            shooter = new Shooter(16); // 6
             logger.addLoggable(shooter);
+            System.out.println("Shooter done");
         } else {
             System.out.println("Shooter initialization disabled.");
         }
@@ -122,7 +123,8 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         gyro.reset();
 
-        auto = new JsonAutonomous("/home/lvuser/deploy/autos/auto-test.json", gyro, drive, shooter, manipulation);
+        auto = new JsonAutonomous("/home/lvuser/deploy/autos/shooter-test.json", gyro, drive, shooter, manipulation);
+        System.out.println("Auto Initialized");
         logger.addLoggable(auto);
         resetLogging();
     }
@@ -132,6 +134,7 @@ public class Robot extends TimedRobot {
         // Robot code goes here
         leftModule.updateCurrent();
         rightModule.updateCurrent();
+        System.out.println("running - Robot");
         auto.run();
 
         logger.log();

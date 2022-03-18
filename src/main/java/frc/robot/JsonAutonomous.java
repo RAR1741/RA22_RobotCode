@@ -114,11 +114,12 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     @Override
     public void run() {
+        System.out.println("running");
         if (step == -1) {
             reset();
         }
         if (instructions.size() == step) {
-            drive.drive(0, 0);
+            drive.drive(0, 0, false);
             return;
         }
         AutoInstruction ai = instructions.get(step);
@@ -137,6 +138,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                 break;
 
             case "shoot":
+            System.out.println("shooting");
                 shoot(ai);
                 break;
 
@@ -177,7 +179,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     private boolean driveDistance(double leftPower, double rightPower, double distance) {
         if(Math.abs(drive.getEncoder() - start) < distance) {
-            drive.drive(leftPower, rightPower);
+            drive.drive(leftPower, rightPower, false);
         } else {
             return true;
         }
@@ -186,7 +188,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     private boolean driveTime(double leftPower, double rightPower, double time) {
         if(timer.get() < time) {
-            drive.drive(leftPower, rightPower);
+            drive.drive(leftPower, rightPower, false);
         } else {
             return true;
         }
@@ -195,9 +197,9 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     public boolean driveCurrent(double leftPower, double rightPower, double current) {
         if(drive.getAverageCurrent() < current) {
-            drive.drive(leftPower, rightPower);
+            drive.drive(leftPower, rightPower, false);
         } else {
-            drive.drive(0, 0);
+            //drive.drive(0, 0);
             return true;
         }
         return false;
@@ -207,7 +209,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
         if(Math.abs(getAngle()-navxStart-deg)<10) {
             return true;
         } else {
-            drive.drive(leftSpeed, rightSpeed);
+            drive.drive(leftSpeed, rightSpeed, false);
             return false;
         }
     }
@@ -218,7 +220,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
             //1: rightPower
             //amount: degrees to turn
         if(rotateDegrees(ai.args.get(0), ai.args.get(1), ai.amount)) {
-            drive.drive(0, 0); // Stop turning
+            drive.drive(0, 0, false); // Stop turning
             reset();
         }
     }
@@ -231,7 +233,9 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     private void shoot(AutoInstruction ai) {
         AutoInstruction.Unit u = ai.unit;
-        if(u == AutoInstruction.Unit.SPEED) {
+        System.out.println(shooter.getSpeed());
+        //shooter.setPower(SHOOTER_SPEED);
+        /*if(u == AutoInstruction.Unit.SPEED) {
             if(shooter.getSpeed() < SHOOTER_SPEED) {
                 shooter.setSpeed(SHOOTER_SPEED);
             } else {
@@ -259,11 +263,11 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                     reset();
                 }
             }
-        }
+        }*/
     }
 
     private void reset() {
-        drive.drive(0, 0);
+        drive.drive(0, 0, true);
         step++;
         navxStart = getAngle();
         start = drive.getEncoder();
