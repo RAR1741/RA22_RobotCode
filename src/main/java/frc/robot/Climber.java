@@ -44,16 +44,18 @@ public class Climber implements Loggable {
     }
 
     public static double MAX_INSTANT_CURRENT = 200.0;
-    public static double MAX_AVERAGE_CURRENT = 110.0;
+    public static double MAX_AVERAGE_CURRENT = 120.0;
     public static double NEXT_AB_STATE_CURRENT = 65.0;
     public static double NEXT_BC_STATE_CURRENT = 45.0;
     public static int FILTER_FRAME_RANGE = 10;
 
-    public static double TOUCH_A_POSITION = 0; // TBD
-    public static double SWING_AB_POSITION = 0; // TBD
-    public static double SWING_B_POSITION = 0; // TBD
-    public static double SWING_BC_POSITION = 0; // TBD
-    public static double SWING_MIN_VELOCITY = 1000; // TBD
+    public static double TOUCH_A_POSITION = 144000; // TBD
+    public static double SWING_AB_POSITION = 43000; // TBD
+    public static double SWING_B_POSITION = 900; // TBD
+    public static double SWING_BC_POSITION = 107000; // TBD
+    public static double SWING_MIN_VELOCITY = 1500; // TBD
+
+    private double motorSpeed;
 
     TalonFX climbingMotor;
     TalonFX secondaryClimbingMotor;
@@ -117,24 +119,24 @@ public class Climber implements Loggable {
         this.rightFilter.update(secondaryClimbingMotor.getStatorCurrent());
 
         // Make sure we're not pulling too much current instantly
-        if (climbingMotor.getStatorCurrent() > MAX_INSTANT_CURRENT
-                || secondaryClimbingMotor.getStatorCurrent() > MAX_INSTANT_CURRENT) {
-            setClimbingState(ClimbingStates.ERROR);
-            System.out.println("--------HIT MAX CURRENT--------");
-        }
+        // if (climbingMotor.getStatorCurrent() > MAX_INSTANT_CURRENT
+        // || secondaryClimbingMotor.getStatorCurrent() > MAX_INSTANT_CURRENT) {
+        // setClimbingState(ClimbingStates.ERROR);
+        // System.out.println("--------HIT MAX CURRENT--------");
+        // }
 
-        // Make sure we're not pulling too much current over time
-        if (leftFilter.get() > MAX_AVERAGE_CURRENT || rightFilter.get() > MAX_AVERAGE_CURRENT) {
-            System.out.println("--------HIT MAX AVERAGE CURRENT--------");
-            setClimbingState(ClimbingStates.ERROR);
-        }
+        // // Make sure we're not pulling too much current over time
+        // if (leftFilter.get() > MAX_AVERAGE_CURRENT || rightFilter.get() > MAX_AVERAGE_CURRENT) {
+        // System.out.println("--------HIT MAX AVERAGE CURRENT--------");
+        // setClimbingState(ClimbingStates.ERROR);
+        // }
 
         switch (this.currentClimberState) {
             // 00 RESTING: Default resting
             case RESTING:
                 climberSolenoidA.set(false);
-                climberSolenoidB1.set(true);
-                climberSolenoidB2.set(true);
+                climberSolenoidB1.set(false);
+                climberSolenoidB2.set(false);
                 climberSolenoidC.set(false);
                 break;
 
@@ -147,11 +149,12 @@ public class Climber implements Loggable {
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
                 // TODO: set motor target here
-                // climbingMotor.set(ControlMode.Position, TOUCH_A_POSITION);
+                setSpeed(motorSpeed);
                 break;
 
             // 10 TOUCH_A: Pin A (button/sensor)
             case TOUCH_A:
+                setSpeed(0);
                 climberSolenoidA.set(false);
                 climberSolenoidB1.set(true);
                 climberSolenoidB2.set(false);
@@ -167,16 +170,20 @@ public class Climber implements Loggable {
             case ROTATE_B:
                 // TODO: set motor power here
                 this.setSpeed(-0.4);
-                if (climbingMotor.getStatorCurrent() > NEXT_AB_STATE_CURRENT
-                        || secondaryClimbingMotor.getStatorCurrent() > NEXT_AB_STATE_CURRENT) {
-                    setClimbingState(ClimbingStates.TOUCH_AB);
-                    this.setSpeed(0);
-                }
+                climberSolenoidA.set(false);
+                climberSolenoidB1.set(true);
+                climberSolenoidB2.set(false);
+                climberSolenoidC.set(true);
+                // if (climbingMotor.getStatorCurrent() > NEXT_AB_STATE_CURRENT
+                // || secondaryClimbingMotor.getStatorCurrent() > NEXT_AB_STATE_CURRENT) {
+                // setClimbingState(ClimbingStates.TOUCH_AB);
+                // this.setSpeed(0);
+                // }
                 break;
 
             // 20 TOUCH_AB: Pin B (high current/sensor)
             case TOUCH_AB:
-                this.setSpeed(0);
+                this.setSpeed(-0.05);
                 climberSolenoidA.set(false);
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
@@ -190,11 +197,12 @@ public class Climber implements Loggable {
             case ROTATE_AB_DOWN:
                 this.setPower(0);
                 // TODO: set motor target here
-                if (Math.abs(climbingMotor.getSelectedSensorPosition() - SWING_AB_POSITION) < 500) {// Determine
-                                                                                                    // tolerance
-                    System.out.println("DONE SWINGING!");
-                    // setClimbingState(ClimbingStates.RELEASE_A);
-                }
+                // if (climbingMotor.getSelectedSensorPosition() > SWING_AB_POSITION) {// Was less
+                // then
+                // // when broken
+                // System.out.println("DONE SWINGING!");
+                // setClimbingState(ClimbingStates.RELEASE_A);
+                // }
                 break;
 
             // 30 RELEASE_A: Unpin A (gyro/accel)
@@ -206,7 +214,7 @@ public class Climber implements Loggable {
                 climberSolenoidC.set(true);
                 // TODO: set motor target here
                 // if (!gates.getA()) {
-                // setClimbingState(ClimbingStates.ROTATE_B_DOWN);;
+                setClimbingState(ClimbingStates.ROTATE_B_DOWN);;
                 // }
                 break;
 
@@ -214,24 +222,28 @@ public class Climber implements Loggable {
             case ROTATE_B_DOWN:
                 // TODO: set motor target here
                 this.setPower(0);
-                if (Math.abs(climbingMotor.getSelectedSensorPosition() - SWING_B_POSITION) < 500
-                        && Math.abs(
-                                climbingMotor.getSelectedSensorVelocity()) < SWING_MIN_VELOCITY) {// Determine
-                                                                                                  // tolerance
-                    System.out.println("DONE SWINGING!");
-                    // setClimbingState(ClimbingStates.ROTATE_C);
-                }
+                // if (Math.abs(climbingMotor.getSelectedSensorPosition() - SWING_B_POSITION) < 1000
+                // && Math.abs(
+                // climbingMotor.getSelectedSensorVelocity()) < SWING_MIN_VELOCITY) {// Determine
+                // // tolerance
+                // System.out.println("DONE SWINGING!");
+                // setClimbingState(ClimbingStates.ROTATE_C);
+                // }
                 break;
 
             // 40 ROTATE_C: Rotate to C bar (gyro/accel)
             case ROTATE_C:
                 // TODO: set motor target here
-                this.setSpeed(-0.2);
-                if (climbingMotor.getStatorCurrent() > NEXT_BC_STATE_CURRENT
-                        || secondaryClimbingMotor.getStatorCurrent() > NEXT_BC_STATE_CURRENT) {
-                    setClimbingState(ClimbingStates.TOUCH_BC);
-                    this.setSpeed(0);
-                }
+                this.setSpeed(-0.3);
+                climberSolenoidA.set(true);
+                climberSolenoidB1.set(false);
+                climberSolenoidB2.set(false);
+                climberSolenoidC.set(true);
+                // if (leftFilter.get() > NEXT_BC_STATE_CURRENT
+                // || rightFilter.get() > NEXT_BC_STATE_CURRENT) {
+                // setClimbingState(ClimbingStates.TOUCH_BC);
+                // this.setSpeed(0);
+                // }
                 break;
 
             // 50 TOUCH_BC: Pin C (high current/sensor)
@@ -251,11 +263,11 @@ public class Climber implements Loggable {
             case ROTATE_BC_DOWN:
                 // TODO: set motor target here
                 this.setPower(0);
-                if (Math.abs(climbingMotor.getSelectedSensorPosition() - SWING_BC_POSITION) < 500) {// Determine
-                                                                                                    // tolerance
-                    System.out.println("DONE SWINGING!");
-                    // setClimbingState(ClimbingStates.RELEASE_B);
-                }
+                // if (climbingMotor.getSelectedSensorPosition() < SWING_BC_POSITION) {// Determine
+                // // tolerance
+                // System.out.println("DONE SWINGING!");
+                // setClimbingState(ClimbingStates.RELEASE_B);
+                // }
                 break;
 
             // 60 RELEASE_B: Unpin B (gyro/accel)
@@ -266,7 +278,7 @@ public class Climber implements Loggable {
                 climberSolenoidB2.set(true);
                 climberSolenoidC.set(false);
                 // if (!gates.getB2()) {
-                // setClimbingState(ClimbingStates.ROTATE_C_DOWN);
+                setClimbingState(ClimbingStates.ROTATE_C_DOWN);
                 // }
                 break;
 
@@ -300,6 +312,14 @@ public class Climber implements Loggable {
 
     public ClimbingStates getNextClimbingState() {
         return ClimbingStates.values()[this.currentClimberState.ordinal() + 1];
+    }
+
+    public ClimbingStates getPreviousClimbingState() {
+        return ClimbingStates.values()[this.currentClimberState.ordinal() - 1];
+    }
+
+    public int getClimberStateId() {
+        return this.currentClimberState.ordinal();
     }
 
     public void disableClimber() {
@@ -397,7 +417,8 @@ public class Climber implements Loggable {
                 break;
 
             case ACTIVE:
-                setSpeed(value);
+                motorSpeed = value;
+                setSpeed(motorSpeed);
                 break;
 
             default:

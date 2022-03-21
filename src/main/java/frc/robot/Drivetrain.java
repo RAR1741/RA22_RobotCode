@@ -11,6 +11,8 @@ public class Drivetrain implements Loggable {
     private final double SHIFT_CURRENT_LOW = 0;
     private final double SHIFT_VELOCITY = 0; // Wheel velocity
 
+    private boolean climbMode = false;
+
     private DriveModule left;
     private DriveModule right;
     private Solenoid shifter;
@@ -47,6 +49,10 @@ public class Drivetrain implements Loggable {
         right.set(rightSpeed);
     }
 
+    public void setClimbMode() {
+        climbMode = !climbMode;
+    }
+
     /**
      * Drive with arcade-style controls.
      *
@@ -54,6 +60,7 @@ public class Drivetrain implements Loggable {
      * @param speedInput The speed to drive
      */
     public void arcadeDrive(double turnInput, double speedInput) {
+        speedInput = speedInput * (climbMode ? 0.3 : 1);
         this.drive(speedInput - turnInput, speedInput + turnInput);
     }
 

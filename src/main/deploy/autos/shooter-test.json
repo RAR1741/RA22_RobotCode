@@ -1,0 +1,17 @@
+{
+    "auto": [
+        {
+            "type": "shoot",
+            "unit": "SPEED",
+            "args": [
+                1000
+            ]
+        },
+        {
+            "type": "wait",
+            "args": [
+                5
+            ]
+        }
+    ]
+}
