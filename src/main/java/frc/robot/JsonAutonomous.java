@@ -243,7 +243,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     }
 
     private void wait(AutoInstruction ai) {
-        if (timer.get() >= ai.args.get(0)) {
+        if (timer.get() >= ai.amount) {
             reset();
         }
     }

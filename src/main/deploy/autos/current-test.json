@@ -11,9 +11,7 @@
         },
         {
             "type": "wait",
-            "args": [
-                1
-            ]
+            "amount": 1
         },
         {
             "type": "drive",
