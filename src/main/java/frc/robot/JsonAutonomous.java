@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class JsonAutonomous extends Autonomous implements Loggable {
 
@@ -97,6 +98,10 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                         }
                     }
 
+                    if (!o.has("type")) {
+                        throw new NoSuchElementException(
+                                "There is no element \"type\" in element " + e.toString() + "!");
+                    }
                     String type = o.get("type").getAsString();
 
                     String unitString = o.has("unit") ? o.get("unit").getAsString() : null;
