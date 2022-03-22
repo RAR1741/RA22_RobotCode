@@ -40,7 +40,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     public static class AutoInstruction {
         public String type;
         public Unit unit;
-        public double amount;
+        public Double amount;
         public List<Double> args;
 
         public enum Unit {
@@ -52,7 +52,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
             this.args = args;
         }
 
-        public AutoInstruction(String type, Unit unit, double amount, List<Double> args) {
+        public AutoInstruction(String type, Unit unit, Double amount, List<Double> args) {
             this.type = type;
             this.unit = unit;
             this.amount = amount;
