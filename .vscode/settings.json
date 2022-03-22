@@ -1,5 +1,6 @@
+
 {
-  "java.configuration.updateBuildConfiguration": "interactive",
+  "java.configuration.updateBuildConfiguration": "disabled",
   "java.server.launchMode": "Standard",
   "files.exclude": {
     "**/.git": true,
