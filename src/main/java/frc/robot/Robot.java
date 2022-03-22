@@ -134,7 +134,6 @@ public class Robot extends TimedRobot {
         // Robot code goes here
         leftModule.updateCurrent();
         rightModule.updateCurrent();
-        System.out.println("running - Robot");
         auto.run();
 
         logger.log();

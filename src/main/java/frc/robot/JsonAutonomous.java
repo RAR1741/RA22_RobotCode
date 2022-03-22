@@ -125,7 +125,6 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     @Override
     public void run() {
-        System.out.println("running");
         if (step == -1) {
             reset();
         }
@@ -149,7 +148,6 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                 break;
 
             case "shoot":
-                System.out.println("shooting");
                 shoot(ai);
                 break;
 
@@ -250,18 +248,37 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     private void shoot(AutoInstruction ai) {
         AutoInstruction.Unit u = ai.unit;
-        System.out.println(shooter.getSpeed());
-        // shooter.setPower(SHOOTER_SPEED);
-        /*
-         * if(u == AutoInstruction.Unit.SPEED) { if(shooter.getSpeed() < SHOOTER_SPEED) {
-         * shooter.setSpeed(SHOOTER_SPEED); } else { timer.reset(); if(timer.get() < ai.args.get(0))
-         * { shooter.setSpeed(SHOOTER_SPEED); manipulation.setIntakeSpin(true); } else {
-         * shooter.setSpeed(0); manipulation.setIntakeSpin(false); reset(); } } } else if(u ==
-         * AutoInstruction.Unit.POWER) { if(shooter.getSpeed() < SHOOTER_SPEED) {
-         * shooter.setPower(SHOOTER_SPEED); } else { timer.reset(); if(timer.get() < ai.args.get(0))
-         * { shooter.setPower(SHOOTER_SPEED); manipulation.setIntakeSpin(true); } else {
-         * shooter.setPower(0); manipulation.setIntakeSpin(false); reset(); } } }
-         */
+
+        if (u == AutoInstruction.Unit.SPEED) {
+            if (shooter.getSpeed() < SHOOTER_SPEED) {
+                shooter.setSpeed(SHOOTER_SPEED);
+            } else {
+                timer.reset();
+                if (timer.get() < ai.args.get(0)) {
+                    shooter.setSpeed(SHOOTER_SPEED);
+                    manipulation.setIntakeSpin(true);
+                } else {
+                    shooter.setSpeed(0);
+                    manipulation.setIntakeSpin(false);
+                    reset();
+                }
+            }
+        } else if (u == AutoInstruction.Unit.POWER) {
+            if (shooter.getSpeed() < SHOOTER_SPEED) {
+                shooter.setPower(SHOOTER_SPEED);
+            } else {
+                timer.reset();
+                if (timer.get() < ai.args.get(0)) {
+                    shooter.setPower(SHOOTER_SPEED);
+                    manipulation.setIntakeSpin(true);
+                } else {
+                    shooter.setPower(0);
+                    manipulation.setIntakeSpin(false);
+                    reset();
+                }
+            }
+        }
+
     }
 
     private void reset() {
