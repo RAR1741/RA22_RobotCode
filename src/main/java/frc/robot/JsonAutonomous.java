@@ -18,8 +18,10 @@ import java.util.List;
 
 public class JsonAutonomous extends Autonomous implements Loggable {
 
-    private static final double TICKS_PER_ROTATION = 16750; //TODO: Update value for 2022 robot
-    private static final double TICKS_PER_INCH = TICKS_PER_ROTATION / (6 * Math.PI); //TODO: Update formula for 2022 robot
+    private static final double TICKS_PER_ROTATION = 16750; // TODO: Update value for 2022 robot
+    private static final double TICKS_PER_INCH = TICKS_PER_ROTATION / (6 * Math.PI); // TODO: Update
+                                                                                     // formula for
+                                                                                     // 2022 robot
     private static final double SHOOTER_SPEED = 1;
     private JsonElement auto;
     private List<AutoInstruction> instructions;
@@ -62,9 +64,11 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     /**
      * Creates a JsonAutonomous from the specified file
+     * 
      * @param file The location of the file to parse
-    */
-    public JsonAutonomous(String file, LoggableGyro gyro, Drivetrain drive, Shooter shooter, Manipulation manipulation) {
+     */
+    public JsonAutonomous(String file, LoggableGyro gyro, Drivetrain drive, Shooter shooter,
+            Manipulation manipulation) {
         this.drive = drive;
         this.gyro = gyro;
         this.shooter = shooter;
@@ -105,7 +109,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                     instructions.add(ai);
                 }
             }
-        } catch (JsonIOException | JsonSyntaxException | FileNotFoundException  e) {
+        } catch (JsonIOException | JsonSyntaxException | FileNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -140,7 +144,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                 break;
 
             case "shoot":
-            System.out.println("shooting");
+                System.out.println("shooting");
                 shoot(ai);
                 break;
 
@@ -153,34 +157,40 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     private void drive(AutoInstruction ai) {
         AutoInstruction.Unit u = ai.unit;
-        //ai args:
-            //0: leftPower
-            //1: rightPower
-        if(u.equals(AutoInstruction.Unit.SECONDS) || u.equals(AutoInstruction.Unit.MILLISECONDS)) {
-            //amount: (milli)seconds to drive
-            if(driveTime(ai.args.get(0), ai.args.get(1), (u.equals(AutoInstruction.Unit.SECONDS) ? ai.amount : ai.amount/1000.0))) {
+        // ai args:
+        // 0: leftPower
+        // 1: rightPower
+        if (u.equals(AutoInstruction.Unit.SECONDS) || u.equals(AutoInstruction.Unit.MILLISECONDS)) {
+            // amount: (milli)seconds to drive
+            if (driveTime(ai.args.get(0), ai.args.get(1),
+                    (u.equals(AutoInstruction.Unit.SECONDS) ? ai.amount : ai.amount / 1000.0))) {
                 reset();
             }
-        } else if(u.equals(AutoInstruction.Unit.ENCODER_TICKS) || u.equals(AutoInstruction.Unit.ROTATIONS)) {
-            //amount: rotations/encoder ticks to drive
-            if(driveDistance(ai.args.get(0), ai.args.get(1), (u.equals(AutoInstruction.Unit.ENCODER_TICKS) ? ai.amount : ai.amount * TICKS_PER_ROTATION))) {
+        } else if (u.equals(AutoInstruction.Unit.ENCODER_TICKS)
+                || u.equals(AutoInstruction.Unit.ROTATIONS)) {
+            // amount: rotations/encoder ticks to drive
+            if (driveDistance(ai.args.get(0), ai.args.get(1),
+                    (u.equals(AutoInstruction.Unit.ENCODER_TICKS) ? ai.amount
+                            : ai.amount * TICKS_PER_ROTATION))) {
                 reset();
             }
-        } else if(u.equals(AutoInstruction.Unit.FEET) || u.equals(AutoInstruction.Unit.INCHES)) {
-            //amount: feet/inches to drive
-            if(driveDistance(ai.args.get(0), ai.args.get(0), (u.equals(AutoInstruction.Unit.INCHES) ? ai.amount * TICKS_PER_INCH : (ai.amount * TICKS_PER_INCH) * 12))) {
+        } else if (u.equals(AutoInstruction.Unit.FEET) || u.equals(AutoInstruction.Unit.INCHES)) {
+            // amount: feet/inches to drive
+            if (driveDistance(ai.args.get(0), ai.args.get(0),
+                    (u.equals(AutoInstruction.Unit.INCHES) ? ai.amount * TICKS_PER_INCH
+                            : (ai.amount * TICKS_PER_INCH) * 12))) {
                 reset();
             }
-        } else if(u.equals(AutoInstruction.Unit.CURRENT)) {
-            //amount: motor current to stop at
-            if(driveCurrent(ai.args.get(0), ai.args.get(0), ai.amount)) {
+        } else if (u.equals(AutoInstruction.Unit.CURRENT)) {
+            // amount: motor current to stop at
+            if (driveCurrent(ai.args.get(0), ai.args.get(0), ai.amount)) {
                 reset();
             }
         }
     }
 
     private boolean driveDistance(double leftPower, double rightPower, double distance) {
-        if(Math.abs(drive.getEncoder() - start) < distance) {
+        if (Math.abs(drive.getEncoder() - start) < distance) {
             drive.drive(leftPower, rightPower, false);
         } else {
             return true;
@@ -189,7 +199,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     }
 
     private boolean driveTime(double leftPower, double rightPower, double time) {
-        if(timer.get() < time) {
+        if (timer.get() < time) {
             drive.drive(leftPower, rightPower, false);
         } else {
             return true;
@@ -198,17 +208,17 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     }
 
     public boolean driveCurrent(double leftPower, double rightPower, double current) {
-        if(drive.getAverageCurrent() < current) {
+        if (drive.getAverageCurrent() < current) {
             drive.drive(leftPower, rightPower, false);
         } else {
-            //drive.drive(0, 0);
+            // drive.drive(0, 0);
             return true;
         }
         return false;
     }
 
     private boolean rotateDegrees(double leftSpeed, double rightSpeed, double deg) {
-        if(Math.abs(getAngle()-navxStart-deg)<10) {
+        if (Math.abs(getAngle() - navxStart - deg) < 10) {
             return true;
         } else {
             drive.drive(leftSpeed, rightSpeed, false);
@@ -217,11 +227,11 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     }
 
     public void turnDegrees(AutoInstruction ai) {
-        //ai args:
-            //0: leftPower
-            //1: rightPower
-            //amount: degrees to turn
-        if(rotateDegrees(ai.args.get(0), ai.args.get(1), ai.amount)) {
+        // ai args:
+        // 0: leftPower
+        // 1: rightPower
+        // amount: degrees to turn
+        if (rotateDegrees(ai.args.get(0), ai.args.get(1), ai.amount)) {
             drive.drive(0, 0, false); // Stop turning
             reset();
         }
@@ -236,36 +246,17 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     private void shoot(AutoInstruction ai) {
         AutoInstruction.Unit u = ai.unit;
         System.out.println(shooter.getSpeed());
-        //shooter.setPower(SHOOTER_SPEED);
-        /*if(u == AutoInstruction.Unit.SPEED) {
-            if(shooter.getSpeed() < SHOOTER_SPEED) {
-                shooter.setSpeed(SHOOTER_SPEED);
-            } else {
-                timer.reset();
-                if(timer.get() < ai.args.get(0)) {
-                    shooter.setSpeed(SHOOTER_SPEED);
-                    manipulation.setIntakeSpin(true);
-                } else {
-                    shooter.setSpeed(0);
-                    manipulation.setIntakeSpin(false);
-                    reset();
-                }
-            }
-        } else if(u == AutoInstruction.Unit.POWER) {
-            if(shooter.getSpeed() < SHOOTER_SPEED) {
-                shooter.setPower(SHOOTER_SPEED);
-            } else {
-                timer.reset();
-                if(timer.get() < ai.args.get(0)) {
-                    shooter.setPower(SHOOTER_SPEED);
-                    manipulation.setIntakeSpin(true);
-                } else {
-                    shooter.setPower(0);
-                    manipulation.setIntakeSpin(false);
-                    reset();
-                }
-            }
-        }*/
+        // shooter.setPower(SHOOTER_SPEED);
+        /*
+         * if(u == AutoInstruction.Unit.SPEED) { if(shooter.getSpeed() < SHOOTER_SPEED) {
+         * shooter.setSpeed(SHOOTER_SPEED); } else { timer.reset(); if(timer.get() < ai.args.get(0))
+         * { shooter.setSpeed(SHOOTER_SPEED); manipulation.setIntakeSpin(true); } else {
+         * shooter.setSpeed(0); manipulation.setIntakeSpin(false); reset(); } } } else if(u ==
+         * AutoInstruction.Unit.POWER) { if(shooter.getSpeed() < SHOOTER_SPEED) {
+         * shooter.setPower(SHOOTER_SPEED); } else { timer.reset(); if(timer.get() < ai.args.get(0))
+         * { shooter.setPower(SHOOTER_SPEED); manipulation.setIntakeSpin(true); } else {
+         * shooter.setPower(0); manipulation.setIntakeSpin(false); reset(); } } }
+         */
     }
 
     private void reset() {
