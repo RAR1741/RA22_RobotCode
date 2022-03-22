@@ -3,6 +3,7 @@
         {
             "type": "shoot",
             "unit": "SPEED",
+            "amount": 1000,
             "args": [
                 1000
             ]

@@ -87,8 +87,10 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                     JsonObject o = e.getAsJsonObject();
 
                     List<Double> extraArgs = new ArrayList<Double>();
-                    for (JsonElement e2 : o.get("args").getAsJsonArray()) {
-                        extraArgs.add(e2.getAsDouble());
+                    if (o.has("args")) {
+                        for (JsonElement e2 : o.get("args").getAsJsonArray()) {
+                            extraArgs.add(e2.getAsDouble());
+                        }
                     }
 
                     String type = o.get("type").getAsString();
