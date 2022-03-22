@@ -143,6 +143,9 @@ public class Robot extends TimedRobot {
             leftModule.updateCurrent();
             rightModule.updateCurrent();
         }
+        if (this.shooterEnabled) {
+            shooter.setSpeed(driver.getRightTriggerAxis());
+        }
 
         logger.log();
         logger.writeLine();
