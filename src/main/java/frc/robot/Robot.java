@@ -178,6 +178,9 @@ public class Robot extends TimedRobot {
             manipulation.setIntakeSpin(operator.getYButton());
             manipulation.setIndexLoad(operator.getXButton());
         }
+        if (this.shooterEnabled) {
+            shooter.setSpeed(driver.getRightTriggerAxis());
+        }
 
         logger.log();
         logger.writeLine();
