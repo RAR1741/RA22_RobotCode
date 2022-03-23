@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
+import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.logging.Loggable;
 import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.LoggableTimer;
@@ -302,5 +303,13 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     @Override
     public void log(Logger logger) {
         logger.log("Autonomous/step", this.step);
+    }
+
+    public static String getAutoPath(String name) {
+        return Filesystem.getDeployDirectory().listFiles((dir, filename) -> {
+            return filename.contentEquals("autos");
+        })[0].listFiles((dir, filename) -> {
+            return filename.contentEquals(name);
+        })[0].getAbsolutePath();
     }
 }
