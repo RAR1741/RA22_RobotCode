@@ -3,15 +3,24 @@ package frc.robot.logging;
 import edu.wpi.first.wpilibj.Timer;
 
 public class LoggableTimer extends Timer implements Loggable {
+    String name;
+
+    public LoggableTimer() {
+        this("Time");
+    }
+
+    public LoggableTimer(String name) {
+        this.name = name;
+    }
 
     @Override
     public void setupLogging(Logger logger) {
-        logger.addAttribute("Time");
+        logger.addAttribute(this.name);
     }
 
     @Override
     public void log(Logger logger) {
-        logger.log("Time", this.get());
+        logger.log(this.name, this.get());
     }
 
 }
