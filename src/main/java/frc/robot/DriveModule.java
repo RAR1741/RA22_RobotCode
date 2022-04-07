@@ -18,7 +18,7 @@ public class DriveModule implements Loggable {
     private Encoder encoder;
 
     private double power;
-    private double current[] = new double[30];
+    private double[] current = new double[30];
     private int indexCurrent;
 
     /**
@@ -44,6 +44,10 @@ public class DriveModule implements Loggable {
         main.config_kD(0, 5);
 
         indexCurrent = 0;
+    }
+
+    public void update() {
+        updateCurrent();
     }
 
     public void setEncoder(int encoderPortA, int encoderPortB, boolean reverseDirection) {
