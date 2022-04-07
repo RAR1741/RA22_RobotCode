@@ -10,7 +10,7 @@ import frc.robot.logging.Logger;
 
 public class DriveModule implements Loggable {
 
-    private final double VELOCITY_COEFFICIENT = 600 / 2048;
+    private final double MAX_VELOCITY = 22000;
 
     private TalonFX main;
     private TalonFX sub;
@@ -18,6 +18,7 @@ public class DriveModule implements Loggable {
     private Encoder encoder;
 
     private double power;
+    private double targetSpeed;
     private double[] current = new double[30];
     private int indexCurrent;
 
@@ -39,9 +40,13 @@ public class DriveModule implements Loggable {
         this.sub.follow(this.main);
 
         main.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30);
-        main.config_kP(0, 0.1);
-        main.config_kI(0, 0.001);
-        main.config_kD(0, 5);
+        main.config_kF(0, 1023 / MAX_VELOCITY);
+        main.config_kP(0, (0.1 * 1023) / 800);
+        main.config_kI(0, 0.000);
+        main.config_kD(0, 0);
+        main.configMotionCruiseVelocity(MAX_VELOCITY / 2);
+        main.configMotionAcceleration(MAX_VELOCITY / 2);
+        main.configClosedloopRamp(0.3);
 
         indexCurrent = 0;
     }
@@ -84,7 +89,12 @@ public class DriveModule implements Loggable {
      * @param speed The speed to set the module to
      */
     public void setSpeed(double speed) {
-        main.set(TalonFXControlMode.Velocity, speed * 22000);
+        targetSpeed = speed * MAX_VELOCITY;
+        main.set(TalonFXControlMode.Velocity, targetSpeed);
+    }
+
+    public void setMagic(double speed) {
+        main.set(TalonFXControlMode.MotionMagic, speed * 22000);
     }
 
     /**
@@ -93,7 +103,7 @@ public class DriveModule implements Loggable {
      * @return velocity (rpm) of the motor
      */
     public double getSpeed() {
-        return main.getSelectedSensorVelocity();// * VELOCITY_COEFFICIENT;
+        return main.getSelectedSensorVelocity();
     }
 
     /**
@@ -131,7 +141,9 @@ public class DriveModule implements Loggable {
         logger.addAttribute(this.moduleName + "/MotorPower");
         logger.addAttribute(this.moduleName + "/Distance");
         logger.addAttribute(this.moduleName + "/EncoderRate");
+        logger.addAttribute(this.moduleName + "/TargetVelocity");
         logger.addAttribute(this.moduleName + "/MotorVelocity");
+        logger.addAttribute(this.moduleName + "/VelocityError");
         logger.addAttribute(this.moduleName + "/MotorCurrent");
         logger.addAttribute(this.moduleName + "/MotorAverageCurrent");
     }
@@ -141,7 +153,9 @@ public class DriveModule implements Loggable {
         logger.log(this.moduleName + "/MotorPower", power);
         logger.log(this.moduleName + "/Distance", this.encoder.getDistance());
         logger.log(this.moduleName + "/EncoderRate", this.encoder.getRate());
+        logger.log(this.moduleName + "/TargetVelocity", targetSpeed);
         logger.log(this.moduleName + "/MotorVelocity", getSpeed());
+        logger.log(this.moduleName + "/VelocityError", targetSpeed - getSpeed());
         logger.log(this.moduleName + "/MotorCurrent", getCurrent());
         logger.log(this.moduleName + "/MotorAverageCurrent", getAverageCurrent());
     }

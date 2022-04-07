@@ -28,9 +28,9 @@ public class Manipulation implements Loggable {
      * @param indexLoadID The CAN id of the spark for the index loader
      *
      */
-    Manipulation(int pneumaticsForwardChannel, int pneumaticsReverseChannel, int intakeWheelID, int indexLoadID) {
+    Manipulation(int pneumaticsForwardChannel, int pneumaticsReverseChannel, int intakeWheelID) {//, int indexLoadID) {
         this.intakeWheel = new CANSparkMax(intakeWheelID, MotorType.kBrushless);
-        this.indexLoad = new CANSparkMax(indexLoadID, MotorType.kBrushless);
+        // this.indexLoad = new CANSparkMax(indexLoadID, MotorType.kBrushless);
         this.intakePneumatics = new DoubleSolenoid(PneumaticsModuleType.REVPH, pneumaticsForwardChannel, pneumaticsReverseChannel);
 
         intakeWheel.setInverted(true);

@@ -46,7 +46,9 @@ public class ClimberGates implements Loggable {
 
     @Override
     public void log(Logger logger) {
-        // TODO Auto-generated method stub
-
+        // logger.log("GateA", this.getA());
+        logger.log("GateB1", this.getB2());
+        // logger.log("GateB2", this.getB2());
+        logger.log("GateC", this.getC());
     }
 }

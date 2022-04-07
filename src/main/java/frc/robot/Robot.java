@@ -39,7 +39,6 @@ public class Robot extends TimedRobot {
     DriveModule rightModule;
 
     Climber climber;
-    // LoggableGyro gyro;
     Shooter shooter;
     Manipulation manipulation;
     CANSparkMax tempClimber;
@@ -49,19 +48,20 @@ public class Robot extends TimedRobot {
 
     LoggablePowerDistribution pdp;
     LoggableCompressor compressor;
-    // ClimberGates climberGates;
+    ClimberGates climberGates;
     LoggableGyro gyro;
 
     boolean drivetrainEnabled = true;
-    boolean tankDriveEnabled = false;
     boolean climberEnabled = false;
+    boolean tempClimberEnalbed = true;
     boolean manipulationEnabled = false;
+    boolean shooterEnabled = false;
     double shootSpeed = 0.40;
 
     // private JsonAutonomous auto;
 
     private static final double DEADBAND_LIMIT = 0.01;
-    private static final double SPEED_CAP = 0.45;
+    private static final double SPEED_CAP = 0.5;
     InputScaler joystickDeadband = new Deadband(DEADBAND_LIMIT);
     InputScaler joystickSquared = new SquaredInput(DEADBAND_LIMIT);
     BoostInput boost = new BoostInput(SPEED_CAP);
@@ -91,49 +91,61 @@ public class Robot extends TimedRobot {
         if (this.climberEnabled) {
             System.out.println("Initializing climber...");
 
-            // Solenoid climberSolenoidA = new Solenoid(PneumaticsModuleType.REVPH, 2);
-            // Solenoid climberSolenoidB1 = new Solenoid(PneumaticsModuleType.REVPH, 3);
-            // Solenoid climberSolenoidB2 = new Solenoid(PneumaticsModuleType.REVPH, 4);
-            // Solenoid climberSolenoidC = new Solenoid(PneumaticsModuleType.REVPH, 5);
+            Solenoid climberSolenoidA = new Solenoid(PneumaticsModuleType.REVPH, 2);
+            Solenoid climberSolenoidB1 = new Solenoid(PneumaticsModuleType.REVPH, 3);
+            Solenoid climberSolenoidB2 = new Solenoid(PneumaticsModuleType.REVPH, 4);
+            Solenoid climberSolenoidC = new Solenoid(PneumaticsModuleType.REVPH, 5);
 
-            // // ClimberSensors climberSensors = new ClimberSensors(0, 1, 2, 3, 4, 5);
-            // climberGates = new ClimberGates(4, 5, 6, 7);
-            // climber = new Climber(9, 10, climberSolenoidA, climberSolenoidB1, climberSolenoidB2,
-            // climberSolenoidC, climberGates);// ,gyro, climberSensors);
+            // ClimberSensors climberSensors = new ClimberSensors(0, 1, 2, 3, 4, 5);
+            climberGates = new ClimberGates(4, 5, 6, 7);
+            climber = new Climber(9, 10, climberSolenoidA, climberSolenoidB1, climberSolenoidB2,
+                    climberSolenoidC, climberGates);// ,gyro, climberSensors);
 
-            // // logger.addLoggable(climberSensors);
-            // logger.addLoggable(climberGates);
-            // logger.addLoggable(climber);
+            // logger.addLoggable(climberSensors);
+            logger.addLoggable(climberGates);
+            logger.addLoggable(climber);
         } else {
             System.out.println("Climber initialization disabled.");
         }
 
         if (this.drivetrainEnabled) {
             System.out.println("Initializing drivetrain...");
-            leftModule = new DriveModule("LeftDriveModule", 2, 3); // 2, 3
+            leftModule = new DriveModule("LeftDriveModule", 2, 3);
             leftModule.setEncoder(2, 3, false);
 
-            rightModule = new DriveModule("RightDriveModule", 4, 5); // 4, 5
+            rightModule = new DriveModule("RightDriveModule", 4, 5);
             rightModule.setEncoder(0, 1, true);
 
-            drive = new Drivetrain(leftModule, rightModule, 6);
+            drive = new Drivetrain(leftModule, rightModule, 6, gyro);
 
-            logger.addLoggable(drive);
+            // logger.addLoggable(drive);
+            logger.addLoggable(leftModule);
+            logger.addLoggable(rightModule);
         } else {
             System.out.println("Drivetrain initialization disabled.");
         }
 
-        // shooter = new Shooter(new TalonFX(6));
+        if (shooterEnabled) {
+            System.out.println("Initializing shooter...");
+            shooter = new Shooter(new TalonFX(6));
+        } else {
+            System.out.println("Shooter initialization disabled.");
+        }
 
         if (manipulationEnabled) {
             System.out.println("Initializing manipulation...");
-            manipulation = new Manipulation(0, 1, 7, 8);
+            manipulation = new Manipulation(0, 1, 7);
         } else {
             System.out.println("Manipulation initialization disabled.");
         }
 
-        tempClimber = new CANSparkMax(8, MotorType.kBrushless);
-        tempClimber.setIdleMode(IdleMode.kBrake);
+        if (tempClimberEnalbed) {
+            System.out.println("Initializing tempory climber...");
+            tempClimber = new CANSparkMax(8, MotorType.kBrushless);
+            tempClimber.setIdleMode(IdleMode.kBrake);
+        } else {
+            System.out.println("Temporary climber initialization disabled.");
+        }
 
         System.out.print("Initializing compressor...");
         compressor = new LoggableCompressor(PneumaticsModuleType.REVPH);
@@ -142,13 +154,18 @@ public class Robot extends TimedRobot {
         logger.addLoggable(driver);
         logger.addLoggable(operator);
         logger.addLoggable(compressor);
+        logger.addLoggable(gyro);
     }
 
     @Override
     public void robotPeriodic() {
         // Robot code goes here
-        drive.update();
-        // climber.update();
+        if (drivetrainEnabled) {
+            drive.update();
+        }
+        if (climberEnabled) {
+            climber.update();
+        }
     }
 
     @Override
@@ -192,71 +209,61 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         // Robot code goes here
         if (this.drivetrainEnabled) {
-            // if (tankDriveEnabled) {
-            // double leftInput = deadband(-driver.getLeftY());
-            // double rightInput = deadband(-driver.getRightY());
-            // drive.tankDrive(leftInput, rightInput);
-            // } else {
             double turnInput = deadband(driver.getRightX()) * -0.3;
             double speedInput = deadband(driver.getLeftY());
             boost.setScale(driver.getRightTriggerAxis());
             drive.arcadeDrive(turnInput, boost.scale(speedInput));
-            // }
-            if (driver.getXButtonPressed()) {
-                tankDriveEnabled = !tankDriveEnabled;
-            }
             // if (driver.getAButtonPressed()) {
             // drive.setShifter(!drive.getShifter());
             // }
-            if (driver.getAButtonPressed()) {
-                drive.setClimbMode();
+
+            drive.setClimbMode(driver.getAButton());
+            if (driver.getBButtonPressed()) {
+                drive.toggleAutoBalance();
             }
 
             leftModule.updateCurrent();
             rightModule.updateCurrent();
         }
 
-        // if (this.climberEnabled) {
-        // double climberInput = deadband(operator.getLeftY());
-        // climber.setMotors(climberInput);
-        // double tempClimberInput = deadband(operator.getRightY());
-        // tempClimber.set(tempClimberInput);
-        // if (operator.getLeftBumperPressed()) {
-        // climber.setClimbingState(climber.getNextClimbingState());
-        // }
-        // // climber.checkClimbingState(operator.getAButtonPressed());
+        if (this.climberEnabled) {
+            double climberInput = deadband(operator.getLeftY());
+            climber.setMotors(climberInput);
+            double tempClimberInput = deadband(operator.getRightY());
+            tempClimber.set(tempClimberInput);
+            if (operator.getLeftBumperPressed()) {
+                climber.setClimbingState(climber.getNextClimbingState());
+            }
 
-        // // TODO: Create a way for motors to go 'limp' when needed, reading loggableGyro
-        // if (operator.getRightBumperPressed()) {
-        // climber.setMotorState(
-        // climber.getMotorState() == MotorStates.ACTIVE ? MotorStates.STATIC
-        // : MotorStates.ACTIVE);
-        // }
+            if (operator.getRightBumperPressed()) {
+                climber.setMotorState(
+                        climber.getMotorState() == MotorStates.ACTIVE ? MotorStates.STATIC
+                                : MotorStates.ACTIVE);
+            }
 
-        // if (operator.getBButtonPressed() && climber.getClimberStateId() != 0) {
-        // climber.setClimbingState(climber.getPreviousClimbingState());
-        // }
-        // // TODO: Enable this when we're ready to test the climber
-        // }
+            if (operator.getBButtonPressed() && climber.getClimberStateId() != 0) {
+                climber.setClimbingState(climber.getPreviousClimbingState());
+            }
+        }
 
         double tempClimberInput = deadband(operator.getRightY());
         tempClimber.set(tempClimberInput);
 
         // System.out.println((climberGates.getB1() ? "B1: true" : "B1: false") + " "
         // + (climberGates.getC() ? "C: true" : "C: false"));
-
-        // if (operator.getYButtonPressed()) {
-        // shootSpeed += 0.01;
-        // System.out.println(shootSpeed);
-        // } else if (operator.getAButtonPressed()) {
-        // shootSpeed -= 0.01;
-        // System.out.println(shootSpeed);
-        // } else if (operator.getBButtonPressed()) {
-        // shootSpeed = 0;
-        // }
-
-        // shooter.setPower(operator.getRightTriggerAxis());
-        // shooter.setPower(operator.getRightTriggerAxis() > 0.5 ? shootSpeed : 0);
+        if (shooterEnabled) {
+            // if (operator.getYButtonPressed()) {
+            // shootSpeed += 0.01;
+            // System.out.println(shootSpeed);
+            // } else if (operator.getAButtonPressed()) {
+            // shootSpeed -= 0.01;
+            // System.out.println(shootSpeed);
+            // } else if (operator.getBButtonPressed()) {
+            // shootSpeed = 0;
+            // }
+            // shooter.setPower(operator.getRightTriggerAxis());
+            shooter.setPower(operator.getRightTriggerAxis() > 0.5 ? shootSpeed : 0);
+        }
 
         if (this.manipulationEnabled) {
             if (driver.getRightBumperPressed()) {
@@ -265,7 +272,7 @@ public class Robot extends TimedRobot {
                 manipulation.setIntakeExtend(false);
             }
             manipulation.setIntakeSpin(operator.getYButton());
-            manipulation.setIndexLoad(operator.getLeftTriggerAxis() > 0.5);
+            // manipulation.setIndexLoad(operator.getLeftTriggerAxis() > 0.5);
         }
 
         logger.log();
