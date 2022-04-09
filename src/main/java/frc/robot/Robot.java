@@ -82,10 +82,10 @@ public class Robot extends TimedRobot {
         if (this.climberEnabled) {
             System.out.println("Initializing climber...");
 
-            Solenoid climberSolenoidA = new Solenoid(PneumaticsModuleType.REVPH, 2);
-            Solenoid climberSolenoidB1 = new Solenoid(PneumaticsModuleType.REVPH, 3);
-            Solenoid climberSolenoidB2 = new Solenoid(PneumaticsModuleType.REVPH, 4);
-            Solenoid climberSolenoidC = new Solenoid(PneumaticsModuleType.REVPH, 5);
+            Solenoid climberSolenoidA = new Solenoid(PneumaticsModuleType.REVPH, 1);
+            Solenoid climberSolenoidB1 = new Solenoid(PneumaticsModuleType.REVPH, 2);
+            Solenoid climberSolenoidB2 = new Solenoid(PneumaticsModuleType.REVPH, 3);
+            Solenoid climberSolenoidC = new Solenoid(PneumaticsModuleType.REVPH, 4);
 
             // ClimberSensors climberSensors = new ClimberSensors(0, 1, 2, 3, 4, 5);
             ClimberGates climberGates = new ClimberGates(6, 7, 8, 9, 10, 11, 12, 13);
@@ -109,7 +109,7 @@ public class Robot extends TimedRobot {
             rightModule = new DriveModule("RightDriveModule", 4, 5);
             rightModule.setEncoder(0, 1, true);
 
-            drive = new Drivetrain(leftModule, rightModule, 6);
+            drive = new Drivetrain(leftModule, rightModule, 0);
 
             logger.addLoggable(drive);
         } else {
@@ -117,7 +117,7 @@ public class Robot extends TimedRobot {
         }
         if (this.manipulationEnabled) {
             System.out.println("Initializing manipulation...");
-            manipulation = new Manipulation(0, 1, 7, 8);
+            manipulation = new Manipulation(5, 6, 7, 8);
         } else {
             System.out.println("Manipulation initialization disabled.");
         }
