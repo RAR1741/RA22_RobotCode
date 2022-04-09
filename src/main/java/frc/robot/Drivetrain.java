@@ -42,20 +42,15 @@ public class Drivetrain implements Loggable {
      * @param leftSpeed The speed of the left motors
      * @param rightSpeed The speed of the right motors
      */
-<<<<<<< HEAD
-    public void drive(double leftValue, double rightValue, boolean power) { // Probably implement deadbands later
-        if(power) {
+    public void drive(double leftValue, double rightValue, boolean power) { // Probably implement
+                                                                            // deadbands later
+        if (power) {
             left.setPower(leftValue);
             right.setPower(rightValue);
         } else {
             left.setSpeed(leftValue);
             right.setSpeed(rightValue);
         }
-=======
-    public void drive(double leftSpeed, double rightSpeed) { // Probably implement deadbands later
-        left.set(leftSpeed);
-        right.set(rightSpeed);
->>>>>>> 3e929cc15eee2f3f57bf5e53addd088fd8548de7
     }
 
     /**
@@ -113,6 +108,9 @@ public class Drivetrain implements Loggable {
      * Shifts gears based on current.
      */
     public void checkGears() {
+        left.updateCurrent();
+        right.updateCurrent();
+
         if (getShifter()) {
             if (left.getAverageCurrent() > SHIFT_CURRENT_LOW
                     || right.getAverageCurrent() > SHIFT_CURRENT_LOW) {
@@ -144,12 +142,14 @@ public class Drivetrain implements Loggable {
 
     @Override
     public void setupLogging(Logger logger) {
-        // logger.addLoggable(left);
-        // logger.addLoggable(right);
+        // TODO Auto-generated method stub
+
     }
 
     @Override
     public void log(Logger logger) {
         // TODO Auto-generated method stub
+
     }
+
 }
