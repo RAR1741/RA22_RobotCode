@@ -11,7 +11,16 @@
         },
         {
             "type": "wait",
-            "amount": 1
+            "amount": 0.5
+        },
+        {
+            "type": "shoot",
+            "unit": "SPEED",
+            "amount": 2
+        },
+        {
+            "type": "wait",
+            "amount": 0.5
         },
         {
             "type": "drive",
