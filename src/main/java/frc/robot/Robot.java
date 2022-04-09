@@ -103,10 +103,10 @@ public class Robot extends TimedRobot {
 
         if (this.drivetrainEnabled) {
             System.out.println("Initializing drivetrain...");
-            leftModule = new DriveModule("LeftDriveModule", 5, 7); // 2, 3
+            leftModule = new DriveModule("LeftDriveModule", 2, 3);
             leftModule.setEncoder(2, 3, false);
 
-            rightModule = new DriveModule("RightDriveModule", 8, 10); // 4, 5
+            rightModule = new DriveModule("RightDriveModule", 4, 5);
             rightModule.setEncoder(0, 1, true);
 
             drive = new Drivetrain(leftModule, rightModule, 6);
@@ -123,7 +123,7 @@ public class Robot extends TimedRobot {
         }
         if (this.shooterEnabled) {
             System.out.println("Initializing shooter");
-            shooter = new Shooter(16); // 6
+            shooter = new Shooter(6);
             logger.addLoggable(shooter);
             System.out.println("Shooter done");
         } else {
