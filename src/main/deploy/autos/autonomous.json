@@ -11,15 +11,17 @@
         },
         {
             "type": "wait",
+            "unit": "SECONDS",
             "amount": 0.5
         },
         {
             "type": "shoot",
-            "unit": "SPEED",
+            "unit": "POWER",
             "amount": 2
         },
         {
             "type": "wait",
+            "unit": "SECONDS",
             "amount": 0.5
         },
         {

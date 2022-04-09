@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import edu.wpi.first.wpilibj.Filesystem;
+import frc.robot.JsonAutonomous.AutoInstruction.Unit;
 import frc.robot.logging.Loggable;
 import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.LoggableTimer;
@@ -24,7 +25,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     private static final double TICKS_PER_INCH = TICKS_PER_ROTATION / (6 * Math.PI); // TODO: Update
                                                                                      // formula for
                                                                                      // 2022 robot
-    private static final double SHOOTER_SPEED = 1;
+    private static final double SHOOTER_SPEED = -1;
     private JsonElement auto;
     private List<AutoInstruction> instructions;
     private int step;
@@ -48,7 +49,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
         public List<Double> args;
 
         public enum Unit {
-            SECONDS, MILLISECONDS, ENCODER_TICKS, ROTATIONS, INCHES, FEET, CURRENT, DEGREES, SPEED, POWER, INVALID
+            SECONDS, MILLISECONDS, ENCODER_TICKS, ROTATIONS, INCHES, FEET, CURRENT, DEGREES, SPEED, POWER, MOTOR, NOTMOTOR, INVALID
         }
 
         public AutoInstruction(String type, List<Double> args) {
@@ -61,6 +62,10 @@ public class JsonAutonomous extends Autonomous implements Loggable {
             this.unit = unit;
             this.amount = amount;
             this.args = args;
+        }
+
+        public String toString() {
+            return String.format("%s <%s %s>%n", this.type, this.amount, this.unit);
         }
     }
 
@@ -152,6 +157,14 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                 shoot(ai);
                 break;
 
+            case "intake":
+                intake(ai);
+                break;
+            
+            case "index":
+                index(ai);
+                break;
+
             default:
                 System.out.println("Invalid Command");
                 reset();
@@ -215,13 +228,13 @@ public class JsonAutonomous extends Autonomous implements Loggable {
         if (drive.getAverageCurrent() < current) {
             drive.drive(leftPower, rightPower, false);
         } else {
-            // drive.drive(0, 0);
             return true;
         }
         return false;
     }
 
     private boolean rotateDegrees(double leftSpeed, double rightSpeed, double deg) {
+        System.out.println(getAngle());
         if (Math.abs(getAngle() - navxStart - deg) < 10) {
             return true;
         } else {
@@ -242,8 +255,14 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     }
 
     private void wait(AutoInstruction ai) {
-        if (timer.get() >= ai.amount) {
-            reset();
+        if (ai.unit.equals(AutoInstruction.Unit.MILLISECONDS)) {
+            if (timer.get() / 1000 >= ai.amount) {
+                reset();
+            }
+        } else {
+            if (timer.get() >= ai.amount) {
+                reset();
+            }
         }
     }
 
@@ -255,31 +274,79 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                 shooter.setSpeed(SHOOTER_SPEED);
             } else {
                 timer.reset();
-                if (timer.get() < ai.args.get(0)) {
+                if (timer.get() < ai.amount) {
                     shooter.setSpeed(SHOOTER_SPEED);
-                    manipulation.setIntakeSpin(true);
+                    manipulation.setIndexLoad(true);
                 } else {
                     shooter.setSpeed(0);
-                    manipulation.setIntakeSpin(false);
+                    manipulation.setIndexLoad(false);
                     reset();
                 }
             }
         } else if (u == AutoInstruction.Unit.POWER) {
-            if (shooter.getSpeed() < SHOOTER_SPEED) {
+            /*if (shooter.getSpeed() < SHOOTER_SPEED) {
                 shooter.setPower(SHOOTER_SPEED);
             } else {
-                timer.reset();
-                if (timer.get() < ai.args.get(0)) {
-                    shooter.setPower(SHOOTER_SPEED);
-                    manipulation.setIntakeSpin(true);
+                timer.reset();*/
+                
+                shooter.setSpeed(-SHOOTER_SPEED * 0.5);
+                if (timer.get() > 2) { // setIndexPower should just be setPower
+                    if (timer.get() < ai.amount + 2) {
+                        shooter.setIndexPower(-0.25);
+                    } else {
+                        shooter.setIndexPower(0);
+                        manipulation.setIndexLoad(false);
+                        shooter.setSpeed(0);
+                        reset();
+                    }
+                    //manipulation.setIndexLoad(true);
                 } else {
-                    shooter.setPower(0);
-                    manipulation.setIntakeSpin(false);
-                    reset();
+                    shooter.setIndexPower(0);
+                    manipulation.setIndexLoad(false);
+                    // shooter.setSpeed(0);
                 }
-            }
+            //}
         }
 
+    }
+
+    private void intake(AutoInstruction ai) {
+        AutoInstruction.Unit u = ai.unit;
+        if(timer.get() < ai.amount) {
+            if(u == Unit.MOTOR) {
+                drive.drive(ai.args.get(0), ai.args.get(1), false);
+                manipulation.setIntakeSpin(true);
+            } else if(u == Unit.NOTMOTOR) {
+                if(ai.args.get(0) == 1) {
+                    manipulation.setIntakeExtend(true);
+                } else {
+                    manipulation.setIntakeExtend(false);
+                }
+            }
+        } else {
+            drive.drive(0, 0, false);
+            manipulation.setIntakeSpin(false);
+            reset();
+        }
+    }
+
+    private void index(AutoInstruction ai) {
+        AutoInstruction.Unit u = ai.unit;
+        if(u == Unit.MILLISECONDS) {
+            if(timer.get() < ai.amount / 1000) {
+                manipulation.setIndexLoad(true);
+            } else {
+                manipulation.setIndexLoad(false);
+                reset();
+            }
+        } else {
+            if(timer.get() < ai.amount) {
+                manipulation.setIndexLoad(true);
+            } else {
+                manipulation.setIndexLoad(false);
+                reset();
+            }
+        }
     }
 
     private void reset() {

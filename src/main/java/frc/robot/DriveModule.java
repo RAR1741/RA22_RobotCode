@@ -74,6 +74,11 @@ public class DriveModule implements Loggable {
         main.set(TalonFXControlMode.PercentOutput, input);
     }
 
+    public void setNeutralMode(NeutralMode mode) {
+        this.main.setNeutralMode(mode);
+        this.sub.setNeutralMode(mode);
+    }
+
     /**
      * Sets the speed of the module.
      *

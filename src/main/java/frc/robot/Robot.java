@@ -4,9 +4,14 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import frc.robot.logging.LoggableCompressor;
 import frc.robot.logging.LoggableController;
 import frc.robot.logging.LoggableGyro;
@@ -46,7 +51,7 @@ public class Robot extends TimedRobot {
     LoggableGyro gyro;
 
     private static final double DEADBAND_LIMIT = 0.01;
-    private static final double SPEED_CAP = 0.6;
+    private static final double SPEED_CAP = 0.25;
     InputScaler joystickDeadband = new Deadband(DEADBAND_LIMIT);
     InputScaler joystickSquared = new SquaredInput(DEADBAND_LIMIT);
     BoostInput boost = new BoostInput(SPEED_CAP);
@@ -62,7 +67,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        pdp = new LoggablePowerDistribution(1, ModuleType.kRev);
+        pdp = new LoggablePowerDistribution(1, ModuleType.kCTRE); // rev
 
         driver = new LoggableController("Driver", 0);
         operator = new LoggableController("Operator", 1);
@@ -74,6 +79,10 @@ public class Robot extends TimedRobot {
         gyro = new LoggableGyro();
         gyro.enableLogging(false);
 
+        System.out.print("Initializing compressor...");
+        compressor = new LoggableCompressor(2, PneumaticsModuleType.CTREPCM); // rev
+        System.out.println("done");
+
         if (this.drivetrainEnabled) {
             System.out.println("Initializing drivetrain...");
             leftModule = new DriveModule("LeftDriveModule", 5, 7); // 2, 3
@@ -83,6 +92,7 @@ public class Robot extends TimedRobot {
             rightModule.setEncoder(0, 1, true);
 
             drive = new Drivetrain(leftModule, rightModule, 6);
+            drive.setNeutralMode(NeutralMode.Coast);
 
             logger.addLoggable(leftModule);
             logger.addLoggable(rightModule);
@@ -92,22 +102,18 @@ public class Robot extends TimedRobot {
         }
         if (this.manipulationEnabled) {
             System.out.println("Initializing manipulation...");
-            manipulation = new Manipulation(0, 1, 7, 8);
+            manipulation = new Manipulation(1, 0, 13, 14); // 0, 1, 7, 8
         } else {
             System.out.println("Manipulation initialization disabled.");
         }
         if (this.shooterEnabled) {
             System.out.println("Initializing shooter");
-            shooter = new Shooter(16); // 6
+            shooter = new Shooter(16, 11); // ?
             logger.addLoggable(shooter);
             System.out.println("Shooter done");
         } else {
             System.out.println("Shooter initialization disabled.");
         }
-
-        System.out.print("Initializing compressor...");
-        compressor = new LoggableCompressor(PneumaticsModuleType.REVPH);
-        System.out.println("done");
 
         logger.addLoggable(driver);
         // logger.addLoggable(operator);
@@ -123,7 +129,10 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         gyro.reset();
 
-        auto = new JsonAutonomous(JsonAutonomous.getAutoPath("shooter-test.json"), gyro, drive, shooter, manipulation);
+        if (drivetrainEnabled) {
+            drive.setNeutralMode(NeutralMode.Brake);
+        }
+        auto = new JsonAutonomous(JsonAutonomous.getAutoPath("fun-shoot-test.json"), gyro, drive, shooter, manipulation);
         System.out.println("Auto Initialized");
         logger.addLoggable(auto);
         resetLogging();
@@ -142,6 +151,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        if (drivetrainEnabled) {
+            drive.setNeutralMode(NeutralMode.Coast);
+        }
         resetLogging();
     }
 
@@ -150,36 +162,39 @@ public class Robot extends TimedRobot {
         // Robot code goes here
         if (this.drivetrainEnabled) {
             if (tankDriveEnabled) {
-                double leftInput = deadband(-driver.getLeftY());
-                double rightInput = deadband(-driver.getRightY());
+                double leftInput = deadband(driver.getLeftY());
+                double rightInput = deadband(driver.getRightY());
+                //leftModule.set(leftInput);
+                //rightModule.set(rightInput);
                 drive.tankDrive(leftInput, rightInput);
             } else {
                 double turnInput = deadband(driver.getRightX());
-                double speedInput = deadband(-driver.getLeftY());
+                double speedInput = deadband(driver.getLeftY()); // negative in 2022
                 boost.setEnabled(driver.getRightTriggerAxis() > 0.5);
                 drive.arcadeDrive(turnInput, boost.scale(speedInput));
             }
             if (driver.getXButtonPressed()) {
                 tankDriveEnabled = !tankDriveEnabled;
             }
-            if (driver.getLeftBumperPressed()) {
-                drive.setShifter(!drive.getShifter());
-            }
+            // if (driver.getLeftBumperPressed()) {
+            //     drive.setShifter(!drive.getShifter());
+            // }
 
             leftModule.updateCurrent();
             rightModule.updateCurrent();
         }
         if (this.manipulationEnabled) {
-            if (driver.getRightBumperPressed()) {
-              manipulation.setIntakeExtend(true);
-            } else if (driver.getLeftBumperPressed()) {
-              manipulation.setIntakeExtend(false);
+            if (operator.getRightBumper()) {
+                manipulation.setIntakeExtend(true); // down
+            } else /* (operator.getLeftBumper()) */ {
+                manipulation.setIntakeExtend(false); // up
             }
             manipulation.setIntakeSpin(operator.getYButton());
             manipulation.setIndexLoad(operator.getXButton());
         }
         if (this.shooterEnabled) {
-            shooter.setSpeed(driver.getRightTriggerAxis());
+            shooter.setIndexPower(operator.getBButton() ? 0.25: -operator.getRightTriggerAxis());
+            shooter.setSpeed(operator.getLeftTriggerAxis()*0.5);
         }
 
         logger.log();
@@ -188,6 +203,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
+        if (drivetrainEnabled) {
+            drive.setNeutralMode(NeutralMode.Coast);
+        }
         logger.close();
         timer.stop();
     }
@@ -200,12 +218,18 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
+        if (drivetrainEnabled) {
+            drive.setNeutralMode(NeutralMode.Coast);
+        }
         resetLogging();
     }
 
     @Override
     public void testPeriodic() {
         // Robot code goes here
+
+        
+
         logger.log();
         logger.writeLine();
     }

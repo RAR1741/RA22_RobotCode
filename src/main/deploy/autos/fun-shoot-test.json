@@ -1,0 +1,148 @@
+{
+    "auto": [
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 64,
+            "args": [
+                0.2,
+                0.2
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 1
+        },
+        {
+            "type": "shoot",
+            "unit": "POWER",
+            "amount": 2.5
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 1
+        },
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 40,
+            "args": [
+                0.2,
+                0.2
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": -55,
+            "args": [
+                0.1,
+                -0.1
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "intake",
+            "unit": "NOTMOTOR",
+            "amount": 1,
+            "args": [
+                1
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "intake",
+            "unit": "MOTOR",
+            "amount": 1.5,
+            "args": [
+                -0.1,
+                -0.1
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "intake",
+            "unit": "NOTMOTOR",
+            "amount": 1,
+            "args": [
+                0
+            ]
+        },
+        {
+           "type": "index",
+           "unit": "SECONDS",
+           "amount": 2
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 70,
+            "args": [
+                -0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "drive",
+            "unit": "SECONDS",
+            "amount": 1,
+            "args": [
+                -0.1,
+                -0.1
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "shoot",
+            "unit": "POWER",
+            "amount": 2
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "drive",
+            "unit": "SECONDS",
+            "amount": 1,
+            "args": [
+                0.1,
+                0.1
+            ]
+        }
+    ]
+}

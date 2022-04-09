@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.logging.Loggable;
@@ -132,6 +133,11 @@ public class Drivetrain implements Loggable {
                 setShifter(false);
             }
         }
+    }
+
+    public void setNeutralMode(NeutralMode mode) {
+        this.left.setNeutralMode(mode);
+        this.right.setNeutralMode(mode);
     }
 
     @Override

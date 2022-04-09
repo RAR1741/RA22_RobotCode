@@ -18,6 +18,7 @@ public class Manipulation implements Loggable {
 
     private double speed;
     private boolean spinning;
+    private boolean extended;
 
     /**
      * Constructor
@@ -31,7 +32,7 @@ public class Manipulation implements Loggable {
     Manipulation(int pneumaticsForwardChannel, int pneumaticsReverseChannel, int intakeWheelID, int indexLoadID) {
         this.intakeWheel = new CANSparkMax(intakeWheelID, MotorType.kBrushless);
         this.indexLoad = new CANSparkMax(indexLoadID, MotorType.kBrushless);
-        this.intakePneumatics = new DoubleSolenoid(PneumaticsModuleType.REVPH, pneumaticsForwardChannel, pneumaticsReverseChannel);
+        this.intakePneumatics = new DoubleSolenoid(2, PneumaticsModuleType.CTREPCM, pneumaticsForwardChannel, pneumaticsReverseChannel); // new robot has rev or something smh
 
         intakeWheel.setInverted(true);
     }
@@ -56,6 +57,7 @@ public class Manipulation implements Loggable {
      */
     public void setIntakeExtend(boolean extend) {
         intakePneumatics.set(extend ? Value.kForward : Value.kReverse);
+        this.extended = extend;
     }
     /**
      * Moves power cells down indexing system
@@ -70,13 +72,15 @@ public class Manipulation implements Loggable {
     @Override
     public void setupLogging(Logger logger) {
         logger.addAttribute("Manipulation/IntakeWheelSpeed");
-        logger.addAttribute("Manipulation/IntakeWheelEnabled");       
+        logger.addAttribute("Manipulation/IntakeWheelEnabled");     
+        logger.addAttribute("Manipulation/IntakeExtend");
     }
 
     @Override
     public void log(Logger logger) {
         logger.log("Manipulation/IntakeWheelSpeed", speed);
         logger.log("Manipulation/IntakeWheelEnabled", spinning);
+        logger.log("Manipulation/IntakeExtend", extended);
     }
     
 }
