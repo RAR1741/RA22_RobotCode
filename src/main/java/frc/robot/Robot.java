@@ -39,7 +39,6 @@ public class Robot extends TimedRobot {
     DriveModule rightModule;
 
     Climber climber;
-    Shooter shooter;
 
     Manipulation manipulation;
     CANSparkMax tempClimber;
@@ -56,8 +55,6 @@ public class Robot extends TimedRobot {
     boolean climberEnabled = true;
     boolean tempClimberEnalbed = false;
     boolean manipulationEnabled = false;
-    boolean shooterEnabled = false;
-    double shootSpeed = 0.40;
 
     private static final double DEADBAND_LIMIT = 0.01;
     private static final double SPEED_CAP = 0.5;
@@ -122,12 +119,6 @@ public class Robot extends TimedRobot {
             System.out.println("Drivetrain initialization disabled.");
         }
 
-        if (shooterEnabled) {
-            System.out.println("Initializing shooter...");
-            shooter = new Shooter(new TalonFX(6));
-        } else {
-            System.out.println("Shooter initialization disabled.");
-        }
 
         if (manipulationEnabled) {
             System.out.println("Initializing manipulation...");
@@ -171,7 +162,6 @@ public class Robot extends TimedRobot {
         timer.reset();
 
         // auto = new JsonAutonomous("/home/lvuser/deploy/autos/autonomous.json", gyro, drive,
-        // shooter,
         // manipulation);
         // System.out.println("Auto Initialized");
         // logger.addLoggable(auto);
@@ -248,9 +238,6 @@ public class Robot extends TimedRobot {
 
         // System.out.println((climberGates.getB1() ? "B1: true" : "B1: false") + " "
         // + (climberGates.getC() ? "C: true" : "C: false"));
-        if (shooterEnabled) {
-            shooter.setPower(operator.getRightTriggerAxis() > 0.5 ? shootSpeed : 0);
-        }
 
         if (this.manipulationEnabled) {
             if (driver.getRightBumperPressed()) {
