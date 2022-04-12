@@ -65,8 +65,8 @@ public class Manipulation implements Loggable {
      * @param load True if it should load; false if not
      * 
      */
-    public void setIndexLoad(boolean load) {
-        indexLoad.set(load ? 0.5 : 0.0);
+    public void setIndexLoad(double speed) {
+        indexLoad.set(speed);
     }
 
     @Override

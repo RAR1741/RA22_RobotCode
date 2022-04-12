@@ -70,7 +70,7 @@ public class Robot extends TimedRobot {
         pdp = new LoggablePowerDistribution(1, ModuleType.kCTRE); // rev
 
         driver = new LoggableController("Driver", 0);
-        operator = new LoggableController("Operator", 1);
+        operator = driver; //new LoggableController("Operator", 1);
         logger = new Logger();
 
         timer = new LoggableTimer();
@@ -132,7 +132,7 @@ public class Robot extends TimedRobot {
         if (drivetrainEnabled) {
             drive.setNeutralMode(NeutralMode.Brake);
         }
-        auto = new JsonAutonomous(JsonAutonomous.getAutoPath("fun-shoot-test.json"), gyro, drive, shooter, manipulation);
+        auto = new JsonAutonomous(JsonAutonomous.getAutoPath("new-auto.json"), gyro, drive, shooter, manipulation);
         System.out.println("Auto Initialized");
         logger.addLoggable(auto);
         resetLogging();
@@ -190,7 +190,7 @@ public class Robot extends TimedRobot {
                 manipulation.setIntakeExtend(false); // up
             }
             manipulation.setIntakeSpin(operator.getYButton());
-            manipulation.setIndexLoad(operator.getXButton());
+            manipulation.setIndexLoad(operator.getXButton() ? 0.5 : 0.0);
         }
         if (this.shooterEnabled) {
             shooter.setIndexPower(operator.getBButton() ? 0.25: -operator.getRightTriggerAxis());

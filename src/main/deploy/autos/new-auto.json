@@ -1,0 +1,40 @@
+{
+    "auto": [
+        {
+            "type": "index",
+            "unit": "SECONDS",
+            "amount": 1.5,
+            "args": [
+                -0.5
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "drive",
+            "unit": "SECONDS",
+            "amount": 1.25,
+            "args": [
+                0.25,
+                0.25
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 45,
+            "args": [
+                -0.1,
+                0.1
+            ]
+        }
+    ]
+}

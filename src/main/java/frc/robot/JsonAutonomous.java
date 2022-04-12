@@ -276,10 +276,10 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                 timer.reset();
                 if (timer.get() < ai.amount) {
                     shooter.setSpeed(SHOOTER_SPEED);
-                    manipulation.setIndexLoad(true);
+                    manipulation.setIndexLoad(0.5);
                 } else {
                     shooter.setSpeed(0);
-                    manipulation.setIndexLoad(false);
+                    manipulation.setIndexLoad(0.0);
                     reset();
                 }
             }
@@ -295,14 +295,14 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                         shooter.setIndexPower(-0.25);
                     } else {
                         shooter.setIndexPower(0);
-                        manipulation.setIndexLoad(false);
+                        manipulation.setIndexLoad(0.0);
                         shooter.setSpeed(0);
                         reset();
                     }
                     //manipulation.setIndexLoad(true);
                 } else {
                     shooter.setIndexPower(0);
-                    manipulation.setIndexLoad(false);
+                    manipulation.setIndexLoad(0.0);
                     // shooter.setSpeed(0);
                 }
             //}
@@ -334,16 +334,16 @@ public class JsonAutonomous extends Autonomous implements Loggable {
         AutoInstruction.Unit u = ai.unit;
         if(u == Unit.MILLISECONDS) {
             if(timer.get() < ai.amount / 1000) {
-                manipulation.setIndexLoad(true);
+                manipulation.setIndexLoad(ai.args.get(0));
             } else {
-                manipulation.setIndexLoad(false);
+                manipulation.setIndexLoad(0.0);
                 reset();
             }
         } else {
             if(timer.get() < ai.amount) {
-                manipulation.setIndexLoad(true);
+                manipulation.setIndexLoad(ai.args.get(0));
             } else {
-                manipulation.setIndexLoad(false);
+                manipulation.setIndexLoad(0.0);
                 reset();
             }
         }
