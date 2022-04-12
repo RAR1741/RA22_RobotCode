@@ -3,6 +3,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -16,6 +17,7 @@ public class Climber implements Loggable {
     enum ClimbingStates {
         RESTING(0, "Default resting"), //
         PRE_STAGE(5, "Rotate climber and set pre-stage pin position (button)"), //
+        PRE_STAGE_MANUAL(6, "Pre-stage w/ manual control override"), //
         TOUCH_A(10, "Pin A (button/sensor)"), //
         ROTATE_B(15, "Rotate to B bar (photogate)"), //
         TOUCH_AB(20, "Pin B (high current/sensor)"), //
@@ -49,6 +51,8 @@ public class Climber implements Loggable {
     public static double NEXT_BC_STATE_CURRENT = 45.0;
     public static int FILTER_FRAME_RANGE = 10;
 
+    public static double ENCODER_DEADZONE = 100;
+
     public static double TOUCH_A_POSITION = 144000; // TBD
     public static double SWING_AB_POSITION = 43000; // TBD
     public static double SWING_B_POSITION = 900; // TBD
@@ -56,6 +60,8 @@ public class Climber implements Loggable {
     public static double SWING_MIN_VELOCITY = 1500; // TBD
 
     private double motorSpeed;
+
+    private double previousTime;
 
     TalonFX climbingMotor;
     TalonFX secondaryClimbingMotor;
@@ -77,10 +83,8 @@ public class Climber implements Loggable {
     LoggableFirstOrderFilter rightFilter;
 
     public Climber(int climbingMotorID, int secondaryClimbingMotorID, Solenoid climberSolenoidA,
-            Solenoid climberSolenoidB1, Solenoid climberSolenoidB2, Solenoid climberSolenoidC // ) {
-            , ClimberGates gates) {
-        // , LoggableGyro gyro) {
-        // , ClimberSensors touch) {
+            Solenoid climberSolenoidB1, Solenoid climberSolenoidB2, Solenoid climberSolenoidC,
+            ClimberSensors touch) {
 
         this.climbingMotor = new TalonFX(climbingMotorID);
         this.secondaryClimbingMotor = new TalonFX(secondaryClimbingMotorID);
@@ -90,8 +94,7 @@ public class Climber implements Loggable {
         this.climberSolenoidB2 = climberSolenoidB2;
         this.climberSolenoidC = climberSolenoidC;
 
-        // this.touch = touch;
-        this.gates = gates;
+        this.touch = touch;
 
         this.climbingMotor.setNeutralMode(NeutralMode.Coast);
         this.secondaryClimbingMotor.setNeutralMode(NeutralMode.Coast);
@@ -148,12 +151,21 @@ public class Climber implements Loggable {
                 climberSolenoidB1.set(true);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
-                // TODO: set motor target here
-                setSpeed(motorSpeed);
+                climbingMotor.set(ControlMode.Position, TOUCH_A_POSITION);
+
+                if (Math.abs(climbingMotor.getSelectedSensorPosition()
+                        - TOUCH_A_POSITION) < ENCODER_DEADZONE) {
+                    setClimbingState(ClimbingStates.PRE_STAGE_MANUAL);
+                }
+                break;
+            // 06 PRE_STAGE_MANUAL: Manual control of climber position
+            case PRE_STAGE_MANUAL:
+                currentMotorState = MotorStates.ACTIVE;
                 break;
 
             // 10 TOUCH_A: Pin A (button/sensor)
             case TOUCH_A:
+                currentMotorState = MotorStates.STATIC;
                 setSpeed(0);
                 climberSolenoidA.set(false);
                 climberSolenoidB1.set(true);
@@ -179,6 +191,11 @@ public class Climber implements Loggable {
                 // setClimbingState(ClimbingStates.TOUCH_AB);
                 // this.setSpeed(0);
                 // }
+
+                if (touch.getB()) {
+                    setClimbingState(ClimbingStates.TOUCH_AB);
+                    previousTime = timer.get();
+                }
                 break;
 
             // 20 TOUCH_AB: Pin B (high current/sensor)
@@ -188,9 +205,12 @@ public class Climber implements Loggable {
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
-                // if (gates.getB1()) {
-                // setClimbingState(ClimbingStates.ROTATE_AB_DOWN);
-                // }
+                if (!gates.getB1()) {
+                    setClimbingState(ClimbingStates.ROTATE_B);
+                }
+                if (timer.get() - previousTime > 0.5) {
+                    setClimbingState(ClimbingStates.ROTATE_AB_DOWN);
+                }
                 break;
 
             // 25 ROTATE_AB_DOWN: Rotate down to plumb (photogate)
@@ -212,7 +232,7 @@ public class Climber implements Loggable {
                 climberSolenoidC.set(true);
                 // TODO: set motor target here
                 // if (!gates.getA()) {
-                setClimbingState(ClimbingStates.ROTATE_B_DOWN);;
+                setClimbingState(ClimbingStates.ROTATE_B_DOWN);
                 // }
                 break;
 
@@ -222,8 +242,8 @@ public class Climber implements Loggable {
                 this.setPower(0);
                 if (Math.abs(climbingMotor.getSelectedSensorPosition() - SWING_B_POSITION) < 1000
                         && Math.abs(
-                                climbingMotor.getSelectedSensorVelocity()) < SWING_MIN_VELOCITY) {// Determine
-                                                                                                                                                                                                // tolerance
+                                climbingMotor.getSelectedSensorVelocity()) < SWING_MIN_VELOCITY) {
+                    // Determine tolerance
                     System.out.println("DONE SWINGING!");
                     // setClimbingState(ClimbingStates.ROTATE_C);
                 }
@@ -435,6 +455,14 @@ public class Climber implements Loggable {
             default:
                 break;
         }
+    }
+
+    /**
+     * Checks whether or not the climber is climbing.
+     * @return true if the climber is climbing
+     */
+    public boolean isClimbing() {
+        return this.currentClimberState != ClimbingStates.RESTING;
     }
 
     @Override

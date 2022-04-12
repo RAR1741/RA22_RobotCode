@@ -48,12 +48,12 @@ public class Robot extends TimedRobot {
 
     LoggablePowerDistribution pdp;
     LoggableCompressor compressor;
-    ClimberGates climberGates;
+    ClimberSensors climberSensors;
     LoggableGyro gyro;
 
     boolean drivetrainEnabled = true;
     boolean climberEnabled = true;
-    boolean tempClimberEnalbed = false;
+    boolean tempClimberEnabled = false;
     boolean manipulationEnabled = false;
 
     private static final double DEADBAND_LIMIT = 0.01;
@@ -92,13 +92,11 @@ public class Robot extends TimedRobot {
             Solenoid climberSolenoidB2 = new Solenoid(PneumaticsModuleType.REVPH, 4);
             Solenoid climberSolenoidC = new Solenoid(PneumaticsModuleType.REVPH, 5);
 
-            // ClimberSensors climberSensors = new ClimberSensors(0, 1, 2, 3, 4, 5);
-            ClimberGates climberGates = new ClimberGates(6, 7, 8, 9, 10, 11, 12, 13);
+            climberSensors = new ClimberSensors(0,0); // TODO: Add sensors and input ids
             climber = new Climber(9, 10, climberSolenoidA, climberSolenoidB1, climberSolenoidB2,
-                    climberSolenoidC, climberGates);// ,gyro, climberSensors);
+                    climberSolenoidC, climberSensors);
 
-            // logger.addLoggable(climberSensors);
-            logger.addLoggable(climberGates);
+            logger.addLoggable(climberSensors);
             logger.addLoggable(climber);
         } else {
             System.out.println("Climber initialization disabled.");
@@ -127,8 +125,8 @@ public class Robot extends TimedRobot {
             System.out.println("Manipulation initialization disabled.");
         }
 
-        if (tempClimberEnalbed) {
-            System.out.println("Initializing tempory climber...");
+        if (tempClimberEnabled) {
+            System.out.println("Initializing temporary climber...");
             tempClimber = new CANSparkMax(8, MotorType.kBrushless);
             tempClimber.setIdleMode(IdleMode.kBrake);
         } else {
@@ -219,7 +217,6 @@ public class Robot extends TimedRobot {
             if (operator.getLeftBumperPressed()) {
                 climber.setClimbingState(climber.getNextClimbingState());
             }
-            // climber.checkClimbingState(operator.getAButtonPressed());
 
             // TODO: Create a way for motors to go 'limp' when needed, reading loggableGyro
             if (operator.getRightBumperPressed()) {
@@ -233,8 +230,11 @@ public class Robot extends TimedRobot {
             }
         }
 
-        double tempClimberInput = deadband(operator.getRightY());
-        tempClimber.set(tempClimberInput);
+        if (tempClimberEnabled) {
+            double tempClimberInput = deadband(operator.getRightY());
+            tempClimber.set(tempClimberInput);
+        }
+
 
         // System.out.println((climberGates.getB1() ? "B1: true" : "B1: false") + " "
         // + (climberGates.getC() ? "C: true" : "C: false"));
