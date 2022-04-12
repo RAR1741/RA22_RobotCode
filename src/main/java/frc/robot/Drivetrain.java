@@ -42,9 +42,15 @@ public class Drivetrain implements Loggable {
      * @param leftSpeed The speed of the left motors
      * @param rightSpeed The speed of the right motors
      */
-    public void drive(double leftSpeed, double rightSpeed) { // Probably implement deadbands later
-        left.set(leftSpeed);
-        right.set(rightSpeed);
+    public void drive(double leftValue, double rightValue, boolean power) { // Probably implement
+                                                                            // deadbands later
+        if (power) {
+            left.setPower(leftValue);
+            right.setPower(rightValue);
+        } else {
+            left.setSpeed(leftValue);
+            right.setSpeed(rightValue);
+        }
     }
 
     /**
@@ -54,7 +60,7 @@ public class Drivetrain implements Loggable {
      * @param speedInput The speed to drive
      */
     public void arcadeDrive(double turnInput, double speedInput) {
-        this.drive(speedInput - turnInput, speedInput + turnInput);
+        this.drive(speedInput - turnInput, speedInput + turnInput, false);
     }
 
     /**
@@ -64,7 +70,7 @@ public class Drivetrain implements Loggable {
      * @param rightDrive The speed to set the right motors
      */
     public void tankDrive(double leftDrive, double rightDrive) {
-        this.drive(leftDrive, rightDrive);
+        this.drive(leftDrive, rightDrive, false);
     }
 
     /**
@@ -86,9 +92,25 @@ public class Drivetrain implements Loggable {
     }
 
     /**
+     * Gets the encoder information for the left DriveModule
+     * 
+     * @return Position of left sensor (in raw sensor units).
+     */
+    public double getEncoder() {
+        return (left.getDriveEnc() + right.getDriveEnc()) / 2;
+    }
+
+    public double getAverageCurrent() {
+        return (left.getAverageCurrent() + right.getAverageCurrent()) / 2;
+    }
+
+    /**
      * Shifts gears based on current.
      */
     public void checkGears() {
+        left.updateCurrent();
+        right.updateCurrent();
+
         if (getShifter()) {
             if (left.getAverageCurrent() > SHIFT_CURRENT_LOW
                     || right.getAverageCurrent() > SHIFT_CURRENT_LOW) {
@@ -120,12 +142,14 @@ public class Drivetrain implements Loggable {
 
     @Override
     public void setupLogging(Logger logger) {
-        // logger.addLoggable(left);
-        // logger.addLoggable(right);
+        // TODO Auto-generated method stub
+
     }
 
     @Override
     public void log(Logger logger) {
         // TODO Auto-generated method stub
+
     }
+
 }

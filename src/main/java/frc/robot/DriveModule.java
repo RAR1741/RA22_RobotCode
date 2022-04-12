@@ -87,6 +87,10 @@ public class DriveModule implements Loggable {
         main.set(TalonFXControlMode.Velocity, speed * 22000);
     }
 
+    public void setPower(double power) {
+        main.set(TalonFXControlMode.PercentOutput, power);
+    }
+
     /**
      * Get the velocity of the module.
      *
@@ -96,6 +100,15 @@ public class DriveModule implements Loggable {
         return main.getSelectedSensorVelocity();// * VELOCITY_COEFFICIENT;
     }
 
+    /**
+     * Get the main sensor position (in raw sensor units).
+     * 
+     * @return Position of selected sensor (in raw sensor units).
+     */
+    public double getDriveEnc() {
+        return main.getSelectedSensorPosition();
+    }
+ 
     /**
      * Gets the average current drawn.
      *

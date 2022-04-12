@@ -1,0 +1,26 @@
+{
+    "auto": [
+        {
+            "type": "drive",
+            "unit": "CURRENT",
+            "amount": 20,
+            "args": [
+                0.05,
+                0.05
+            ]
+        },
+        {
+            "type": "wait",
+            "amount": 1
+        },
+        {
+            "type": "drive",
+            "unit": "FEET",
+            "amount": 5,
+            "args": [
+                -0.05,
+                -0.05
+            ]
+        }
+    ]
+}
