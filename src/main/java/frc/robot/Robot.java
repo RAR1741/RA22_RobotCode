@@ -37,14 +37,10 @@ public class Robot extends TimedRobot {
     LoggableController operator;
     Manipulation manipulation;
     Shooter shooter;
-    Limelight limelight; // TODO Remove limelight code
 
     LoggablePowerDistribution pdp;
     LoggableCompressor compressor;
 
-    // TODO Remove limelight code
-    boolean limelightToggle = true;
-    boolean lightOn = true;
     boolean drivetrainEnabled = true;
     boolean tankDriveEnabled = true;
     boolean manipulationEnabled = true;
@@ -87,15 +83,6 @@ public class Robot extends TimedRobot {
         compressor = new LoggableCompressor(2, PneumaticsModuleType.CTREPCM); // rev
         System.out.println("done");
 
-        // TODO Remove limelight code
-        if (this.limelightToggle) {
-            System.out.print("Initializing vision system (limelight)...");
-            limelight = new Limelight();
-            limelight.setLightEnabled(false);
-            System.out.println("done");
-        } else {
-            System.out.println("Vision system (limelight) disabled. Skipping initialization...");
-        }
         if (this.drivetrainEnabled) {
             System.out.println("Initializing drivetrain...");
             leftModule = new DriveModule("LeftDriveModule", 5, 7); // 2, 3
@@ -156,7 +143,6 @@ public class Robot extends TimedRobot {
         // Robot code goes here
         leftModule.updateCurrent();
         rightModule.updateCurrent();
-        limelight.update(); // TODO Remove limelight code
         auto.run();
 
         logger.log();
@@ -174,14 +160,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         // Robot code goes here
-        // TODO Remove limelight code
-        if (this.limelightToggle) {
-            limelight.update();
-            if (driver.getYButtonPressed()) {
-                lightOn = !lightOn;
-            }
-            limelight.setLightEnabled(lightOn);
-          }
         if (this.drivetrainEnabled) {
             if (tankDriveEnabled) {
                 double leftInput = deadband(driver.getLeftY());
