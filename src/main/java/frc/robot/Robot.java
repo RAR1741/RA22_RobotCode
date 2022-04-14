@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
     boolean drivetrainEnabled = true;
     boolean tankDriveEnabled = true;
     boolean manipulationEnabled = true;
-    boolean shooterEnabled = true;
+    boolean shooterEnabled = false;
 
     private JsonAutonomous auto;
 
@@ -67,10 +67,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        pdp = new LoggablePowerDistribution(1, ModuleType.kCTRE); // rev
+        pdp = new LoggablePowerDistribution(1, ModuleType.kRev);
 
         driver = new LoggableController("Driver", 0);
-        operator = driver; //new LoggableController("Operator", 1);
+        operator = new LoggableController("Operator", 1);
         logger = new Logger();
 
         timer = new LoggableTimer();
@@ -80,15 +80,15 @@ public class Robot extends TimedRobot {
         gyro.enableLogging(false);
 
         System.out.print("Initializing compressor...");
-        compressor = new LoggableCompressor(2, PneumaticsModuleType.CTREPCM); // rev
+        compressor = new LoggableCompressor(2, PneumaticsModuleType.REVPH);
         System.out.println("done");
 
         if (this.drivetrainEnabled) {
             System.out.println("Initializing drivetrain...");
-            leftModule = new DriveModule("LeftDriveModule", 5, 7); // 2, 3
+            leftModule = new DriveModule("LeftDriveModule", 2, 3);
             leftModule.setEncoder(2, 3, false);
 
-            rightModule = new DriveModule("RightDriveModule", 8, 10); // 4, 5
+            rightModule = new DriveModule("RightDriveModule", 4, 5);
             rightModule.setEncoder(0, 1, true);
 
             drive = new Drivetrain(leftModule, rightModule, 6);
@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
         }
         if (this.manipulationEnabled) {
             System.out.println("Initializing manipulation...");
-            manipulation = new Manipulation(1, 0, 13, 14); // 0, 1, 7, 8
+            manipulation = new Manipulation(0, 1, 7, 14); // 0, 1, 7, ?
         } else {
             System.out.println("Manipulation initialization disabled.");
         }
