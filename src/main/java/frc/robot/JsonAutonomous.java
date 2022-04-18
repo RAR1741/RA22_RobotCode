@@ -36,7 +36,6 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     private Drivetrain drive;
 
-    private Shooter shooter;
     private Manipulation manipulation;
 
     private FileReader fr;
@@ -73,7 +72,6 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     public JsonAutonomous(String file, LoggableGyro gyro, Drivetrain drive, Manipulation manipulation) {
         this.drive = drive;
         this.gyro = gyro;
-        this.shooter = shooter;
         this.manipulation = manipulation;
 
         parseFile(file);
