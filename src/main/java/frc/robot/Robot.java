@@ -11,9 +11,15 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.shuffleboard.SendableCameraWrapper;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Climber.MotorStates;
 import frc.robot.logging.LoggableCompressor;
@@ -56,6 +62,10 @@ public class Robot extends TimedRobot {
     boolean manipulationEnabled = true;
 
     private JsonAutonomous auto;
+    private final String billiard0 = JsonAutonomous.getAutoPath("billiards-zero.json");
+    private final String billiard1 = JsonAutonomous.getAutoPath("billiards-one.json");
+    private final String billiard2 = JsonAutonomous.getAutoPath("billiards-two.json");
+    SendableChooser<String> autonomousPathChooser = new SendableChooser<>();
 
     private static final double DEADBAND_LIMIT = 0.01;
     private static final double SPEED_CAP = 0.5;
@@ -145,6 +155,12 @@ public class Robot extends TimedRobot {
         compressor = new LoggableCompressor(PneumaticsModuleType.REVPH);
         System.out.println("done");
 
+        autonomousPathChooser.setDefaultOption("Drive straight back or something", this.billiard0);
+        autonomousPathChooser.addOption("The Billiards autonomous program called one", this.billiard1);
+        autonomousPathChooser.addOption("The Billiards autonomous program called two", this.billiard2);
+
+        SmartDashboard.putData(autonomousPathChooser);
+
         logger.addLoggable(driver);
         logger.addLoggable(operator);
         logger.addLoggable(compressor);
@@ -169,7 +185,7 @@ public class Robot extends TimedRobot {
         if (drivetrainEnabled) {
             drive.setNeutralMode(NeutralMode.Brake);
         }
-        auto = new JsonAutonomous(JsonAutonomous.getAutoPath("billiards-one.json"), gyro, drive, manipulation);
+        auto = new JsonAutonomous(autonomousPathChooser.getSelected(), gyro, drive, manipulation);
         System.out.println("Auto Initialized");
         logger.addLoggable(auto);
         resetLogging();
