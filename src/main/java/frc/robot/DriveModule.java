@@ -46,7 +46,7 @@ public class DriveModule implements Loggable {
         main.config_kD(0, 0);
         main.configMotionCruiseVelocity(MAX_VELOCITY / 2);
         main.configMotionAcceleration(MAX_VELOCITY / 2);
-        main.configClosedloopRamp(0.3);
+        main.configClosedloopRamp(0.4);
 
         indexCurrent = 0;
     }
