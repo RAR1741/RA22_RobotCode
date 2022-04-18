@@ -171,6 +171,7 @@ public class Drivetrain implements Loggable {
 
     @Override
     public void log(Logger logger) {
-        // TODO Auto-generated method stub
+        left.log(logger);
+        right.log(logger);
     }
 }
