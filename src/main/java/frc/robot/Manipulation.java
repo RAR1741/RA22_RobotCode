@@ -71,8 +71,8 @@ public class Manipulation implements Loggable {
         intakeWheel.set(intake);
     }
 
-    public void setCollect(boolean collect) {
-        if (intakePneumatics.get() == Value.kForward && collect) {
+    public void setCollect() {
+        if (intakePneumatics.get() == Value.kForward) {
             this.setCollection(-0.3, 0.6);
         } else {
             this.setCollection(0, 0);

@@ -249,13 +249,13 @@ public class Robot extends TimedRobot {
             manipulation.setIntakeExtend(driver.getLeftBumper());
 
             if (operator.getYButton()) {
-                manipulation.setCollect(true);
+                manipulation.setCollect();
             } else if (operator.getXButton()) {
                 manipulation.setSlowEject();
             } else if (operator.getAButton()) {
                 manipulation.setEject();
             } else {
-                manipulation.setCollect(false);
+                manipulation.setCollection(0,0);
             }
         }
 
