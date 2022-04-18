@@ -21,7 +21,7 @@ import java.util.NoSuchElementException;
 
 public class JsonAutonomous extends Autonomous implements Loggable {
 
-    private static final double TICKS_PER_ROTATION = 16750; // TODO: Update value for 2022 robot
+    private static final double TICKS_PER_ROTATION = 47102; // TODO: Update value for 2022 robot
     private static final double TICKS_PER_INCH = TICKS_PER_ROTATION / (6 * Math.PI); // TODO: Update
                                                                                      // formula for
                                                                                      // 2022 robot
