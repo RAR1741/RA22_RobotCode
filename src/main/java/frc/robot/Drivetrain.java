@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.logging.Loggable;
+import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.Logger;
 
 public class Drivetrain implements Loggable {
@@ -10,10 +11,19 @@ public class Drivetrain implements Loggable {
     private final double SHIFT_CURRENT_HIGH = 80; // TODO Get actual values when we test drivetrain
     private final double SHIFT_CURRENT_LOW = 0;
     private final double SHIFT_VELOCITY = 0; // Wheel velocity
+    private final double OFF_BALANCE_THRESHOLD = 15;
+    private final double ON_BALANCE_THRESHOLD = 7;
+
+    private boolean climbMode;
+    private boolean autoBalanceMode;
+    private boolean autoBalanceEnabled;
+
+    private double balanceScale;
 
     private DriveModule left;
     private DriveModule right;
     private Solenoid shifter;
+    private LoggableGyro gyro;
 
     /**
      * Constructor.
@@ -22,18 +32,44 @@ public class Drivetrain implements Loggable {
      * @param right DriveModule of the drivetrain's right half
      * @param shifter ID for the shifter solenoid
      */
-    Drivetrain(DriveModule left, DriveModule right, int shifterID) {
+    Drivetrain(DriveModule left, DriveModule right, int shifterID, LoggableGyro gyro) {
         this.left = left;
         this.right = right;
 
         this.shifter = new Solenoid(PneumaticsModuleType.REVPH, shifterID);
 
+        this.gyro = gyro;
+
         right.setInverted(true);
+
+        climbMode = false;
+        autoBalanceMode = false;
+        autoBalanceEnabled = false;
     }
 
     public void update() {
         this.left.update();
         this.right.update();
+        this.autoBalance();
+    }
+
+    private void autoBalance() {
+        if (!autoBalanceMode && Math.abs(gyro.getPitch()) >= Math.abs(OFF_BALANCE_THRESHOLD)) {
+            autoBalanceMode = true;
+        } else if (autoBalanceMode && Math.abs(gyro.getPitch()) <= Math.abs(ON_BALANCE_THRESHOLD)) {
+            autoBalanceMode = false;
+        }
+
+        if (autoBalanceMode) {
+            double pitchAngleRadians = gyro.getPitch() * (Math.PI / 180.0);
+            balanceScale = Math.sin(pitchAngleRadians) * 0.5;
+        } else {
+            balanceScale = 0;
+        }
+    }
+
+    public void toggleAutoBalance() {
+        autoBalanceEnabled = !autoBalanceEnabled;
     }
 
     /**
@@ -43,8 +79,12 @@ public class Drivetrain implements Loggable {
      * @param rightSpeed The speed of the right motors
      */
     public void drive(double leftSpeed, double rightSpeed) { // Probably implement deadbands later
-        left.set(leftSpeed);
-        right.set(rightSpeed);
+        left.setSpeed(leftSpeed);
+        right.setSpeed(rightSpeed);
+    }
+
+    public void setClimbMode(boolean climb) {
+        climbMode = climb;
     }
 
     /**
@@ -54,6 +94,11 @@ public class Drivetrain implements Loggable {
      * @param speedInput The speed to drive
      */
     public void arcadeDrive(double turnInput, double speedInput) {
+        if (!getShifter()) {
+            turnInput *= 1.45;
+        }
+        speedInput =
+                climbMode ? speedInput * 0.4 : speedInput + (autoBalanceEnabled ? balanceScale : 0);
         this.drive(speedInput - turnInput, speedInput + turnInput);
     }
 
@@ -70,16 +115,16 @@ public class Drivetrain implements Loggable {
     /**
      * Changes gears for the drivetrain.
      *
-     * @param lowSpeed true if in low speed gearing, false if in high speed gearing
+     * @param highSpeed true if in high speed gearing, false if in low speed gearing
      */
-    public void setShifter(boolean lowSpeed) {
-        shifter.set(lowSpeed);
+    public void setShifter(boolean highSpeed) {
+        shifter.set(highSpeed);
     }
 
     /**
      * Gets if the gear shift is engaged.
      *
-     * @return true if in low gear, false if in high gear
+     * @return true if in high gear, false if in low gear
      */
     public boolean getShifter() {
         return shifter.get();
@@ -126,6 +171,7 @@ public class Drivetrain implements Loggable {
 
     @Override
     public void log(Logger logger) {
-        // TODO Auto-generated method stub
+        left.log(logger);
+        right.log(logger);
     }
 }
