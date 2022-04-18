@@ -25,7 +25,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     private static final double TICKS_PER_INCH = TICKS_PER_ROTATION / (6 * Math.PI); // TODO: Update
                                                                                      // formula for
                                                                                      // 2022 robot
-    //private static final double SHOOTER_SPEED = 1;
+    // private static final double SHOOTER_SPEED = 1;
     private JsonElement auto;
     private List<AutoInstruction> instructions;
     private int step;
@@ -48,7 +48,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
         public List<Double> args;
 
         public enum Unit {
-            SECONDS, MILLISECONDS, ENCODER_TICKS, ROTATIONS, INCHES, FEET, CURRENT, DEGREES, SPEED, POWER, INVALID
+            SECONDS, MILLISECONDS, ENCODER_TICKS, ROTATIONS, INCHES, FEET, CURRENT, DEGREES, EXTEND, EJECT, INVALID
         }
 
         public AutoInstruction(String type, List<Double> args) {
@@ -69,7 +69,8 @@ public class JsonAutonomous extends Autonomous implements Loggable {
      * 
      * @param file The location of the file to parse
      */
-    public JsonAutonomous(String file, LoggableGyro gyro, Drivetrain drive, Manipulation manipulation) {
+    public JsonAutonomous(String file, LoggableGyro gyro, Drivetrain drive,
+            Manipulation manipulation) {
         this.drive = drive;
         this.gyro = gyro;
         this.manipulation = manipulation;
@@ -146,9 +147,17 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                 wait(ai);
                 break;
 
+            case "eject":
+                eject(ai);
+                break;
+
+            case "intake":
+                intake(ai);
+                break;
+
             // case "shoot":
-            //     shoot(ai);
-            //     break;
+            // shoot(ai);
+            // break;
 
             default:
                 System.out.println("Invalid Command");
@@ -178,14 +187,14 @@ public class JsonAutonomous extends Autonomous implements Loggable {
             }
         } else if (u.equals(AutoInstruction.Unit.FEET) || u.equals(AutoInstruction.Unit.INCHES)) {
             // amount: feet/inches to drive
-            if (driveDistance(ai.args.get(0), ai.args.get(0),
+            if (driveDistance(ai.args.get(0), ai.args.get(1),
                     (u.equals(AutoInstruction.Unit.INCHES) ? ai.amount * TICKS_PER_INCH
                             : (ai.amount * TICKS_PER_INCH) * 12))) {
                 reset();
             }
         } else if (u.equals(AutoInstruction.Unit.CURRENT)) {
             // amount: motor current to stop at
-            if (driveCurrent(ai.args.get(0), ai.args.get(0), ai.amount)) {
+            if (driveCurrent(ai.args.get(0), ai.args.get(1), ai.amount)) {
                 reset();
             }
         }
@@ -245,38 +254,66 @@ public class JsonAutonomous extends Autonomous implements Loggable {
         }
     }
 
-    // private void shoot(AutoInstruction ai) {
-    //     AutoInstruction.Unit u = ai.unit;
+    private void eject(AutoInstruction ai) {
+        if (timer.get() < ai.amount) {
+            manipulation.setCollection(ai.args.get(0), ai.args.get(1));
+        } else {
+            reset();
+        }
+    }
 
-    //     if (u == AutoInstruction.Unit.SPEED) {
-    //         if (shooter.getSpeed() < SHOOTER_SPEED) {
-    //             shooter.setSpeed(SHOOTER_SPEED);
-    //         } else {
-    //             timer.reset();
-    //             if (timer.get() < ai.args.get(0)) {
-    //                 shooter.setSpeed(SHOOTER_SPEED);
-    //                 manipulation.setIntakeSpin(true);
-    //             } else {
-    //                 shooter.setSpeed(0);
-    //                 manipulation.setIntakeSpin(false);
-    //                 reset();
-    //             }
-    //         }
-    //     } else if (u == AutoInstruction.Unit.POWER) {
-    //         if (shooter.getSpeed() < SHOOTER_SPEED) {
-    //             shooter.setPower(SHOOTER_SPEED);
-    //         } else {
-    //             timer.reset();
-    //             if (timer.get() < ai.args.get(0)) {
-    //                 shooter.setPower(SHOOTER_SPEED);
-    //                 manipulation.setIntakeSpin(true);
-    //             } else {
-    //                 shooter.setPower(0);
-    //                 manipulation.setIntakeSpin(false);
-    //                 reset();
-    //             }
-    //         }
-    //     }
+    private void intake(AutoInstruction ai) {
+        AutoInstruction.Unit u = ai.unit;
+
+        if (u.equals(AutoInstruction.Unit.EXTEND)) {
+            if (ai.amount == 1) {
+                manipulation.setIntakeExtend(true);
+            } else if (ai.amount == 0) {
+                manipulation.setIntakeExtend(false);
+            }
+        } else if (u.equals(AutoInstruction.Unit.FEET) || u.equals(AutoInstruction.Unit.INCHES)) {
+            if (driveDistance(ai.args.get(0), ai.args.get(1),
+                    (u.equals(AutoInstruction.Unit.INCHES) ? ai.amount * TICKS_PER_INCH
+                            : (ai.amount * TICKS_PER_INCH) * 12))) {
+                reset();
+            } else {
+                manipulation.setCollection(ai.args.get(2), ai.args.get(3));
+            }
+        }
+    }
+
+    // private void shoot(AutoInstruction ai) {
+    // AutoInstruction.Unit u = ai.unit;
+
+    // if (u == AutoInstruction.Unit.SPEED) {
+    // if (shooter.getSpeed() < SHOOTER_SPEED) {
+    // shooter.setSpeed(SHOOTER_SPEED);
+    // } else {
+    // timer.reset();
+    // if (timer.get() < ai.args.get(0)) {
+    // shooter.setSpeed(SHOOTER_SPEED);
+    // manipulation.setIntakeSpin(true);
+    // } else {
+    // shooter.setSpeed(0);
+    // manipulation.setIntakeSpin(false);
+    // reset();
+    // }
+    // }
+    // } else if (u == AutoInstruction.Unit.POWER) {
+    // if (shooter.getSpeed() < SHOOTER_SPEED) {
+    // shooter.setPower(SHOOTER_SPEED);
+    // } else {
+    // timer.reset();
+    // if (timer.get() < ai.args.get(0)) {
+    // shooter.setPower(SHOOTER_SPEED);
+    // manipulation.setIntakeSpin(true);
+    // } else {
+    // shooter.setPower(0);
+    // manipulation.setIntakeSpin(false);
+    // reset();
+    // }
+    // }
+    // }
 
     // }
 

@@ -169,7 +169,7 @@ public class Robot extends TimedRobot {
         if (drivetrainEnabled) {
             drive.setNeutralMode(NeutralMode.Brake);
         }
-        auto = new JsonAutonomous(JsonAutonomous.getAutoPath("auto-test.json"), gyro, drive, manipulation);
+        auto = new JsonAutonomous(JsonAutonomous.getAutoPath("billiards-one.json"), gyro, drive, manipulation);
         System.out.println("Auto Initialized");
         logger.addLoggable(auto);
         resetLogging();

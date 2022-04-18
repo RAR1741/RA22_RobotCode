@@ -66,33 +66,32 @@ public class Manipulation implements Loggable {
         indexLoad.set(load ? -0.2 : 0.0);
     }
 
+    public void setCollection(double index, double intake) {
+        indexLoad.set(index);
+        intakeWheel.set(intake);
+    }
+
     public void setCollect(boolean collect) {
         if (intakePneumatics.get() == Value.kForward && collect) {
-            indexLoad.set(-0.3);
-            intakeWheel.set(0.6);
+            this.setCollection(-0.3, 0.6);
         } else {
-            indexLoad.set(0);
-            intakeWheel.set(0);
+            this.setCollection(0, 0);
         }
     }
 
     public void setSlowEject() {
         if (intakePneumatics.get() == Value.kForward) {
-            indexLoad.set(0.4);
-            intakeWheel.set(-0.35);
+            this.setCollection(0.4, -0.35);
         } else {
-            indexLoad.set(0);
-            intakeWheel.set(0);
+            this.setCollection(0, 0);
         }
     }
 
     public void setEject() {
         if (intakePneumatics.get() == Value.kForward) {
-            indexLoad.set(0.4);
-            intakeWheel.set(-1);
+            this.setCollection(0.4, -1);
         } else {
-            indexLoad.set(0);
-            intakeWheel.set(0);
+            this.setCollection(0, 0);
         }
     }
 
