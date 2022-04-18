@@ -155,10 +155,6 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                 intake(ai);
                 break;
 
-            // case "shoot":
-            // shoot(ai);
-            // break;
-
             default:
                 System.out.println("Invalid Command");
                 reset();
@@ -281,41 +277,6 @@ public class JsonAutonomous extends Autonomous implements Loggable {
             }
         }
     }
-
-    // private void shoot(AutoInstruction ai) {
-    // AutoInstruction.Unit u = ai.unit;
-
-    // if (u == AutoInstruction.Unit.SPEED) {
-    // if (shooter.getSpeed() < SHOOTER_SPEED) {
-    // shooter.setSpeed(SHOOTER_SPEED);
-    // } else {
-    // timer.reset();
-    // if (timer.get() < ai.args.get(0)) {
-    // shooter.setSpeed(SHOOTER_SPEED);
-    // manipulation.setIntakeSpin(true);
-    // } else {
-    // shooter.setSpeed(0);
-    // manipulation.setIntakeSpin(false);
-    // reset();
-    // }
-    // }
-    // } else if (u == AutoInstruction.Unit.POWER) {
-    // if (shooter.getSpeed() < SHOOTER_SPEED) {
-    // shooter.setPower(SHOOTER_SPEED);
-    // } else {
-    // timer.reset();
-    // if (timer.get() < ai.args.get(0)) {
-    // shooter.setPower(SHOOTER_SPEED);
-    // manipulation.setIntakeSpin(true);
-    // } else {
-    // shooter.setPower(0);
-    // manipulation.setIntakeSpin(false);
-    // reset();
-    // }
-    // }
-    // }
-
-    // }
 
     private void reset() {
         drive.drive(0, 0);
