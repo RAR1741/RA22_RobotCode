@@ -53,12 +53,15 @@ public class Climber implements Loggable {
     public static double ENCODER_DEADZONE = 100;
 
     public static double TOUCH_A_POSITION = 144000; // TBD
+    public static double TOUCH_B_POSITION = 0;
     public static double SWING_AB_POSITION = 43000; // TBD
     public static double SWING_B_POSITION = 900; // TBD
+    public static double TOUCH_C_POSITION = 0;
     public static double SWING_BC_POSITION = 107000; // TBD
     public static double SWING_MIN_VELOCITY = 1500; // TBD
 
     private double motorSpeed;
+    private double pError;
 
     private double previousTime;
 
@@ -170,11 +173,14 @@ public class Climber implements Loggable {
             // 15 ROTATE_B: Rotate to B bar (photogate)
             case ROTATE_B:
                 // TODO: set motor power here
-                this.setMotors(-0.4);
                 climberSolenoidA.set(false);
                 climberSolenoidB1.set(true);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
+
+                pError = Math.abs(
+                        (getPosition() - TOUCH_B_POSITION) / (TOUCH_B_POSITION - TOUCH_A_POSITION));
+                this.setMotors(-(0.3 + 0.3 * pError));
                 // if (climbingMotor.getStatorCurrent() > NEXT_AB_STATE_CURRENT
                 // || secondaryClimbingMotor.getStatorCurrent() > NEXT_AB_STATE_CURRENT) {
                 // setClimbingState(ClimbingStates.TOUCH_AB);
@@ -251,7 +257,9 @@ public class Climber implements Loggable {
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
-                this.setMotors(-0.3);
+                pError = Math.abs(
+                        (getPosition() - TOUCH_C_POSITION) / (TOUCH_C_POSITION - SWING_B_POSITION));
+                this.setMotors(-(0.2 + 0.4 * pError));
                 // if (climbingMotor.getStatorCurrent() > NEXT_BC_STATE_CURRENT
                 // || secondaryClimbingMotor.getStatorCurrent() > NEXT_BC_STATE_CURRENT) {
                 // setClimbingState(ClimbingStates.TOUCH_BC);
@@ -417,6 +425,10 @@ public class Climber implements Loggable {
         return climbingMotor.getSelectedSensorVelocity();
     }
 
+    public double getPosition() {
+        return climbingMotor.getSelectedSensorPosition();
+    }
+
     public void setMotorState(MotorStates currentState) {
         this.currentMotorState = currentState;
     }
@@ -499,7 +511,7 @@ public class Climber implements Loggable {
         logger.log("Climber/Right/Current", getRightCurrent());
 
         logger.log("Climber/Speed", getSpeed());
-        logger.log("Climber/Position", climbingMotor.getSelectedSensorPosition());
+        logger.log("Climber/Position", getPosition());
 
         logger.log("Climber/State/Name", this.currentClimberState.name);
         logger.log("Climber/State/Id", this.currentClimberState.id);
