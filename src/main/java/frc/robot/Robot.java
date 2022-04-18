@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -39,7 +40,7 @@ public class Robot extends TimedRobot {
     DriveModule rightModule;
 
     Climber climber;
-    // LoggableGyro gyro;
+    LoggableGyro gyro;
     Shooter shooter;
     Manipulation manipulation;
     CANSparkMax tempClimber;
@@ -50,7 +51,6 @@ public class Robot extends TimedRobot {
     LoggablePowerDistribution pdp;
     LoggableCompressor compressor;
     // ClimberGates climberGates;
-    LoggableGyro gyro;
 
     boolean drivetrainEnabled = true;
     boolean tankDriveEnabled = false;
@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
     boolean manipulationEnabled = false;
     double shootSpeed = 0.40;
 
-    // private JsonAutonomous auto;
+    private JsonAutonomous auto;
 
     private static final double DEADBAND_LIMIT = 0.01;
     private static final double SPEED_CAP = 0.45;
@@ -108,15 +108,23 @@ public class Robot extends TimedRobot {
             System.out.println("Climber initialization disabled.");
         }
 
+        gyro = new LoggableGyro();
+        gyro.enableLogging(false);
+
+        System.out.print("Initializing compressor...");
+        compressor = new LoggableCompressor(2, PneumaticsModuleType.REVPH);
+        System.out.println("done");
+
         if (this.drivetrainEnabled) {
             System.out.println("Initializing drivetrain...");
-            leftModule = new DriveModule("LeftDriveModule", 2, 3); // 2, 3
+            leftModule = new DriveModule("LeftDriveModule", 2, 3);
             leftModule.setEncoder(2, 3, false);
 
-            rightModule = new DriveModule("RightDriveModule", 4, 5); // 4, 5
+            rightModule = new DriveModule("RightDriveModule", 4, 5);
             rightModule.setEncoder(0, 1, true);
 
             drive = new Drivetrain(leftModule, rightModule, 6);
+            drive.setNeutralMode(NeutralMode.Coast);
 
             logger.addLoggable(drive);
         } else {
@@ -154,30 +162,22 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         gyro.reset();
-        timer.reset();
 
-        // auto = new JsonAutonomous("/home/lvuser/deploy/autos/autonomous.json", gyro, drive,
-        // shooter,
-        // manipulation);
-        // System.out.println("Auto Initialized");
-        // logger.addLoggable(auto);
+        if (drivetrainEnabled) {
+            drive.setNeutralMode(NeutralMode.Brake);
+        }
+        auto = new JsonAutonomous(JsonAutonomous.getAutoPath("new-auto.json"), gyro, drive, manipulation);
+        System.out.println("Auto Initialized");
+        logger.addLoggable(auto);
         resetLogging();
     }
 
     @Override
     public void autonomousPeriodic() {
         // Robot code goes here
-
-        if (timer.get() < 2) {
-            drive.tankDrive(-0.3, -0.3);
-        } else {
-            drive.tankDrive(0, 0);
-        }
-
         leftModule.updateCurrent();
         rightModule.updateCurrent();
-        System.out.println("running - Robot");
-        // auto.run();
+        auto.run();
 
         logger.log();
         logger.writeLine();
@@ -185,6 +185,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        if (drivetrainEnabled) {
+            drive.setNeutralMode(NeutralMode.Coast);
+        }
         resetLogging();
     }
 
@@ -214,6 +217,15 @@ public class Robot extends TimedRobot {
 
             leftModule.updateCurrent();
             rightModule.updateCurrent();
+        }
+        if (this.manipulationEnabled) {
+            if (operator.getRightBumper()) {
+                manipulation.setIntakeExtend(true); // down
+            } else /* (operator.getLeftBumper()) */ {
+                manipulation.setIntakeExtend(false); // up
+            }
+            manipulation.setIntakeSpin(operator.getYButton());
+            manipulation.setIndexLoad(operator.getXButton());
         }
 
         // if (this.climberEnabled) {
@@ -274,6 +286,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
+        if (drivetrainEnabled) {
+            drive.setNeutralMode(NeutralMode.Coast);
+        }
         logger.close();
         timer.stop();
     }
@@ -286,6 +301,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
+        if (drivetrainEnabled) {
+            drive.setNeutralMode(NeutralMode.Coast);
+        }
         resetLogging();
     }
 

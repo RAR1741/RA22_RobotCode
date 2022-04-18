@@ -1,0 +1,135 @@
+{
+    "auto": [
+        {
+            "type": "index",
+            "unit": "SECONDS",
+            "amount": 1.5,
+            "args": [
+                -0.5
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "drive",
+            "unit": "SECONDS",
+            "amount": 1.25,
+            "args": [
+                0.25,
+                0.25
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 45,
+            "args": [
+                -0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "intake",
+            "unit": "NOTMOTOR",
+            "amount": 0.5,
+            "args": [
+                1
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "intake",
+            "unit": "MOTOR",
+            "amount": 1.5,
+            "args": [
+                -0.05,
+                -0.05
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "intake",
+            "unit": "NOTMOTOR",
+            "amount": 0.5,
+            "args": [
+                0
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 160,
+            "args": [
+                -0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "drive",
+            "unit": "SECONDS",
+            "amount": 1.6,
+            "args": [
+                -0.2,
+                -0.2
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 30,
+            "args": [
+                -0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "index",
+            "unit": "SECONDS",
+            "amount": 1.5,
+            "args": [
+                -0.5
+            ]
+        }
+    ]
+}

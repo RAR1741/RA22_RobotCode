@@ -53,6 +53,8 @@ def includeDesktopSupport = true
 dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
+    
+    implementation 'com.google.code.gson:gson:2.9.0'
 
     implementation 'com.google.code.gson:gson:2.9.0'
 

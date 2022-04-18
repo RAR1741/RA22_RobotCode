@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.logging.Loggable;
@@ -45,8 +46,8 @@ public class Drivetrain implements Loggable {
      * @param rightSpeed The speed of the right motors
      */
     public void drive(double leftSpeed, double rightSpeed) { // Probably implement deadbands later
-        left.set(leftSpeed);
-        right.set(rightSpeed);
+        left.setPower(leftSpeed);
+        right.setPower(rightSpeed);
     }
 
     public void setClimbMode() {
@@ -93,6 +94,19 @@ public class Drivetrain implements Loggable {
     }
 
     /**
+     * Gets the encoder information for the left DriveModule
+     * 
+     * @return Position of left sensor (in raw sensor units).
+     */
+    public double getEncoder() {
+        return (left.getDriveEnc() + right.getDriveEnc()) / 2;
+    }
+
+    public double getAverageCurrent() {
+        return (left.getAverageCurrent() + right.getAverageCurrent()) / 2;
+    }
+
+    /**
      * Shifts gears based on current.
      */
     public void checkGears() {
@@ -123,6 +137,11 @@ public class Drivetrain implements Loggable {
                 setShifter(false);
             }
         }
+    }
+
+    public void setNeutralMode(NeutralMode mode) {
+        this.left.setNeutralMode(mode);
+        this.right.setNeutralMode(mode);
     }
 
     @Override
