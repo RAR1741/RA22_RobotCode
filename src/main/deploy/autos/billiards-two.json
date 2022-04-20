@@ -8,10 +8,10 @@
         {
             "type": "turnDeg",
             "unit": "DEGREES",
-            "amount": -5,
+            "amount": 4,
             "args": [
-                -0.1,
-                0.1
+                0.1,
+                -0.1
             ]
         },
         {
@@ -31,7 +31,7 @@
         {
             "type": "turnDeg",
             "unit": "DEGREES",
-            "amount": -40,
+            "amount": -84,
             "args": [
                 -0.1,
                 0.1
@@ -40,7 +40,7 @@
         {
             "type": "drive",
             "unit": "INCHES",
-            "amount": 50,
+            "amount": 25,
             "args": [
                 0.1,
                 0.1
@@ -49,7 +49,7 @@
         {
             "type": "turnDeg",
             "unit": "DEGREES",
-            "amount": 40,
+            "amount": 70,
             "args": [
                 0.1,
                 -0.1
@@ -63,7 +63,7 @@
         {
             "type": "intake",
             "unit": "INCHES",
-            "amount": 50,
+            "amount": 40,
             "args": [
                 0.1,
                 0.1,
@@ -77,20 +77,18 @@
             "amount": 0
         },
         {
-            "type": "intake",
+            "type": "drive",
             "unit": "INCHES",
-            "amount": 50,
+            "amount": 40,
             "args": [
                 -0.1,
-                -0.1,
-                0.4,
-                -0.35
+                -0.1
             ]
         },
         {
             "type": "turnDeg",
             "unit": "DEGREES",
-            "amount": 15,
+            "amount": 55,
             "args": [
                 0.1,
                 -0.1
@@ -118,7 +116,7 @@
         {
             "type": "turnDeg",
             "unit": "DEGREES",
-            "amount": -55,
+            "amount": -125,
             "args": [
                 -0.1,
                 0.1
@@ -132,7 +130,7 @@
         {
             "type": "intake",
             "unit": "INCHES",
-            "amount": 10,
+            "amount": 25,
             "args": [
                 -0.1,
                 -0.1,
