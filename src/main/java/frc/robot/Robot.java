@@ -103,9 +103,9 @@ public class Robot extends TimedRobot {
             Solenoid climberSolenoidB2 = new Solenoid(PneumaticsModuleType.REVPH, 3);
             Solenoid climberSolenoidC = new Solenoid(PneumaticsModuleType.REVPH, 4);
 
-            // climberSensors = new ClimberSensors(0, 0); // TODO: Add sensors and input ids
+            climberSensors = new ClimberSensors(4, 5); // TODO: Add sensors and input ids
             climber = new Climber(10, 9, climberSolenoidA, climberSolenoidB1, climberSolenoidB2,
-                    climberSolenoidC);
+                    climberSolenoidC);// , climberSensors);
 
             // logger.addLoggable(climberSensors);
             logger.addLoggable(climber);
