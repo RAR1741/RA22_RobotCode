@@ -52,16 +52,13 @@ public class Climber implements Loggable {
 
     public static double ENCODER_DEADZONE = 100;
 
-    public static double TOUCH_A_POSITION = 144000; // TBD
-    public static double TOUCH_B_POSITION = 0;
-    public static double SWING_AB_POSITION = 43000; // TBD
-    public static double SWING_B_POSITION = 900; // TBD
-    public static double TOUCH_C_POSITION = 0;
-    public static double SWING_BC_POSITION = 107000; // TBD
-    public static double SWING_MIN_VELOCITY = 1500; // TBD
+    public static double TOUCH_A_POSITION = 120000; // TBD
+    public static double TOUCH_B_POSITION = -18000;
+    public static double SWING_B_POSITION = -25000; // TBD
+    public static double TOUCH_C_POSITION = -145000;
 
     private double motorSpeed;
-    private double pError;
+    private double pError = 0;
 
     private double previousTime;
 
@@ -86,6 +83,7 @@ public class Climber implements Loggable {
 
     public Climber(int climbingMotorID, int secondaryClimbingMotorID, Solenoid climberSolenoidA,
             Solenoid climberSolenoidB1, Solenoid climberSolenoidB2, Solenoid climberSolenoidC) {
+        // ClimberSensors touch) {
 
         this.climbingMotor = new TalonFX(climbingMotorID);
         this.secondaryClimbingMotor = new TalonFX(secondaryClimbingMotorID);
@@ -95,7 +93,7 @@ public class Climber implements Loggable {
         this.climberSolenoidB2 = climberSolenoidB2;
         this.climberSolenoidC = climberSolenoidC;
 
-        // this.touch = touch;
+        this.touch = touch;
 
         this.climbingMotor.setNeutralMode(NeutralMode.Coast);
         this.secondaryClimbingMotor.setNeutralMode(NeutralMode.Coast);
@@ -180,7 +178,9 @@ public class Climber implements Loggable {
 
                 pError = Math.abs(
                         (getPosition() - TOUCH_B_POSITION) / (TOUCH_B_POSITION - TOUCH_A_POSITION));
-                this.setMotors(-(0.3 + 0.3 * pError));
+                this.setMotors(-(0.4 + 0.7 * pError));
+                // this.setMotors(-0.4);
+
                 // if (climbingMotor.getStatorCurrent() > NEXT_AB_STATE_CURRENT
                 // || secondaryClimbingMotor.getStatorCurrent() > NEXT_AB_STATE_CURRENT) {
                 // setClimbingState(ClimbingStates.TOUCH_AB);
@@ -196,10 +196,18 @@ public class Climber implements Loggable {
             // 20 TOUCH_AB: Pin B (high current/sensor)
             case TOUCH_AB:
                 this.setMotors(-0.05);
+                // if (touch.getB()) {
                 climberSolenoidA.set(false);
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
+                // } else {
+                // climberSolenoidA.set(false);
+                // climberSolenoidB1.set(true);
+                // climberSolenoidB2.set(false);
+                // climberSolenoidC.set(true);
+                // previousTime = timer.get();
+                // }
                 // if (!gates.getB1()) {
                 // setClimbingState(ClimbingStates.ROTATE_B);
                 // }
@@ -215,11 +223,12 @@ public class Climber implements Loggable {
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
-                if (climbingMotor.getSelectedSensorPosition() > SWING_AB_POSITION) {// Was less then
-                                                                                    // when broken
-                    System.out.println("DONE SWINGING!");
-                    // setClimbingState(ClimbingStates.RELEASE_A);
-                }
+                // if (climbingMotor.getSelectedSensorPosition() > SWING_AB_POSITION) {// Was less
+                // then
+                // // when broken
+                // System.out.println("DONE SWINGING!");
+                // // setClimbingState(ClimbingStates.RELEASE_A);
+                // }
                 break;
 
             // // 30 RELEASE_A: Unpin A (gyro/accel)
@@ -242,13 +251,13 @@ public class Climber implements Loggable {
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
                 // this.setPower(0);
-                if (Math.abs(climbingMotor.getSelectedSensorPosition() - SWING_B_POSITION) < 1000
-                        && Math.abs(
-                                climbingMotor.getSelectedSensorVelocity()) < SWING_MIN_VELOCITY) {
-                    // Determine tolerance
-                    System.out.println("DONE SWINGING!");
-                    // setClimbingState(ClimbingStates.ROTATE_C);
-                }
+                // if (Math.abs(climbingMotor.getSelectedSensorPosition() - SWING_B_POSITION) < 1000
+                // && Math.abs(
+                // climbingMotor.getSelectedSensorVelocity()) < SWING_MIN_VELOCITY) {
+                // // Determine tolerance
+                // System.out.println("DONE SWINGING!");
+                // // setClimbingState(ClimbingStates.ROTATE_C);
+                // }
                 break;
 
             // 40 ROTATE_C: Rotate to C bar (gyro/accel)
@@ -257,9 +266,12 @@ public class Climber implements Loggable {
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(true);
+
                 pError = Math.abs(
                         (getPosition() - TOUCH_C_POSITION) / (TOUCH_C_POSITION - SWING_B_POSITION));
-                this.setMotors(-(0.2 + 0.4 * pError));
+                this.setMotors(-(0.3 + 0.7 * pError));
+                // this.setMotors(-0.3);
+
                 // if (climbingMotor.getStatorCurrent() > NEXT_BC_STATE_CURRENT
                 // || secondaryClimbingMotor.getStatorCurrent() > NEXT_BC_STATE_CURRENT) {
                 // setClimbingState(ClimbingStates.TOUCH_BC);
@@ -286,11 +298,11 @@ public class Climber implements Loggable {
                 climberSolenoidB1.set(false);
                 climberSolenoidB2.set(false);
                 climberSolenoidC.set(false);
-                if (climbingMotor.getSelectedSensorPosition() < SWING_BC_POSITION) {// Determine
-                                                                                    // tolerance
-                    System.out.println("DONE SWINGING!");
-                    // setClimbingState(ClimbingStates.RELEASE_B);
-                }
+                // if (climbingMotor.getSelectedSensorPosition() < SWING_BC_POSITION) {// Determine
+                // // tolerance
+                // System.out.println("DONE SWINGING!");
+                // // setClimbingState(ClimbingStates.RELEASE_B);
+                // }
                 break;
 
             // 60 RELEASE_B: Unpin B (gyro/accel)
@@ -330,6 +342,7 @@ public class Climber implements Loggable {
                 disableClimber();
                 break;
         }
+
     }
 
     public void setClimbingState(ClimbingStates climbingState) {
@@ -498,6 +511,7 @@ public class Climber implements Loggable {
 
         logger.addAttribute("Climber/Speed");
         logger.addAttribute("Climber/Position");
+        logger.addAttribute("Climber/Error");
 
         logger.addAttribute("Climber/State/Name");
         logger.addAttribute("Climber/State/Id");
@@ -512,6 +526,7 @@ public class Climber implements Loggable {
 
         logger.log("Climber/Speed", getSpeed());
         logger.log("Climber/Position", getPosition());
+        logger.log("Climber/Error", pError);
 
         logger.log("Climber/State/Name", this.currentClimberState.name);
         logger.log("Climber/State/Id", this.currentClimberState.id);
