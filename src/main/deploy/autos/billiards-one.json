@@ -6,20 +6,11 @@
             "amount": 1
         },
         {
-            "type": "turnDeg",
-            "unit": "DEGREES",
-            "amount": 4,
-            "args": [
-                0.1,
-                -0.1
-            ]
-        },
-        {
             "type": "eject",
             "unit": "EJECT",
-            "amount": 1,
+            "amount": 1.5,
             "args": [
-                0.4,
+                0.8,
                 -1
             ]
         },
@@ -31,10 +22,10 @@
         {
             "type": "turnDeg",
             "unit": "DEGREES",
-            "amount": -84,
+            "amount": -55,
             "args": [
-                -0.1,
-                0.1
+                -0.2,
+                0.2
             ]
         },
         {
@@ -47,10 +38,10 @@
             "unit": "INCHES",
             "amount": 50,
             "args": [
-                0.1,
-                0.1,
-                0.4,
-                -0.35
+                0.2,
+                0.2,
+                -0.6,
+                1
             ]
         },
         {

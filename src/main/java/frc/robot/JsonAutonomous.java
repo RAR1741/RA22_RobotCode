@@ -66,7 +66,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     /**
      * Creates a JsonAutonomous from the specified file
-     * 
+     *
      * @param file The location of the file to parse
      */
     public JsonAutonomous(String file, LoggableGyro gyro, Drivetrain drive,
@@ -225,9 +225,10 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     }
 
     private boolean rotateDegrees(double leftSpeed, double rightSpeed, double deg) {
-        if (Math.abs(getAngle() - navxStart - deg) < 10) {
+        if (Math.abs(getAngle() - navxStart - deg) < 3) {
             return true;
         } else {
+            System.out.println(getAngle() - navxStart - deg);
             drive.drive(leftSpeed, rightSpeed);
             return false;
         }
@@ -267,6 +268,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
             } else if (ai.amount == 0) {
                 manipulation.setIntakeExtend(false);
             }
+            reset();
         } else if (u.equals(AutoInstruction.Unit.FEET) || u.equals(AutoInstruction.Unit.INCHES)) {
             if (driveDistance(ai.args.get(0), ai.args.get(1),
                     (u.equals(AutoInstruction.Unit.INCHES) ? ai.amount * TICKS_PER_INCH
@@ -280,6 +282,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     private void reset() {
         drive.drive(0, 0);
+        manipulation.setCollection(0, 0);
         step++;
         navxStart = getAngle();
         start = drive.getEncoder();

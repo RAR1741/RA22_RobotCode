@@ -178,7 +178,7 @@ public class Climber implements Loggable {
 
                 pError = Math.abs(
                         (getPosition() - TOUCH_B_POSITION) / (TOUCH_B_POSITION - TOUCH_A_POSITION));
-                this.setMotors(-(0.4 + 0.7 * pError));
+                this.setMotors(-(0.2 + 0.7 * Math.sqrt(pError)));
                 // this.setMotors(-0.4);
 
                 // if (climbingMotor.getStatorCurrent() > NEXT_AB_STATE_CURRENT
@@ -269,7 +269,7 @@ public class Climber implements Loggable {
 
                 pError = Math.abs(
                         (getPosition() - TOUCH_C_POSITION) / (TOUCH_C_POSITION - SWING_B_POSITION));
-                this.setMotors(-(0.3 + 0.7 * pError));
+                this.setMotors(-(0.3 + 0.7 * Math.sqrt(pError)));
                 // this.setMotors(-0.3);
 
                 // if (climbingMotor.getStatorCurrent() > NEXT_BC_STATE_CURRENT

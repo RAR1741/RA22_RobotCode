@@ -81,7 +81,7 @@ public class Manipulation implements Loggable {
 
     public void setSlowEject() {
         if (intakePneumatics.get() == Value.kForward) {
-            this.setCollection(0.4, -0.35);
+            this.setCollection(0.4, -0.4);
         } else {
             this.setCollection(0, 0);
         }

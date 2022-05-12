@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -67,6 +68,8 @@ public class Robot extends TimedRobot {
     private final String billiard2 = JsonAutonomous.getAutoPath("billiards-two.json");
     SendableChooser<String> autonomousPathChooser = new SendableChooser<>();
 
+    String autonomousPath = billiard0;
+
     private static final double DEADBAND_LIMIT = 0.01;
     private static final double SPEED_CAP = 0.5;
     InputScaler joystickDeadband = new Deadband(DEADBAND_LIMIT);
@@ -114,11 +117,8 @@ public class Robot extends TimedRobot {
         }
 
         gyro = new LoggableGyro();
+        gyro.reset();
         gyro.enableLogging(false);
-
-        System.out.print("Initializing compressor...");
-        compressor = new LoggableCompressor(2, PneumaticsModuleType.REVPH);
-        System.out.println("done");
 
         if (this.drivetrainEnabled) {
             System.out.println("Initializing drivetrain...");
@@ -145,7 +145,7 @@ public class Robot extends TimedRobot {
 
         if (tempClimberEnabled) {
             System.out.println("Initializing temporary climber...");
-            tempClimber = new CANSparkMax(8, MotorType.kBrushless);
+            tempClimber = new CANSparkMax(6, MotorType.kBrushless);
             tempClimber.setIdleMode(IdleMode.kBrake);
         } else {
             System.out.println("Temporary climber initialization disabled.");
@@ -155,9 +155,12 @@ public class Robot extends TimedRobot {
         compressor = new LoggableCompressor(PneumaticsModuleType.REVPH);
         System.out.println("done");
 
-        autonomousPathChooser.setDefaultOption("Drive straight back or something", this.billiard0);
-        autonomousPathChooser.addOption("The Billiards autonomous program called one", this.billiard1);
-        autonomousPathChooser.addOption("The Billiards autonomous program called two", this.billiard2);
+        autonomousPathChooser.setDefaultOption("Whatever the preset default is", this.billiard0);
+        autonomousPathChooser.addOption("Drive straight back or something", this.billiard0);
+        autonomousPathChooser.addOption("The Billiards autonomous program called one",
+                this.billiard1);
+        autonomousPathChooser.addOption("The Billiards autonomous program called two",
+                this.billiard2);
 
         SmartDashboard.putData(autonomousPathChooser);
 
@@ -176,30 +179,48 @@ public class Robot extends TimedRobot {
         if (climberEnabled) {
             climber.update();
         }
+        // var autonomousPath = autonomousPathChooser.getSelected();
+        SmartDashboard.putString("Selected autonomous file", autonomousPath);
     }
 
     @Override
     public void autonomousInit() {
-        gyro.reset();
-
         if (drivetrainEnabled) {
             drive.setNeutralMode(NeutralMode.Brake);
         }
-        auto = new JsonAutonomous(autonomousPathChooser.getSelected(), gyro, drive, manipulation);
+        timer.reset();
+        // autonomousPath = autonomousPathChooser.getSelected();
+        auto = new JsonAutonomous(billiard0, gyro, drive, manipulation);
         System.out.println("Auto Initialized");
-        logger.addLoggable(auto);
-        resetLogging();
+        // logger.addLoggable(auto);
+        // resetLogging();
     }
 
     @Override
     public void autonomousPeriodic() {
         // Robot code goes here
-        leftModule.updateCurrent();
-        rightModule.updateCurrent();
+        // leftModule.updateCurrent();
+        // rightModule.updateCurrent();
         auto.run();
+        // if (timer.get() < 0.5) {
+        // manipulation.setIntakeExtend(true);
+        // drive.drive(-0.3, -0.3);
+        // } else if (timer.get() < 3) {
+        // manipulation.setIntakeExtend(true);
+        // manipulation.setSlowEject();
+        // drive.drive(-0.3, -0.3);
+        // } else if (timer.get() < 4) {
+        // manipulation.setIntakeExtend(true);
+        // manipulation.setEject();
+        // drive.drive(0, 0);
+        // } else {
+        // manipulation.setIntakeExtend(false);
+        // manipulation.setCollection(0, 0);
+        // drive.drive(0, 0);
+        // }
 
-        logger.log();
-        logger.writeLine();
+        // logger.log();
+        // logger.writeLine();
     }
 
     @Override
@@ -214,7 +235,7 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         // Robot code goes here
         if (this.drivetrainEnabled) {
-            double turnInput = deadband(driver.getRightX()) * -0.3;
+            double turnInput = deadband(driver.getRightX()) * -0.36;
             double speedInput = deadband(-driver.getLeftY());
             boost.setScale(driver.getRightTriggerAxis());
             drive.arcadeDrive(turnInput, boost.scale(speedInput));
@@ -271,7 +292,7 @@ public class Robot extends TimedRobot {
             } else if (operator.getAButton()) {
                 manipulation.setEject();
             } else {
-                manipulation.setCollection(0,0);
+                manipulation.setCollection(0, 0);
             }
         }
 
