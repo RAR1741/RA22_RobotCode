@@ -4,25 +4,18 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.shuffleboard.SendableCameraWrapper;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Climber.MotorStates;
+import frc.robot.config.Constants;
 import frc.robot.logging.LoggableCompressor;
 import frc.robot.logging.LoggableController;
 import frc.robot.logging.LoggableGyro;
@@ -56,6 +49,8 @@ public class Robot extends TimedRobot {
     LoggablePowerDistribution pdp;
     LoggableCompressor compressor;
     ClimberSensors climberSensors;
+
+    boolean demoModeEnabled = Constants.demoModeEnabled;
 
     boolean drivetrainEnabled = true;
     boolean climberEnabled = true;
@@ -201,7 +196,9 @@ public class Robot extends TimedRobot {
         // Robot code goes here
         // leftModule.updateCurrent();
         // rightModule.updateCurrent();
-        auto.run();
+        if (!demoModeEnabled) {
+            auto.run();
+        }
         // if (timer.get() < 0.5) {
         // manipulation.setIntakeExtend(true);
         // drive.drive(-0.3, -0.3);
@@ -235,29 +232,26 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         // Robot code goes here
         if (this.drivetrainEnabled) {
-            double turnInput = deadband(driver.getRightX()) * -0.36;
-            double speedInput = deadband(-driver.getLeftY());
+            double turnInput = deadband(driver.getRightX()) * (!demoModeEnabled ? -0.36 : -0.24);
+            double speedInput = deadband(-driver.getLeftY()) * (!demoModeEnabled ? 1 : 1.25);
+
             boost.setScale(driver.getRightTriggerAxis());
+
             drive.arcadeDrive(turnInput, boost.scale(speedInput));
 
-            drive.setShifter(driver.getLeftTriggerAxis() < 0.5);
+            if (!demoModeEnabled) {
+                drive.setShifter(driver.getLeftTriggerAxis() < 0.5);
+                drive.setClimbMode(driver.getAButton());
+            } else {
+                drive.setShifter(false);
+            }
 
-            drive.setClimbMode(driver.getAButton());
             // if (driver.getBButtonPressed()) {
             // drive.toggleAutoBalance();
             // }
 
             leftModule.updateCurrent();
             rightModule.updateCurrent();
-        }
-        if (this.manipulationEnabled) {
-            if (operator.getRightBumper()) {
-                manipulation.setIntakeExtend(true); // down
-            } else /* (operator.getLeftBumper()) */ {
-                manipulation.setIntakeExtend(false); // up
-            }
-            manipulation.setIntakeSpin(operator.getYButton());
-            manipulation.setIndexLoad(operator.getXButton());
         }
 
         if (this.climberEnabled) {
@@ -283,16 +277,29 @@ public class Robot extends TimedRobot {
         }
 
         if (this.manipulationEnabled) {
-            manipulation.setIntakeExtend(driver.getLeftBumper());
+            if (!demoModeEnabled) {
+                manipulation.setIntakeExtend(driver.getLeftBumper());
 
-            if (operator.getYButton()) {
-                manipulation.setCollect();
-            } else if (operator.getXButton()) {
-                manipulation.setSlowEject();
-            } else if (operator.getAButton()) {
-                manipulation.setEject();
+                if (operator.getYButton()) {
+                    manipulation.setCollect();
+                } else if (operator.getXButton()) {
+                    manipulation.setSlowEject();
+                } else if (operator.getAButton()) {
+                    manipulation.setEject();
+                } else {
+                    manipulation.setCollection(0, 0);
+                }
             } else {
-                manipulation.setCollection(0, 0);
+                if (driver.getLeftBumper()) {
+                    manipulation.setCollect();
+                    manipulation.setIntakeExtend(true);
+                } else if (driver.getRightBumper()) {
+                    manipulation.setEject();
+                    manipulation.setIntakeExtend(true);
+                } else {
+                    manipulation.setIntakeExtend(false);
+                    manipulation.setCollection(0, 0);
+                }
             }
         }
 
