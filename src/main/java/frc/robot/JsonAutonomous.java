@@ -1,23 +1,15 @@
 package frc.robot;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.JsonAutonomous.AutoInstruction.Unit;
 import frc.robot.logging.Loggable;
 import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
+import frc.robot.parsing.JsonParser;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public class JsonAutonomous extends Autonomous implements Loggable {
 
@@ -26,7 +18,6 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                                                                                      // formula for
                                                                                      // 2022 robot
     private static final double SHOOTER_SPEED = -1;
-    private JsonElement auto;
     private List<AutoInstruction> instructions;
     private int step;
     private LoggableTimer timer;
@@ -38,9 +29,6 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     private Shooter shooter;
     private Manipulation manipulation;
-
-    private FileReader fr;
-    private JsonReader jr;
 
     public static class AutoInstruction {
         public String type;
@@ -88,40 +76,22 @@ public class JsonAutonomous extends Autonomous implements Loggable {
         step = -1;
         timer = new LoggableTimer();
         instructions = new ArrayList<AutoInstruction>();
-        try {
-            fr = new FileReader(file);
-            jr = new JsonReader(fr);
-            auto = JsonParser.parseReader(jr);
-            JsonElement inner = auto.getAsJsonObject().get("auto");
-            if (inner.isJsonArray()) {
-                for (JsonElement e : inner.getAsJsonArray()) {
-                    JsonObject o = e.getAsJsonObject();
+        JsonParser parser = new JsonParser(file);
+        parser.parse(-1);
+        for(int i = 0; i < parser.instructionSize; i++) {
+            parser.parse(i);
 
-                    List<Double> extraArgs = new ArrayList<Double>();
-                    if (o.has("args")) {
-                        for (JsonElement e2 : o.get("args").getAsJsonArray()) {
-                            extraArgs.add(e2.getAsDouble());
-                        }
-                    }
+            List<Double> args = parser.args;
 
-                    if (!o.has("type")) {
-                        throw new NoSuchElementException(
-                                "There is no element \"type\" in element " + e.toString() + "!");
-                    }
-                    String type = o.get("type").getAsString();
+            String type = parser.type;
+            
+            String unitString = parser.unit;
+            AutoInstruction.Unit unit = unitString != null ? parseUnit(unitString) : null;
 
-                    String unitString = o.has("unit") ? o.get("unit").getAsString() : null;
-                    AutoInstruction.Unit unit = unitString != null ? parseUnit(unitString) : null;
+            Double amount = parser.amount;
 
-                    Double amount = o.has("amount") ? o.get("amount").getAsDouble() : null;
-
-                    AutoInstruction ai = unit == null ? new AutoInstruction(type, extraArgs)
-                            : new AutoInstruction(type, unit, amount, extraArgs);
-                    instructions.add(ai);
-                }
-            }
-        } catch (JsonIOException | JsonSyntaxException | FileNotFoundException e) {
-            e.printStackTrace();
+            AutoInstruction ai = unit == null ? new AutoInstruction(type, args) : new AutoInstruction(type, unit, amount, args);
+            instructions.add(ai);
         }
     }
 
@@ -235,7 +205,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     private boolean rotateDegrees(double leftSpeed, double rightSpeed, double deg) {
         System.out.println(getAngle());
-        if (Math.abs(getAngle() - navxStart - deg) < 10) {
+        if (Math.abs(getAngle() - navxStart - deg) < 2) {
             return true;
         } else {
             drive.drive(leftSpeed, rightSpeed, false);
