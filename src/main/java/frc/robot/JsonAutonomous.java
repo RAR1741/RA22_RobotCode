@@ -92,6 +92,13 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
             AutoInstruction ai = unit == null ? new AutoInstruction(type, args) : new AutoInstruction(type, unit, amount, args);
             instructions.add(ai);
+
+            System.out.println("Type: " + parser.type);
+            System.out.println("Unit: " + parser.unit);
+            System.out.println("Amount: " + parser.amount);
+            for(int j = 0; j < parser.args.size(); j++) {
+                System.out.println("Args: arg " + j + ": " + parser.args.get(j));
+            }
         }
     }
 
