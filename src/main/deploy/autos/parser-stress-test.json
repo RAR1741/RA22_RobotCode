@@ -1,0 +1,157 @@
+{
+    "auto": [
+        {
+            "type": "drive",
+            "unit": "SECONDS",
+            "amount": 1,
+            "args": [
+                -0.1,
+                -0.1
+            ]
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 90,
+            "args": [
+                -0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "drive",
+            "unit": "SECONDS",
+            "amount": 3,
+            "args": [
+                0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": -0.1,
+            "args": [
+                -0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 0.1,
+            "args": [
+                0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 0.1,
+            "args": [
+                0.1,
+                -0.1
+            ]
+        },
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 0.1,
+            "args": [
+                0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": -0.1,
+            "args": [
+                -0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 0.1,
+            "args": [
+                0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 0.1,
+            "args": [
+                0.1,
+                -0.1
+            ]
+        },
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 0.1,
+            "args": [
+                0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": -0.1,
+            "args": [
+                -0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 0.1,
+            "args": [
+                0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 0.1,
+            "args": [
+                0.1,
+                -0.1
+            ]
+        },
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 0.1,
+            "args": [
+                0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": -0.1,
+            "args": [
+                -0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 0.1,
+            "args": [
+                0.1,
+                0.1
+            ]
+        }
+    ]
+}
