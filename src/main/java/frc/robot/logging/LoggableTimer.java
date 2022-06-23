@@ -14,13 +14,13 @@ public class LoggableTimer extends Timer implements Loggable {
     }
 
     @Override
-    public void setupLogging(Logger logger) {
-        logger.addAttribute(this.name);
+    public void logHeaders(Logger logger) {
+        logger.addHeader(this.name);
     }
 
     @Override
-    public void log(Logger logger) {
-        logger.log(this.name, this.get());
+    public void logData(Logger logger) {
+        logger.addData(this.name, this.get());
     }
 
 }

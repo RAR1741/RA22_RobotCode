@@ -11,10 +11,12 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Climber.MotorStates;
 import frc.robot.logging.LoggableCompressor;
 import frc.robot.logging.LoggableController;
-import frc.robot.logging.LoggableGyro;
+// import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.LoggablePowerDistribution;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
+
+import java.io.IOException;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -62,11 +64,20 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         logger = new Logger();
+
         timer = new LoggableTimer();
         logger.addLoggable(timer);
         // gyro = new LoggableGyro();
 
         pdp = new LoggablePowerDistribution(1, ModuleType.kRev);
+		logger.addLoggable(pdp);
+
+		try {
+			logger.createLog();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         driver = new LoggableController("Driver", 0);
         operator = new LoggableController("Operator", 1);
@@ -112,6 +123,8 @@ public class Robot extends TimedRobot {
         logger.addLoggable(driver);
         logger.addLoggable(operator);
         logger.addLoggable(compressor);
+
+		logger.logAllHeaders();
     }
 
     @Override
@@ -129,8 +142,13 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         // Robot code goes here
-        logger.log();
-        logger.writeLine();
+		logger.logAllData();
+        try {
+			logger.writeData();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     @Override
@@ -180,13 +198,17 @@ public class Robot extends TimedRobot {
             // TODO: Enable this when we're ready to test the climber
         }
 
-        logger.log();
-        logger.writeLine();
+        logger.logAllData();
+        try {
+			logger.writeData();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     @Override
     public void disabledInit() {
-        logger.close();
         timer.stop();
     }
 
@@ -210,15 +232,19 @@ public class Robot extends TimedRobot {
         // climber.checkClimbingState();
         // }
 
-        logger.log();
-        logger.writeLine();
+        logger.logAllData();
+        try {
+			logger.writeData();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     private void resetLogging() {
-        logger.open();
-        logger.setup();
-
         timer.reset();
         timer.start();
+
+		logger.logAllHeaders();
     }
 }
