@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -25,6 +26,9 @@ import java.io.IOException;
  * project.
  */
 public class Robot extends TimedRobot {
+
+	Notifier notif;
+	Runnable runnable;
 
     Logger logger;
     LoggableTimer timer;
@@ -64,6 +68,14 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         logger = new Logger();
+		runnable = new Runnable() {
+			@Override
+			public void run() {
+				logger.logAll();
+			}
+		};
+
+		notif = new Notifier(runnable);
 
         timer = new LoggableTimer();
         logger.addLoggable(timer);
@@ -125,6 +137,8 @@ public class Robot extends TimedRobot {
         logger.addLoggable(compressor);
 
 		logger.logAllHeaders();
+
+		notif.startPeriodic(1/30);
     }
 
     @Override
@@ -142,13 +156,6 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         // Robot code goes here
-		logger.logAllData();
-        try {
-			logger.writeData();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
     }
 
     @Override
@@ -197,25 +204,17 @@ public class Robot extends TimedRobot {
             }
             // TODO: Enable this when we're ready to test the climber
         }
-
-        logger.logAllData();
-        try {
-			logger.writeData();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
     }
 
     @Override
     public void disabledInit() {
         timer.stop();
+		notif.stop();
     }
 
     @Override
     public void disabledPeriodic() {
         // Robot code goes here
-        // logger.log();
     }
 
     @Override
@@ -231,14 +230,6 @@ public class Robot extends TimedRobot {
         // climber.setPower(operator.getRightY()); // Deadband
         // climber.checkClimbingState();
         // }
-
-        logger.logAllData();
-        try {
-			logger.writeData();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
     }
 
     private void resetLogging() {

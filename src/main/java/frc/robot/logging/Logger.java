@@ -133,6 +133,23 @@ public class Logger {
 	}
 
 	/**
+	 * Sends all accumulated data to log file.
+	 */
+	public void logAll() {
+		// logAllData();
+        // try {
+		// 	writeData();
+		// } catch (IOException e) {
+		// 	// TODO Auto-generated catch block
+		// 	e.printStackTrace();
+		// }
+
+		// throw new NullPointerException();
+
+		System.out.println("test");
+	}
+
+	/**
 	* Checks if the header being created exists already.
 	*
 	* @param header The header that trying to be created.
@@ -168,4 +185,4 @@ public class Logger {
 			return false;
 		}
 	}
-} 
+}
