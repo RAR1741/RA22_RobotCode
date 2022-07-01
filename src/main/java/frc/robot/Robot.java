@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -15,9 +14,10 @@ import frc.robot.logging.LoggableController;
 // import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.LoggablePowerDistribution;
 import frc.robot.logging.LoggableTimer;
+import frc.robot.logging.LogTimer;
 import frc.robot.logging.Logger;
-
 import java.io.IOException;
+import java.util.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -27,10 +27,10 @@ import java.io.IOException;
  */
 public class Robot extends TimedRobot {
 
-	Notifier notif;
-	Runnable runnable;
-
     Logger logger;
+	LogTimer logTimer;
+	Timer runTimer;
+
     LoggableTimer timer;
 
     Drivetrain drive;
@@ -68,14 +68,8 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         logger = new Logger();
-		runnable = new Runnable() {
-			@Override
-			public void run() {
-				logger.logAll();
-			}
-		};
-
-		notif = new Notifier(runnable);
+		logTimer = new LogTimer(logger);
+		runTimer = new Timer();
 
         timer = new LoggableTimer();
         logger.addLoggable(timer);
@@ -137,8 +131,14 @@ public class Robot extends TimedRobot {
         logger.addLoggable(compressor);
 
 		logger.logAllHeaders();
+		try {
+			logger.writeHeaders();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		notif.startPeriodic(1/30);
+		runTimer.schedule(logTimer, 0, 33);
     }
 
     @Override
@@ -209,7 +209,8 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         timer.stop();
-		notif.stop();
+
+		resetLogging();
     }
 
     @Override
@@ -235,7 +236,5 @@ public class Robot extends TimedRobot {
     private void resetLogging() {
         timer.reset();
         timer.start();
-
-		logger.logAllHeaders();
     }
 }
