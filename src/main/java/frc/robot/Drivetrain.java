@@ -125,7 +125,5 @@ public class Drivetrain implements Loggable {
     }
 
     @Override
-    public void logData(Logger logger) {
-        // TODO Auto-generated method stub
-    }
+    public void logData(Logger logger) {}
 }

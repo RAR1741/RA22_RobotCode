@@ -81,7 +81,6 @@ public class Robot extends TimedRobot {
 		try {
 			logger.createLog();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -134,7 +133,6 @@ public class Robot extends TimedRobot {
 		try {
 			logger.writeHeaders();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

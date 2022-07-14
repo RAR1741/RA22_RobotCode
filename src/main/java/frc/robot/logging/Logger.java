@@ -140,7 +140,6 @@ public class Logger {
         try {
 			writeData();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
