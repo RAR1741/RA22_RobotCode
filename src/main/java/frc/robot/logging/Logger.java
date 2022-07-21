@@ -133,18 +133,6 @@ public class Logger {
 	}
 
 	/**
-	 * Sends all accumulated data to log file.
-	 */
-	public void logAll() {
-		logAllData();
-        try {
-			writeData();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	* Checks if the header being created exists already.
 	*
 	* @param header The header that trying to be created.
@@ -155,7 +143,7 @@ public class Logger {
 		try {
 			return logData.containsKey(header);
 		}
-		catch (NullPointerException exception) {
+		catch (NullPointerException nullpointer) {
 			return false;
 		}
     }
@@ -176,7 +164,7 @@ public class Logger {
 				return true;
 			}
 		}
-		catch (NullPointerException exception) {
+		catch (NullPointerException nullpointer) {
 			return false;
 		}
 	}

@@ -1,5 +1,6 @@
 package frc.robot.logging;
 
+import java.io.IOException;
 import java.util.TimerTask;
 
 public class LogTimer extends TimerTask {
@@ -11,6 +12,11 @@ public class LogTimer extends TimerTask {
 
 	@Override
 	public void run() {
-		logger.logAll();
+		logger.logAllData();
+        try {
+			logger.writeData();
+		} catch (IOException io) {
+			io.printStackTrace();
+		}
 	}
 }

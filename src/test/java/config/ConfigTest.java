@@ -97,7 +97,7 @@ public class ConfigTest {
     public String getTestFileUrl() {
         try {
             return getClass().getResource("test_config.txt").toURI().getPath();
-        } catch (Exception e) {
+        } catch (Exception exception) {
             return "";
         }
     }

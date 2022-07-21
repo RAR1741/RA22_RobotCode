@@ -80,8 +80,8 @@ public class Robot extends TimedRobot {
 
 		try {
 			logger.createLog();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException io) {
+			io.printStackTrace();
 		}
 
         driver = new LoggableController("Driver", 0);
@@ -132,8 +132,8 @@ public class Robot extends TimedRobot {
 		logger.logAllHeaders();
 		try {
 			logger.writeHeaders();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException io) {
+			io.printStackTrace();
 		}
 
 		runTimer.schedule(logTimer, 0, 33);
