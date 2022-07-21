@@ -8,7 +8,7 @@ DISCLAIMER: This document assumes you know how Java works. If not, it is strongl
 To show how to use the logger system, this document will demonstrate the creation of a `Loggable` object and how to register it in the log file.
 
 ### Create the Loggable
-1. Go to ***/src/main/java/frc/robot/logging*** and create a new Java file. The naming system used for the loggables are like this: *Loggable*, followed immediately by the name of the system being logged. For demonstrations purposes, I will call it *LoggableTest.java*.
+1. Go to ***/src/main/java/frc/robot/logging*** and create a new Java file. The naming system used for the loggables are like this: *Loggable*, followed immediately by the name of the system being logged. For demonstrations purposes, let's call it *LoggableTest.java*.
 
 2. Inside this file, create a new class. You'll also need to have it implement *Loggable.java*. This contains the methods needed to accumulate data to send to the log file. No import will be needed, as *Loggable.java* is in the same file as our *LoggableTest* class.
 ```java
