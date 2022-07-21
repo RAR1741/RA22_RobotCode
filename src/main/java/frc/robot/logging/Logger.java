@@ -41,9 +41,9 @@ public class Logger {
 	}
 
 	/**
-	* Creates a header that values can be added under.
+	* Creates a header that data can be attributed to.
 	*
-	* @param header The name of the header to be created.
+	* @param header The name of the header being created.
 	*/
 	public void addHeader(String header) {
 		if (hasHeader(header)) {
@@ -55,10 +55,10 @@ public class Logger {
 	}
 
 	/**
-	* Adds a value under the specified header.
+	* Adds data under the specified header.
 	*
-	* @param header The name of the header that the value will be put under.
-	* @param data The value to be added under the header.
+	* @param header The header that the data will be attributed to.
+	* @param data The data being logged.
 	*/
 	public void addData(String header, Object data) {
 		if (!hasHeader(header)) {
@@ -75,7 +75,7 @@ public class Logger {
 	}
 
 	/**
-	* Writes all the headers created to the log file.
+	* Writes the created headers to the log file.
 	*
 	* @throws IOException
 	*/
@@ -91,7 +91,7 @@ public class Logger {
 	}
 
 	/**
-	* Writes all the data added to the log file.
+	* Writes the accumulated data to the log file.
 	*
 	* @throws IOException
 	*/
@@ -109,13 +109,15 @@ public class Logger {
 
 	/**
 	* Creates a new Loggable object.
+	*
+	* @param loggable The Loggable object to be registered.
 	*/
 	public void addLoggable(Loggable loggable) {
 		loggables.add(loggable);
 	}
 
 	/**
-	* Logs all headers.
+	* Goes through every registered Loggable and calls the "logHeaders()" method.
 	*/
 	public void logAllHeaders() {
 		for (Loggable loggable: loggables) {
@@ -124,7 +126,7 @@ public class Logger {
 	}
 
 	/**
-	* Logs all data.
+	* Goes through every registered Loggable and calls the "logData()" method.
 	*/
 	public void logAllData() {
 		for (Loggable loggable: loggables) {
@@ -135,9 +137,9 @@ public class Logger {
 	/**
 	* Checks if the header being created exists already.
 	*
-	* @param header The header that trying to be created.
+	* @param header The header that is being created.
 	*
-	* @return Whether the header exists already or not.
+	* @return Whether the header exists.
 	*/
 	private boolean hasHeader(String header) {
 		try {
@@ -151,9 +153,9 @@ public class Logger {
 	/**
 	* Checks if the header already has current data under it.
 	*
-	* @param header The header being checked for data.
+	* @param header The header being checked for content.
 	*
-	* @return Whether the header has data already or not.
+	* @return Whether the header has data.
 	*/
 	private boolean hasData(String header) {
 		try {
