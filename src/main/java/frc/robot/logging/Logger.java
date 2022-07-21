@@ -119,7 +119,7 @@ public class Logger {
 	/**
 	* Goes through every registered Loggable and calls the "logHeaders()" method.
 	*/
-	public void logAllHeaders() {
+	public void collectHeaders() {
 		for (Loggable loggable: loggables) {
 			loggable.logHeaders(this);
 		}
@@ -128,7 +128,7 @@ public class Logger {
 	/**
 	* Goes through every registered Loggable and calls the "logData()" method.
 	*/
-	public void logAllData() {
+	public void collectData() {
 		for (Loggable loggable: loggables) {
 			loggable.logData(this);
 		}

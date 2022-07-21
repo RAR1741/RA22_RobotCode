@@ -12,7 +12,7 @@ public class LogTimer extends TimerTask {
 
 	@Override
 	public void run() {
-		logger.logAllData();
+		logger.collectData();
         try {
 			logger.writeData();
 		} catch (IOException io) {

@@ -129,7 +129,7 @@ public class Robot extends TimedRobot {
         logger.addLoggable(operator);
         logger.addLoggable(compressor);
 
-		logger.logAllHeaders();
+		logger.collectHeaders();
 		try {
 			logger.writeHeaders();
 		} catch (IOException io) {
