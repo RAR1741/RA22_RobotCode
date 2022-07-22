@@ -56,7 +56,7 @@ public class Config {
         public boolean testCorrectType(String input) {
             try {
                 value = Double.parseDouble(input);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException numberformat) {
                 return false;
             }
             return true;
@@ -146,7 +146,7 @@ public class Config {
         Scanner infile;
         try {
             infile = new Scanner(new File(filename));
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException filenotfound) {
             return false;
         }
 

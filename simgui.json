@@ -31,6 +31,14 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Ungrouped/DigitalInput[10]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[11]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[12]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[13]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[6]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[7]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[8]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[9]": "Digital Input",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro"
     },
     "windows": {

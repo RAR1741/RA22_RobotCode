@@ -13,12 +13,12 @@ public class LoggableCompressor extends Compressor implements Loggable {
     }
 
     @Override
-    public void setupLogging(Logger logger) {
-        logger.addAttribute("PH/pressure");
+    public void logHeaders(Logger logger) {
+        logger.addHeader("PH/pressure");
     }
 
     @Override
-    public void log(Logger logger) {
-        logger.log("PH/pressure", this.getPressure());
+    public void logData(Logger logger) {
+        logger.addData("PH/pressure", this.getPressure());
     }
 }

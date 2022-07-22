@@ -1,18 +1,13 @@
 package frc.robot.logging;
 
-/** A class for a loggable subsystem. */
 public interface Loggable {
-    /**
-     * Sets up all the keys in the given Logger object.
-     *
-     * @param logger Logger class to setup keys in
-     */
-    public abstract void setupLogging(Logger logger);
+	/**
+	* Logs all the headers provided by the Loggable object.
+	*/
+	public abstract void logHeaders(Logger logger);
 
-    /**
-     * Logs data in the given Logger object.
-     *
-     * @param logger Logger class to log data to
-     */
-    public abstract void log(Logger logger);
+	/**
+	* Logs all the data provided by the Loggable object.
+	*/
+	public abstract void logData(Logger logger);
 }
