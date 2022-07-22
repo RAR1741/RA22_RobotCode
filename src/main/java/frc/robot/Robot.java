@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
 		logTimer = new LogTimer(logger);
 		runTimer = new Timer();
 
-        timer = new LoggableTimer();
+        timer = new LoggableTimer("Timer");
         logger.addLoggable(timer);
         // gyro = new LoggableGyro();
 
