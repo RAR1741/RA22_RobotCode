@@ -148,7 +148,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        resetLogging();
+        resetTimer();
     }
 
     @Override
@@ -158,7 +158,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        resetLogging();
+        resetTimer();
     }
 
     @Override
@@ -208,7 +208,7 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         timer.stop();
 
-		resetLogging();
+		resetTimer();
     }
 
     @Override
@@ -218,7 +218,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-        resetLogging();
+        resetTimer();
     }
 
     @Override
@@ -231,7 +231,7 @@ public class Robot extends TimedRobot {
         // }
     }
 
-    private void resetLogging() {
+    private void resetTimer() {
         timer.reset();
         timer.start();
     }
