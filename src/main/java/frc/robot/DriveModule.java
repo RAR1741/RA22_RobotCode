@@ -10,7 +10,7 @@ import frc.robot.logging.Logger;
 
 public class DriveModule implements Loggable {
 
-    private final double VELOCITY_COEFFICIENT = 600 / 2048;
+    // private final double VELOCITY_COEFFICIENT = 600 / 2048;
 
     private TalonFX main;
     private TalonFX sub;
@@ -24,7 +24,7 @@ public class DriveModule implements Loggable {
     /**
      * Constructor.
      *
-     * @param moduleName Name of the attribute to log speed
+     * @param moduleName Name of the attribute to addData speed
      * @param mainID CAN id of the main TalonFX
      * @param subID CAN id of the sub TalonFX
      */
@@ -127,22 +127,22 @@ public class DriveModule implements Loggable {
     }
 
     @Override
-    public void setupLogging(Logger logger) {
-        logger.addAttribute(this.moduleName + "/MotorPower");
-        logger.addAttribute(this.moduleName + "/Distance");
-        logger.addAttribute(this.moduleName + "/EncoderRate");
-        logger.addAttribute(this.moduleName + "/MotorVelocity");
-        logger.addAttribute(this.moduleName + "/MotorCurrent");
-        logger.addAttribute(this.moduleName + "/MotorAverageCurrent");
+    public void logHeaders(Logger logger) {
+        logger.addHeader(this.moduleName + "/MotorPower");
+        logger.addHeader(this.moduleName + "/Distance");
+        logger.addHeader(this.moduleName + "/EncoderRate");
+        logger.addHeader(this.moduleName + "/MotorVelocity");
+        logger.addHeader(this.moduleName + "/MotorCurrent");
+        logger.addHeader(this.moduleName + "/MotorAverageCurrent");
     }
 
     @Override
-    public void log(Logger logger) {
-        logger.log(this.moduleName + "/MotorPower", power);
-        logger.log(this.moduleName + "/Distance", this.encoder.getDistance());
-        logger.log(this.moduleName + "/EncoderRate", this.encoder.getRate());
-        logger.log(this.moduleName + "/MotorVelocity", getSpeed());
-        logger.log(this.moduleName + "/MotorCurrent", getCurrent());
-        logger.log(this.moduleName + "/MotorAverageCurrent", getAverageCurrent());
+    public void logData(Logger logger) {
+        logger.addData(this.moduleName + "/MotorPower", power);
+        logger.addData(this.moduleName + "/Distance", this.encoder.getDistance());
+        logger.addData(this.moduleName + "/EncoderRate", this.encoder.getRate());
+        logger.addData(this.moduleName + "/MotorVelocity", getSpeed());
+        logger.addData(this.moduleName + "/MotorCurrent", getCurrent());
+        logger.addData(this.moduleName + "/MotorAverageCurrent", getAverageCurrent());
     }
 }

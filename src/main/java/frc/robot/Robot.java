@@ -11,10 +11,13 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Climber.MotorStates;
 import frc.robot.logging.LoggableCompressor;
 import frc.robot.logging.LoggableController;
-import frc.robot.logging.LoggableGyro;
+// import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.LoggablePowerDistribution;
 import frc.robot.logging.LoggableTimer;
+import frc.robot.logging.LogTimer;
 import frc.robot.logging.Logger;
+import java.io.IOException;
+import java.util.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -25,6 +28,9 @@ import frc.robot.logging.Logger;
 public class Robot extends TimedRobot {
 
     Logger logger;
+	LogTimer logTimer;
+	Timer runTimer;
+
     LoggableTimer timer;
 
     Drivetrain drive;
@@ -62,11 +68,21 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         logger = new Logger();
-        timer = new LoggableTimer();
+		logTimer = new LogTimer(logger);
+		runTimer = new Timer();
+
+        timer = new LoggableTimer("Timer");
         logger.addLoggable(timer);
         // gyro = new LoggableGyro();
 
         pdp = new LoggablePowerDistribution(1, ModuleType.kRev);
+		logger.addLoggable(pdp);
+
+		try {
+			logger.createLog();
+		} catch (IOException io) {
+			io.printStackTrace();
+		}
 
         driver = new LoggableController("Driver", 0);
         operator = new LoggableController("Operator", 1);
@@ -112,6 +128,15 @@ public class Robot extends TimedRobot {
         logger.addLoggable(driver);
         logger.addLoggable(operator);
         logger.addLoggable(compressor);
+
+		logger.collectHeaders();
+		try {
+			logger.writeHeaders();
+		} catch (IOException io) {
+			io.printStackTrace();
+		}
+
+		runTimer.schedule(logTimer, 0, 33);
     }
 
     @Override
@@ -123,19 +148,17 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        resetLogging();
+        resetTimer();
     }
 
     @Override
     public void autonomousPeriodic() {
         // Robot code goes here
-        logger.log();
-        logger.writeLine();
     }
 
     @Override
     public void teleopInit() {
-        resetLogging();
+        resetTimer();
     }
 
     @Override
@@ -179,26 +202,23 @@ public class Robot extends TimedRobot {
             }
             // TODO: Enable this when we're ready to test the climber
         }
-
-        logger.log();
-        logger.writeLine();
     }
 
     @Override
     public void disabledInit() {
-        logger.close();
         timer.stop();
+
+		resetTimer();
     }
 
     @Override
     public void disabledPeriodic() {
         // Robot code goes here
-        // logger.log();
     }
 
     @Override
     public void testInit() {
-        resetLogging();
+        resetTimer();
     }
 
     @Override
@@ -209,15 +229,9 @@ public class Robot extends TimedRobot {
         // climber.setPower(operator.getRightY()); // Deadband
         // climber.checkClimbingState();
         // }
-
-        logger.log();
-        logger.writeLine();
     }
 
-    private void resetLogging() {
-        logger.open();
-        logger.setup();
-
+    private void resetTimer() {
         timer.reset();
         timer.start();
     }

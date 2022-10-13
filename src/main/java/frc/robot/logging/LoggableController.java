@@ -14,22 +14,22 @@ public class LoggableController extends XboxController implements Loggable {
     /**
      * Sets up logging for the controller.
      */
-    public void setupLogging(Logger logger) {
-        logger.addAttribute(name + "/LeftX");
-        logger.addAttribute(name + "/LeftY");
-        logger.addAttribute(name + "/RightX");
-        logger.addAttribute(name + "/RightY");
+    public void logHeaders(Logger logger) {
+        logger.addHeader(name + "/LeftX");
+        logger.addHeader(name + "/LeftY");
+        logger.addHeader(name + "/RightX");
+        logger.addHeader(name + "/RightY");
     }
 
     @Override
     /**
      * Logs the controller's values.
      */
-    public void log(Logger logger) {
-        logger.log(name + "/LeftX", this.getLeftX());
-        logger.log(name + "/LeftY", this.getLeftY());
-        logger.log(name + "/RightX", this.getRightX());
-        logger.log(name + "/RightY", this.getRightY());
+    public void logData(Logger logger) {
+        logger.addData(name + "/LeftX", this.getLeftX());
+        logger.addData(name + "/LeftY", this.getLeftY());
+        logger.addData(name + "/RightX", this.getRightX());
+        logger.addData(name + "/RightY", this.getRightY());
     }
 
 }
