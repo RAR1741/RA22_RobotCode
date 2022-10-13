@@ -18,5 +18,4 @@ public class LoggableTimer extends Timer implements Loggable {
     public void logData(Logger logger) {
         logger.addData(this.name, this.get());
     }
-
 }
