@@ -193,31 +193,28 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        // Robot code goes here
-        // leftModule.updateCurrent();
-        // rightModule.updateCurrent();
-        if (!demoModeEnabled) {
-            auto.run();
+        //Robot code goes here
+        leftModule.updateCurrent();
+        rightModule.updateCurrent();
+        if (timer.get() < 0.5) {
+            manipulation.setIntakeExtend(true);
+            drive.drive(-0.3, -0.3);
+        } else if (timer.get() < 3) {
+            manipulation.setIntakeExtend(true);
+            manipulation.setSlowEject();
+            drive.drive(-0.3, -0.3);
+        } else if (timer.get() < 4) {
+            manipulation.setIntakeExtend(true);
+            manipulation.setEject();
+            drive.drive(0, 0);
+        } else {
+            manipulation.setIntakeExtend(false);
+            manipulation.setCollection(0, 0);
+            drive.drive(0, 0);
         }
-        // if (timer.get() < 0.5) {
-        // manipulation.setIntakeExtend(true);
-        // drive.drive(-0.3, -0.3);
-        // } else if (timer.get() < 3) {
-        // manipulation.setIntakeExtend(true);
-        // manipulation.setSlowEject();
-        // drive.drive(-0.3, -0.3);
-        // } else if (timer.get() < 4) {
-        // manipulation.setIntakeExtend(true);
-        // manipulation.setEject();
-        // drive.drive(0, 0);
-        // } else {
-        // manipulation.setIntakeExtend(false);
-        // manipulation.setCollection(0, 0);
-        // drive.drive(0, 0);
-        // }
 
-        // logger.log();
-        // logger.writeLine();
+        logger.log();
+        logger.writeLine();
     }
 
     @Override
