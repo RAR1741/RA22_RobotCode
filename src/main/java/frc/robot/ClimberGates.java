@@ -35,18 +35,18 @@ public class ClimberGates implements Loggable{
     }
 
     @Override
-    public void setupLogging(Logger logger) {
-        logger.log("GateA", this.getA());
-        logger.log("GateB1", this.getB1());
-        logger.log("GateB2", this.getB2());
-        logger.log("GateC", this.getC());
+    public void logHeaders(Logger logger) {
+        logger.addHeader("GateA");
+        logger.addHeader("GateB1");
+        logger.addHeader("GateB2");
+        logger.addHeader("GateC");
     }
 
     @Override
-    public void log(Logger logger) {
-        logger.log("GateA", this.getA());
-        logger.log("GateB1", this.getB2());
-        logger.log("GateB2", this.getB2());
-        logger.log("GateC", this.getC());
+    public void logData(Logger logger) {
+        logger.addData("GateA", this.getA());
+		logger.addData("GateB1", this.getB1());
+		logger.addData("GateB2", this.getB2());
+		logger.addData("GateC", this.getC());
     }
 }

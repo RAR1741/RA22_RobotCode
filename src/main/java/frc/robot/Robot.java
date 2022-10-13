@@ -16,12 +16,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Climber.MotorStates;
 import frc.robot.config.Constants;
+import frc.robot.logging.LogTimer;
 import frc.robot.logging.LoggableCompressor;
 import frc.robot.logging.LoggableController;
 import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.LoggablePowerDistribution;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
+
+import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -32,7 +37,10 @@ import frc.robot.logging.Logger;
 public class Robot extends TimedRobot {
 
     Logger logger;
-    LoggableTimer timer;
+	TimerTask logTimer;
+	Timer runTimer;
+
+	LoggableTimer timer;
 
     Drivetrain drive;
     DriveModule leftModule;
@@ -82,13 +90,33 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        logger = new Logger();
-        timer = new LoggableTimer();
-        logger.addLoggable(timer);
+        timer = new LoggableTimer("Time");
+		logger = new Logger();
+		runTimer = new Timer();
+
+		logTimer = new TimerTask() {
+		@Override
+		public void run() {
+			logger.collectData();
+				try {
+					logger.writeData();
+				} catch (IOException io) {
+					io.printStackTrace();
+				}
+			}
+		};
+        
+		logger.addLoggable(timer);
         gyro = new LoggableGyro();
         gyro.enableLogging(false);
 
         pdp = new LoggablePowerDistribution(1, ModuleType.kRev);
+
+		try {
+			logger.createLog();
+		} catch (IOException io) {
+			io.printStackTrace();
+		}
 
         driver = new LoggableController("Driver", 0);
         operator = new LoggableController("Operator", 1);
@@ -163,6 +191,15 @@ public class Robot extends TimedRobot {
         logger.addLoggable(operator);
         logger.addLoggable(compressor);
         logger.addLoggable(gyro);
+
+		logger.collectHeaders();
+		try {
+			logger.writeHeaders();
+		} catch (IOException io) {
+			io.printStackTrace();
+		}
+
+		runTimer.schedule(logTimer, 0, 33);
     }
 
     @Override
@@ -212,9 +249,6 @@ public class Robot extends TimedRobot {
             manipulation.setCollection(0, 0);
             drive.drive(0, 0);
         }
-
-        logger.log();
-        logger.writeLine();
     }
 
     @Override
@@ -299,9 +333,6 @@ public class Robot extends TimedRobot {
                 }
             }
         }
-
-        logger.log();
-        logger.writeLine();
     }
 
     @Override
@@ -309,7 +340,6 @@ public class Robot extends TimedRobot {
         if (drivetrainEnabled) {
             drive.setNeutralMode(NeutralMode.Coast);
         }
-        logger.close();
         timer.stop();
     }
 
@@ -335,15 +365,9 @@ public class Robot extends TimedRobot {
         // climber.setPower(operator.getRightY()); // Deadband
         // climber.checkClimbingState();
         // }
-
-        logger.log();
-        logger.writeLine();
     }
 
     private void resetLogging() {
-        logger.open();
-        logger.setup();
-
         timer.reset();
         timer.start();
     }

@@ -94,15 +94,15 @@ public class Manipulation implements Loggable {
     }
 
     @Override
-    public void setupLogging(Logger logger) {
-        logger.addAttribute("Manipulation/IntakeWheelSpeed");
-        logger.addAttribute("Manipulation/IntakeWheelEnabled");
+    public void logHeaders(Logger logger) {
+        logger.addHeader("Manipulation/IntakeWheelSpeed");
+        logger.addHeader("Manipulation/IntakeWheelEnabled");
     }
 
     @Override
-    public void log(Logger logger) {
-        logger.log("Manipulation/IntakeWheelSpeed", speed);
-        logger.log("Manipulation/IntakeWheelEnabled", spinning);
+    public void logData(Logger logger) {
+        logger.addData("Manipulation/IntakeWheelSpeed", speed);
+        logger.addData("Manipulation/IntakeWheelEnabled", spinning);
     }
 
 }

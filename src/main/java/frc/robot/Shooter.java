@@ -30,12 +30,12 @@ public class Shooter implements Loggable {
     }
 
     @Override
-    public void setupLogging(Logger logger) {
-        logger.addAttribute("Shooter/speed");
+    public void logHeaders(Logger logger) {
+        logger.addHeader("Shooter/speed");
     }
 
     @Override
-    public void log(Logger logger) {
-        logger.log("Shooter/speed", this.getSpeed());
+    public void logData(Logger logger) {
+        logger.addData("Shooter/speed", this.getSpeed());
     }
 }

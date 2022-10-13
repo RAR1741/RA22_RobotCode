@@ -497,42 +497,6 @@ public class Climber implements Loggable {
         return this.currentClimberState != ClimbingStates.RESTING;
     }
 
-    @Override
-    public void setupLogging(Logger logger) {
-        this.timer.setupLogging(logger);
-
-        // logger.addLoggable(this.leftFilter);
-        // logger.addLoggable(this.rightFilter);
-        // this.leftFilter.setupLogging(logger);
-        // this.rightFilter.setupLogging(logger);
-
-        logger.addAttribute("Climber/Left/Current");
-        logger.addAttribute("Climber/Right/Current");
-
-        logger.addAttribute("Climber/Speed");
-        logger.addAttribute("Climber/Position");
-        logger.addAttribute("Climber/Error");
-
-        logger.addAttribute("Climber/State/Name");
-        logger.addAttribute("Climber/State/Id");
-        logger.addAttribute("Climber/State/Ordinal");
-    }
-
-    @Override
-    public void log(Logger logger) {
-        this.timer.log(logger);
-        logger.log("Climber/Left/Current", getLeftCurrent());
-        logger.log("Climber/Right/Current", getRightCurrent());
-
-        logger.log("Climber/Speed", getSpeed());
-        logger.log("Climber/Position", getPosition());
-        logger.log("Climber/Error", pError);
-
-        logger.log("Climber/State/Name", this.currentClimberState.name);
-        logger.log("Climber/State/Id", this.currentClimberState.id);
-        logger.log("Climber/State/Ordinal", this.currentClimberState.ordinal());
-    }
-
     public boolean getClimberSolenoidAState() {
         return climberSolenoidA.get();
     }
@@ -571,5 +535,39 @@ public class Climber implements Loggable {
 
     public double getRightCurrent() {
         return secondaryClimbingMotor.getStatorCurrent();
+    }
+
+	@Override
+    public void logHeaders(Logger logger) {
+        this.timer.logHeaders(logger);
+
+        // logger.addLoggable(this.leftFilter);
+        // logger.addLoggable(this.rightFilter);
+        // this.leftFilter.setupLogging(logger);
+        // this.rightFilter.setupLogging(logger);
+
+        logger.addHeader("Climber/Left/Current");
+        logger.addHeader("Climber/Right/Current");
+
+        logger.addHeader("Climber/Speed");
+        logger.addHeader("Climber/Position");
+
+        logger.addHeader("Climber/State/Name");
+        logger.addHeader("Climber/State/Id");
+        logger.addHeader("Climber/State/Ordinal");
+    }
+
+    @Override
+    public void logData(Logger logger) {
+        this.timer.logData(logger);
+        logger.addData("Climber/Left/Current", getLeftCurrent());
+        logger.addData("Climber/Right/Current", getRightCurrent());
+
+        logger.addData("Climber/Speed", getSpeed());
+        logger.addData("Climber/Position", climbingMotor.getSelectedSensorPosition());
+
+        logger.addData("Climber/State/Name", this.currentClimberState.name);
+        logger.addData("Climber/State/Id", this.currentClimberState.id);
+        logger.addData("Climber/State/Ordinal", this.currentClimberState.ordinal());
     }
 }

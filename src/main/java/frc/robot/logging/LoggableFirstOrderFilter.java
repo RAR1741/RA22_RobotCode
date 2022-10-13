@@ -28,12 +28,12 @@ public class LoggableFirstOrderFilter implements Loggable {
     }
 
     @Override
-    public void setupLogging(Logger logger) {
-        logger.addAttribute(this.name + "/Average");
+    public void logHeaders(Logger logger) {
+        logger.addHeader(this.name + "/Average");
     }
 
     @Override
-    public void log(Logger logger) {
-        logger.log(this.name + "/Average", get());
+    public void logData(Logger logger) {
+        logger.addData(this.name + "/Average", get());
     }
 }

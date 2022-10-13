@@ -17,13 +17,16 @@ public class ClimberSensors implements Loggable {
     }
 
     @Override
-    public void setupLogging(Logger logger) {
-        logger.log("TouchB", this.getB());
+    public void logHeaders(Logger logger) {
+        // logger.addHeader("TouchA");
+        logger.addHeader("TouchB");
+        // logger.addHeader("TouchC");
     }
 
     @Override
-    public void log(Logger logger) {
-        // TODO Auto-generated method stub
-
+    public void logData(Logger logger) {
+        // logger.addData("TouchA", this.getA());
+        logger.addData("TouchB", this.getB());
+        // logger.addData("TouchC", this.getC());
     }
 }

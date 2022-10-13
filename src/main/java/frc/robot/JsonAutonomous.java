@@ -80,7 +80,7 @@ public class JsonAutonomous extends Autonomous implements Loggable {
 
     public void parseFile(String file) {
         step = -1;
-        timer = new LoggableTimer();
+        timer = new LoggableTimer("Timer");
         instructions = new ArrayList<AutoInstruction>();
         try {
             fr = new FileReader(file);
@@ -295,13 +295,13 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     }
 
     @Override
-    public void setupLogging(Logger logger) {
-        logger.addAttribute("Autonomous/step");
+    public void logHeaders(Logger logger) {
+        logger.addHeader("Autonomous/step");
     }
 
     @Override
-    public void log(Logger logger) {
-        logger.log("Autonomous/step", this.step);
+    public void logData(Logger logger) {
+        logger.addData("Autonomous/step", this.step);
     }
 
     public static String getAutoPath(String name) {
