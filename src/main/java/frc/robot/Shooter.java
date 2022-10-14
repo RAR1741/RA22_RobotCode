@@ -23,8 +23,7 @@ public class Shooter implements Loggable {
     }
 
     public void setSpeed(double speed) {
-            this.shooterMotor.set(ControlMode.Velocity, speed);  
-        }
+		this.shooterMotor.set(ControlMode.Velocity, speed);
     }
 
     public void setPower(double power, String motor) {
