@@ -1,0 +1,147 @@
+{
+    "auto": [
+        {
+            "type": "intake",
+            "unit": "EXTEND",
+            "amount": 1
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 4,
+            "args": [
+                0.3,
+                -0.3
+            ]
+        },
+        {
+            "type": "eject",
+            "unit": "EJECT",
+            "amount": 1,
+            "args": [
+                0.4,
+                -1
+            ]
+        },
+        {
+            "type": "intake",
+            "unit": "EXTEND",
+            "amount": 0
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": -84,
+            "args": [
+                -0.3,
+                0.3
+            ]
+        },
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 25,
+            "args": [
+                0.3,
+                0.3
+            ]
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 70,
+            "args": [
+                0.3,
+                -0.3
+            ]
+        },
+        {
+            "type": "intake",
+            "unit": "EXTEND",
+            "amount": 1
+        },
+        {
+            "type": "intake",
+            "unit": "INCHES",
+            "amount": 40,
+            "args": [
+                0.3,
+                0.3,
+                0.4,
+                -0.35
+            ]
+        },
+        {
+            "type": "intake",
+            "unit": "EXTEND",
+            "amount": 0
+        },
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 40,
+            "args": [
+                -0.3,
+                -0.3
+            ]
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": 55,
+            "args": [
+                0.3,
+                -0.3
+            ]
+        },
+        {
+            "type": "intake",
+            "unit": "EXTEND",
+            "amount": 1
+        },
+        {
+            "type": "eject",
+            "unit": "EJECT",
+            "amount": 1,
+            "args": [
+                0.4,
+                -1
+            ]
+        },
+        {
+            "type": "intake",
+            "unit": "EXTEND",
+            "amount": 0
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": -125,
+            "args": [
+                -0.3,
+                0.3
+            ]
+        },
+        {
+            "type": "intake",
+            "unit": "EXTEND",
+            "amount": 1
+        },
+        {
+            "type": "intake",
+            "unit": "INCHES",
+            "amount": 25,
+            "args": [
+                0.3,
+                0.3,
+                0.4,
+                -0.35
+            ]
+        },
+        {
+            "type": "intake",
+            "unit": "EXTEND",
+            "amount": 0
+        }
+    ]
+}

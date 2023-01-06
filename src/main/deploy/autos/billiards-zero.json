@@ -1,0 +1,41 @@
+{
+    "auto": [
+        {
+            "type": "intake",
+            "unit": "EXTEND",
+            "amount": 1
+        },
+        {
+            "type": "eject",
+            "unit": "EJECT",
+            "amount": 0.8,
+            "args": [
+                0.4,
+                -0.45
+            ]
+        },
+        {
+            "type": "eject",
+            "unit": "EJECT",
+            "amount": 0.6,
+            "args": [
+                0.4,
+                -1
+            ]
+        },
+        {
+            "type": "intake",
+            "unit": "EXTEND",
+            "amount": 0
+        },
+        {
+            "type": "drive",
+            "unit": "INCHES",
+            "amount": 100,
+            "args": [
+                -0.4,
+                -0.4
+            ]
+        }
+    ]
+}

@@ -1,0 +1,37 @@
+{
+    "auto": [
+        {
+            "type": "drive",
+            "unit": "CURRENT",
+            "amount": 35,
+            "args": [
+                0.1,
+                0.1
+            ]
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "shoot",
+            "unit": "POWER",
+            "amount": 2
+        },
+        {
+            "type": "wait",
+            "unit": "SECONDS",
+            "amount": 0.5
+        },
+        {
+            "type": "drive",
+            "unit": "FEET",
+            "amount": 6.75,
+            "args": [
+                -0.1,
+                -0.1
+            ]
+        }
+    ]
+}

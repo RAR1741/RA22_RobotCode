@@ -1,0 +1,53 @@
+{
+    "auto": [
+        {
+            "type": "intake",
+            "unit": "EXTEND",
+            "amount": 1
+        },
+        {
+            "type": "eject",
+            "unit": "EJECT",
+            "amount": 1.5,
+            "args": [
+                0.8,
+                -1
+            ]
+        },
+        {
+            "type": "intake",
+            "unit": "EXTEND",
+            "amount": 0
+        },
+        {
+            "type": "turnDeg",
+            "unit": "DEGREES",
+            "amount": -55,
+            "args": [
+                -0.2,
+                0.2
+            ]
+        },
+        {
+            "type": "intake",
+            "unit": "EXTEND",
+            "amount": 1
+        },
+        {
+            "type": "intake",
+            "unit": "INCHES",
+            "amount": 50,
+            "args": [
+                0.2,
+                0.2,
+                -0.6,
+                1
+            ]
+        },
+        {
+            "type": "intake",
+            "unit": "EXTEND",
+            "amount": 0
+        }
+    ]
+}
