@@ -30,7 +30,7 @@ public class JsonParser {
     /**
      * Parses each autonomous instruction from the json file into java-readable data
      *
-     * @param step the current instruction to parse (starting at 0). Step -1 initialized the parser
+     * @param step the current instruction to parse (starting at 0). Step -1 initializes the parser
      */
     public void parse(int step) {
         int currentStep = -1;

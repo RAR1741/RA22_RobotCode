@@ -9,6 +9,7 @@ import frc.robot.logging.Logger;
 import frc.robot.parsing.JsonParser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class JsonAutonomous extends Autonomous implements Loggable {
@@ -75,22 +76,23 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     public void parseFile(String file) {
         step = -1;
         timer = new LoggableTimer();
-        instructions = new ArrayList<AutoInstruction>();
+        instructions = new ArrayList<>();
         JsonParser parser = new JsonParser(file);
         parser.parse(-1);
         for(int i = 0; i < parser.instructionSize; i++) {
             parser.parse(i);
 
-            List<Double> args = parser.args;
+            Double[] args = parser.args.toArray(new Double[0]);
 
             String type = parser.type;
-            
+
             String unitString = parser.unit;
             AutoInstruction.Unit unit = unitString != null ? parseUnit(unitString) : null;
 
             Double amount = parser.amount;
 
-            AutoInstruction ai = unit == null ? new AutoInstruction(type, args) : new AutoInstruction(type, unit, amount, args);
+            AutoInstruction ai = unit == null ? new AutoInstruction(type, Arrays.asList(args))
+                    : new AutoInstruction(type, unit, amount, Arrays.asList(args));
             instructions.add(ai);
         }
     }
