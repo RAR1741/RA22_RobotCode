@@ -30,11 +30,15 @@ public class Logger {
 	*/
 	public void createLog() throws IOException {
 		Calendar calendar = Calendar.getInstance();
-        String dir = "\\home\\lvuser\\logs";
-		Path path = Paths.get(dir + "\\" + calendar.get(Calendar.YEAR) + "-"
-		+ (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH) + "-"
-		+ calendar.get(Calendar.HOUR_OF_DAY) + "-" + calendar.get(Calendar.MINUTE) + "-"
-		+ calendar.get(Calendar.SECOND) + ".csv");
+        String dir = (System.getProperty("os.name").equals("Linux")) ? System.getenv("LOGS") + "/" : "\\home\\lvuser\\logs\\";
+		Path path = Paths.get(
+            dir + calendar.get(Calendar.YEAR) + "-" +
+            (calendar.get(Calendar.MONTH) + 1) + "-" +
+            calendar.get(Calendar.DAY_OF_MONTH) + "-" +
+            calendar.get(Calendar.HOUR_OF_DAY) + "-" +
+            calendar.get(Calendar.MINUTE) + "-" +
+            calendar.get(Calendar.SECOND) + ".csv"
+        );
 		
 		logName = Files.createFile(path).toString();
 		logger = new BufferedWriter(new FileWriter(logName, true));
