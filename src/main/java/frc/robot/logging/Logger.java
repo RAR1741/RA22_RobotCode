@@ -30,7 +30,7 @@ public class Logger {
 	*/
 	public void createLog() throws IOException {
 		Calendar calendar = Calendar.getInstance();
-        String dir = (System.getProperty("os.name").equals("Linux")) ? System.getenv("LOGS") + "/" : "\\home\\lvuser\\logs\\";
+        String dir = (System.getProperty("os.name").equals("Linux")) ? System.getenv("LOGS") + "/" : "\\home\\lvuser\\logs\\"; // TODO: If on Linux, run this command before running: [ -d "$HOME/logs" ] && export LOGS=$HOME/logs || cd $HOME && mkdir logs && export LOGS=$HOME/logs
 		Path path = Paths.get(
             dir + calendar.get(Calendar.YEAR) + "-" +
             (calendar.get(Calendar.MONTH) + 1) + "-" +
