@@ -1,16 +1,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Filesystem;
-import frc.robot.JsonAutonomous.AutoInstruction.Unit;
 import frc.robot.logging.Loggable;
 import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
-import frc.robot.parsing.JsonParser;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import frc.robot.parsing.*;
+import frc.robot.parsing.AutoInstruction.Unit;
 
 public class JsonAutonomous extends Autonomous implements Loggable {
 
@@ -19,7 +15,6 @@ public class JsonAutonomous extends Autonomous implements Loggable {
                                                                                      // formula for
                                                                                      // 2022 robot
     private static final double SHOOTER_SPEED = -1;
-    private List<AutoInstruction> instructions;
     private int step;
     private LoggableTimer timer;
     private double start;
@@ -31,32 +26,8 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     private Shooter shooter;
     private Manipulation manipulation;
 
-    public static class AutoInstruction {
-        public String type;
-        public Unit unit;
-        public Double amount;
-        public List<Double> args;
+    private AutoParser parser;
 
-        public enum Unit {
-            SECONDS, MILLISECONDS, ENCODER_TICKS, ROTATIONS, INCHES, FEET, CURRENT, DEGREES, SPEED, POWER, MOTOR, NOTMOTOR, INVALID
-        }
-
-        public AutoInstruction(String type, List<Double> args) {
-            this.type = type;
-            this.args = args;
-        }
-
-        public AutoInstruction(String type, Unit unit, Double amount, List<Double> args) {
-            this.type = type;
-            this.unit = unit;
-            this.amount = amount;
-            this.args = args;
-        }
-
-        public String toString() {
-            return String.format("%s <%s %s>%n", this.type, this.amount, this.unit);
-        }
-    }
 
     /**
      * Creates a JsonAutonomous from the specified file
@@ -76,24 +47,17 @@ public class JsonAutonomous extends Autonomous implements Loggable {
     public void parseFile(String file) {
         step = -1;
         timer = new LoggableTimer();
-        instructions = new ArrayList<>();
-        JsonParser parser = new JsonParser(file);
-        parser.parse(-1);
-        for(int i = 0; i < parser.instructionSize; i++) {
-            parser.parse(i);
-
-            Double[] args = parser.args.toArray(new Double[0]);
-
-            String type = parser.type;
-
-            String unitString = parser.unit;
-            AutoInstruction.Unit unit = unitString != null ? parseUnit(unitString) : null;
-
-            Double amount = parser.amount;
-
-            AutoInstruction ai = unit == null ? new AutoInstruction(type, Arrays.asList(args))
-                    : new AutoInstruction(type, unit, amount, Arrays.asList(args));
-            instructions.add(ai);
+        parser = new AutoParser(file);
+        for(AutoInstruction ai : parser.INSTRUCTIONS) { //TODO: Debug prints
+            System.out.println("Block " + (parser.INSTRUCTIONS.indexOf(ai) + 1));
+            System.out.println("Type: " + ai.type);
+            System.out.println("Unit: " + ai.unit);
+            System.out.println("Amount: " + ai.amount);
+            System.out.println("Args:");
+            for(double i : ai.args) {
+                System.out.println("\t" + i);
+            }
+            System.out.println();
         }
     }
 
@@ -106,11 +70,11 @@ public class JsonAutonomous extends Autonomous implements Loggable {
         if (step == -1) {
             reset();
         }
-        if (instructions.size() == step) {
+        if (parser.INSTRUCTIONS.size() == step) {
             drive.drive(0, 0, false);
             return;
         }
-        AutoInstruction ai = instructions.get(step);
+        AutoInstruction ai = parser.INSTRUCTIONS.get(step);
 
         switch (ai.type) {
             case "drive":
