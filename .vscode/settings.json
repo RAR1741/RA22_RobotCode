@@ -28,24 +28,9 @@
   "java.test.defaultConfig": "WPIlibUnitTests",
   "java.completion.importOrder": ["", "javax", "java", "#"],
   "java.format.enabled": true,
-  "java.editor.formatOnSave": true,
   "java.format.settings.url": ".vscode/eclipse-java-google-style.xml",
   "[java]": {
     "editor.tabSize": 4,
     "editor.detectIndentation": false
   },
-  "cSpell.words": [
-    "Atclause",
-    "checkstyle",
-    "DEADBAND",
-    "deadbands",
-    "javadoc",
-    "loggables",
-    "lvuser",
-    "markdownlint",
-    "photogate",
-    "puppycrawl"
-  ],
-  "java.checkstyle.configuration": "${workspaceFolder}/checkstyle.xml",
-  "java.checkstyle.version": "8.39"
 }
