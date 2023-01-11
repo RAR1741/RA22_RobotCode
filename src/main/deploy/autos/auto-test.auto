@@ -20,8 +20,6 @@
     "type": "wait",
     "unit": "SECONDS",
     "amount": 1
-    args: [
-    ]
 }
 {
     "type": "drive,

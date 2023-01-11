@@ -1,4 +1,4 @@
-// Version 2.0
+// Version 2.1
 package frc.robot.parsing;
 
 import java.io.*;
@@ -23,7 +23,6 @@ public class AutoParser {
         parse();
     }
 
-    //TODO wait and the whole args reading system need sfixed
     public void parse() {
         if(LINES.isEmpty()) {
             Scanner fileReader = null;
@@ -73,7 +72,7 @@ public class AutoParser {
                             }
                             i++;
                         }
-                    }
+                    } else { i--; }
                     if (i < LINES.size() - 1) { i++; }
                     if(LINES.get(i).contains("}")) {
                         INSTRUCTIONS.add(unit == null ? new AutoInstruction(type, args) : new AutoInstruction(type, AutoInstruction.parseUnit(unit), amount, args));
