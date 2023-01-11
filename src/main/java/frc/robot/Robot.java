@@ -14,10 +14,10 @@ import frc.robot.logging.LoggableController;
 // import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.LoggablePowerDistribution;
 import frc.robot.logging.LoggableTimer;
-import frc.robot.logging.LogTimer;
 import frc.robot.logging.Logger;
 import java.io.IOException;
 import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -26,9 +26,7 @@ import java.util.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
-
     Logger logger;
-	LogTimer logTimer;
 	Timer runTimer;
 
     LoggableTimer timer;
@@ -68,7 +66,6 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         logger = new Logger();
-		logTimer = new LogTimer(logger);
 		runTimer = new Timer();
 
         timer = new LoggableTimer("Timer");
@@ -131,12 +128,23 @@ public class Robot extends TimedRobot {
 
 		logger.collectHeaders();
 		try {
-			logger.writeHeaders();
+            logger.writeData("Initiation");
 		} catch (IOException io) {
 			io.printStackTrace();
 		}
 
-		runTimer.schedule(logTimer, 0, 33);
+        System.out.println("Starting logger...");
+		runTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                logger.collectData();
+                try {
+                    logger.writeData(null);
+                } catch (IOException io) {
+                    io.printStackTrace();
+                }
+            }
+        }, 0, 33);
     }
 
     @Override
@@ -148,6 +156,13 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        try {
+            logger.writeData("Autonomous");
+            logger.writeHeaders();
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
+
         resetTimer();
     }
 
@@ -158,6 +173,13 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        try {
+            logger.writeData("TeleOp");
+            logger.writeHeaders();
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
+
         resetTimer();
     }
 
@@ -206,8 +228,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        timer.stop();
+        try {
+            logger.writeData("Disabled");
+            logger.writeHeaders();
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
 
+        timer.stop();
 		resetTimer();
     }
 
@@ -218,6 +246,13 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
+        try {
+            logger.writeData("Testmode");
+            logger.writeHeaders();
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
+        
         resetTimer();
     }
 

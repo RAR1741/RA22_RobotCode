@@ -8,19 +8,18 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 
 public class Logger {
 	private BufferedWriter logger;
 	public Map<String, String> logData;
-	private List<Loggable> loggables;
+	private ArrayList<Loggable> loggables;
 	private String logName;
 
 	public Logger() {
 		logData = new HashMap<String, String>();
-		loggables = new ArrayList<>();
+		loggables = new ArrayList<Loggable>();
 	}
 
 	/**
@@ -29,8 +28,8 @@ public class Logger {
 	* @throws IOException
 	*/
 	public void createLog() throws IOException {
-		Calendar calendar = Calendar.getInstance();
-        String dir = (System.getProperty("os.name").equals("Linux")) ? System.getenv("LOGS") + "/" : "\\home\\lvuser\\logs\\"; // TODO: If on Linux, run this command before running: [ -d "$HOME/logs" ] && export LOGS=$HOME/logs || cd $HOME && mkdir logs && export LOGS=$HOME/logs
+        Calendar calendar = Calendar.getInstance();
+        String dir = (System.getProperty("os.name").equals("Linux")) ? "./src/main/java/frc/robot/logging/logs/" : "\\home\\lvuser\\logs\\";
 		Path path = Paths.get(
             dir + calendar.get(Calendar.YEAR) + "-" +
             (calendar.get(Calendar.MONTH) + 1) + "-" +
@@ -50,7 +49,7 @@ public class Logger {
 	* @param header The name of the header being created.
 	*/
 	public void addHeader(String header) {
-		if (hasHeader(header)) {
+		if (logData.containsKey(header)) {
 			System.err.println("The header \"" + header + "\" already exists.");
 		}
 		else {
@@ -65,16 +64,11 @@ public class Logger {
 	* @param data The data being logged.
 	*/
 	public void addData(String header, Object data) {
-		if (!hasHeader(header)) {
+		if (!logData.containsKey(header)) {
 			System.err.println("The header \"" + header + "\" does not exist.");
 		}
 		else {
-			if (hasData(header)) {
-				System.err.println("The header \"" + header + "\" already has data.");
-			}
-			else {
-				logData.put(header, data.toString());
-			}
+			logData.put(header, data.toString());
 		}
 	}
 
@@ -89,7 +83,6 @@ public class Logger {
 		}
 
 		logger.newLine();
-
 		logger.close();
 		logger = new BufferedWriter(new FileWriter(logName, true));
 	}
@@ -99,14 +92,28 @@ public class Logger {
 	*
 	* @throws IOException
 	*/
-	public void writeData() throws IOException {
-		for (Map.Entry<String, String> data: logData.entrySet()) {
-			logger.write(data.getValue() + ",");
-			logData.put(data.getKey(), null);
-		}
+	public void writeData(String stage) throws IOException {
+        if (stage == null) {
+            for (Map.Entry<String, String> data: logData.entrySet()) {
+                logger.write(data.getValue() + ",");
+                logData.put(data.getKey(), null);
+            }
+        }
+        else {
+            String output = "========================================= Current Stage: " + stage + " =========================================";
+            
+            logger.newLine();
+            for (int i = 0; i < output.length(); i++) {
+                logger.write("=");
+            }
+            logger.newLine(); logger.write(output); logger.newLine();
+            for (int i = 0; i < output.length(); i++) {
+                logger.write("=");
+            }
+            logger.newLine();
+        }
 
 		logger.newLine();
-
 		logger.close();
 		logger = new BufferedWriter(new FileWriter(logName, true));
 	}
@@ -135,43 +142,6 @@ public class Logger {
 	public void collectData() {
 		for (Loggable loggable: loggables) {
 			loggable.logData(this);
-		}
-	}
-
-	/**
-	* Checks if the header being created exists already.
-	*
-	* @param header The header that is being created.
-	*
-	* @return Whether the header exists.
-	*/
-	private boolean hasHeader(String header) {
-		try {
-			return logData.containsKey(header);
-		}
-		catch (NullPointerException nullpointer) {
-			return false;
-		}
-    }
-
-	/**
-	* Checks if the header already has current data under it.
-	*
-	* @param header The header being checked for content.
-	*
-	* @return Whether the header has data.
-	*/
-	private boolean hasData(String header) {
-		try {
-			if (logData.get(header) == null) {
-				return false;
-			}
-			else {
-				return true;
-			}
-		}
-		catch (NullPointerException nullpointer) {
-			return false;
 		}
 	}
 }
