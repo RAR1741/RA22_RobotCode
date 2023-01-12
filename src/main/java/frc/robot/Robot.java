@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.Climber.MotorStates;
 import frc.robot.logging.LoggableCompressor;
 import frc.robot.logging.LoggableController;
-// import frc.robot.logging.LoggableGyro;
 import frc.robot.logging.LoggablePowerDistribution;
 import frc.robot.logging.LoggableTimer;
 import frc.robot.logging.Logger;
+
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -69,11 +69,7 @@ public class Robot extends TimedRobot {
 		runTimer = new Timer();
 
         timer = new LoggableTimer("Timer");
-        logger.addLoggable(timer);
-        // gyro = new LoggableGyro();
-
         pdp = new LoggablePowerDistribution(1, ModuleType.kRev);
-		logger.addLoggable(pdp);
 
 		try {
 			logger.createLog();
@@ -92,13 +88,9 @@ public class Robot extends TimedRobot {
             Solenoid climberSolenoidB2 = new Solenoid(PneumaticsModuleType.REVPH, 4);
             Solenoid climberSolenoidC = new Solenoid(PneumaticsModuleType.REVPH, 5);
 
-            // ClimberSensors climberSensors = new ClimberSensors(0, 1, 2, 3, 4, 5);
             ClimberGates climberGates = new ClimberGates(6, 7, 8, 9, 10, 11, 12, 13);
             climber = new Climber(9, 10, climberSolenoidA, climberSolenoidB1, climberSolenoidB2,
-                    climberSolenoidC, climberGates);// ,gyro, climberSensors);
-
-            // logger.addLoggable(climberSensors);
-            logger.addLoggable(climber);
+                    climberSolenoidC, climberGates);
         } else {
             System.out.println("Climber initialization disabled.");
         }
@@ -112,16 +104,17 @@ public class Robot extends TimedRobot {
             rightModule.setEncoder(0, 1, true);
 
             drive = new Drivetrain(leftModule, rightModule, 6);
-
-            logger.addLoggable(drive);
         } else {
             System.out.println("Drivetrain initialization disabled.");
         }
 
         System.out.print("Initializing compressor...");
         compressor = new LoggableCompressor(PneumaticsModuleType.REVPH);
-        System.out.println("done");
 
+        logger.addLoggable(pdp);
+        logger.addLoggable(climber);
+        logger.addLoggable(drive);
+        logger.addLoggable(timer);
         logger.addLoggable(driver);
         logger.addLoggable(operator);
         logger.addLoggable(compressor);
